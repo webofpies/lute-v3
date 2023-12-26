@@ -78,7 +78,9 @@ span.status2 {
 }
 
 span.status3 {
-  background-color: var(--status-3-color);
+  /* background-color: var(--status-3-color); */
+  text-decoration: underline 4px var(--status-2-color);
+  background-color: transparent;
 }
 
 span.status4 {
@@ -89,13 +91,13 @@ span.status5 {
   background-color: var(--status-5-color);
 }
 
-ul.form-control input[type="radio"] {
+#status input[type="radio"] {
   display: none;
   /* opacity: 0; */
   /* transform: translateX(10px); */
 }
 
-ul.form-control {
+#status {
   /* display: inline-block; */
   --status-border-color: rgb(173, 203, 208);
   width: min-content;
@@ -106,11 +108,11 @@ ul.form-control {
   /* margin-top: 1rem; */
 }
 
-ul.form-control label {
+#status label {
   font-size: 0.8rem;
 }
 
-ul.form-control li {
+#status li {
   display: flex;
   align-items: center;
   color: #797f86;
@@ -119,30 +121,30 @@ ul.form-control li {
   position: relative;
 }
 
-ul.form-control input[type="radio"] + label {
+#status input[type="radio"] + label {
   /* background-color: 2px solid rgba(130, 142, 144, 0.3); */
   /* border: 2px solid rgba(130, 142, 144, 0.3); */
   /* border-right: none; */
   /* border-left: none; */
   /* display: block; */
-  width: 41px;
-  height: 37px;
+  width: 32px;
+  height: 1.9rem;
   text-align: center;
-  line-height: 2.3;
+  line-height: 1.9;
   font-size: 1rem;
   /* padding: 3.3px; */
 }
 
-ul.form-control input[type="radio"]:checked + label {
+#status input[type="radio"]:checked + label {
   font-weight: 700;
   color: #3c3c3c;
   box-shadow: inset 0 0 0 2px rgb(49, 115, 155);
   border: none;
 }
 
-ul.form-control input[type="radio"]:nth-child(6):checked + label,
+#status input[type="radio"]#status-5:checked + label,
 /* ul.form-control input[checked]:nth-child(6) + label, */
-ul.form-control input[type="radio"]:nth-child(7):checked + label
+#status input[type="radio"]#status-6:checked + label
 /* ul.form-control input[checked]:nth-child(7) + label  */
 {
   color: #fff;
@@ -153,7 +155,7 @@ ul.form-control input[type="radio"]:nth-child(7):checked + label
   /* filter: brightness(70%); */
 /* } */
 
-ul.form-control li:nth-child(1) label {
+#status li:nth-child(1) label {
   background-color: var(--status-1-color);
   border-top-left-radius: 50%;
   border-bottom-left-radius: 50%;
@@ -162,7 +164,7 @@ ul.form-control li:nth-child(1) label {
   border-right: none;
 }
 
-ul.form-control li:nth-child(2) label {
+#status li:nth-child(2) label {
   background-color: var(--status-2-color);
 
   /* border: 2px solid var(--status-border-color); */
@@ -170,7 +172,7 @@ ul.form-control li:nth-child(2) label {
   border-left: none;
 }
 
-ul.form-control li:nth-child(3) label {
+#status li:nth-child(3) label {
   background-color: var(--status-3-color);
 
   /* border: 2px solid var(--status-border-color); */
@@ -178,21 +180,21 @@ ul.form-control li:nth-child(3) label {
   border-left: none;
 }
 
-ul.form-control li:nth-child(4) label {
+#status li:nth-child(4) label {
   background-color: var(--status-4-color);
   /* border: 2px solid var(--status-border-color); */
   border-right: none;
   border-left: none;
 }
 
-ul.form-control li:nth-child(5) label {
+#status li:nth-child(5) label {
   background-color: var(--status-5-color);
   /* border: 2px solid var(--status-border-color); */
   border-right: none;
   border-left: none;
 }
 
-ul.form-control li:nth-child(6) label {
+#status li:nth-child(6) label {
   background-color: var(--status-6-color);
   /* margin-left: 15px; */
   border-top-right-radius: 50%;
@@ -201,11 +203,11 @@ ul.form-control li:nth-child(6) label {
   /* border: 2px solid var(--status-border-color); */
 }
 
-ul.form-control li:nth-child(7) label{
+#status li:nth-child(7) label{
   background-color: var(--status-7-color);
   margin-left: 10px;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
 
   /* /~ to get the same size as others ~/ */
@@ -213,11 +215,11 @@ ul.form-control li:nth-child(7) label{
   
 }
 
-ul.form-control li:nth-child(6) label,
-ul.form-control li:nth-child(7) label {
+#status li:nth-child(6) label,
+#status li:nth-child(7) label {
   font-size: 1.1rem;
   text-align: center;
-  line-height: 2.1;
+  line-height: 1.9;
   color: #fff;
 }
 
@@ -264,7 +266,7 @@ ul.form-control li:nth-child(7) label {
 /* } */
 
 #thetexttitle {
-  font-size: 2rem;
+  font-size: 1.7rem;
 }
 
 div#thetext {
@@ -277,8 +279,8 @@ div#thetext {
   /* display: none; */
   font-family: inherit;
   background-color: #f5faff;
-  border-radius: 5px;
-  height: 37px;
+  border-radius: 2px;
+  /* height: 37px; */
 }
 
 #parentslist .tagit-new {
@@ -286,8 +288,8 @@ div#thetext {
 }
 
 input[type="text"].form-control {
-  border-radius: 5px;
-  padding: 0.5rem 0.8rem;
+  border-radius: 2px;
+  padding: 0.2rem 0.3rem;
   background-color: aliceblue;
   font-weight: 500;
 }
@@ -300,7 +302,7 @@ input[type="text"] {
 }
 
 ::placeholder {
-  font-size: 0.8rem;
+  /* font-size: 0.8rem; */
   font-weight: normal;
 }
 
@@ -308,6 +310,7 @@ input[type="text"] {
   /* display: none; */
 
   /* height: 40px; */
+  font-family: inherit;
   margin-bottom: 1rem;
 }
 
@@ -318,8 +321,8 @@ input[type="text"] {
 
 ul.shorttaglist {
   box-sizing: border-box;
-  border-radius: 5px;
-  padding: 0.5rem 0.8rem;
+  border-radius: 2px;
+  padding: 0.2rem 0.3rem;
   background-color: aliceblue;
 }
 
@@ -330,8 +333,8 @@ ul.shorttaglist {
 
   resize: none;
   box-sizing: border-box;
-  border-radius: 5px;
-  padding: 0.5rem 0.8rem;
+  border-radius: 2px;
+  padding: 0.2rem 0.3rem;
   background-color: #f5faff;
   /* border: none; */
   border: 1px solid #c6c6c6;
