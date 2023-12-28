@@ -175,104 +175,78 @@ span.status5 {
   /* filter: brightness(70%); */
 /* } */
 
+#status label[for="status-1"],
+#status label[for="status-2"],
+#status label[for="status-3"],
+#status label[for="status-4"] {
+  border-right: none;
+  border-left: none;
+}
+
 #status label[for="status-0"] {
   background-color: var(--status-1-color);
+
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 
-  /* border: 2px solid var(--status-border-color); */
-  /* box-sizing: border-box; */
-  /* border-right: none; */
-  /* border: 2px solid var(--status-border-color); */
   border-right: none;
 }
 
 #status label[for="status-1"] {
   background-color: var(--status-2-color);
-
-  /* border: 2px solid var(--status-border-color);; */
-  /* box-sizing: border-box; */
-  /* border: 2px solid var(--status-border-color); */
-  border-right: none;
-  border-left: none;
 }
 
 #status label[for="status-2"] {
   background-color: var(--status-3-color);
-
-  /* border: 2px solid var(--status-border-color);; */
-  /* box-sizing: border-box; */
-  /* border: 2px solid var(--status-border-color); */
-  border-right: none;
-  border-left: none;
 }
 
 #status label[for="status-3"] {
   background-color: var(--status-4-color);
-
-  /* border: 2px solid var(--status-border-color);; */
-  /* box-sizing: border-box; */
-  /* border: 2px solid var(--status-border-color); */
-  border-right: none;
-  border-left: none;
 }
 
 #status label[for="status-4"] {
   background-color: var(--status-5-color);
-
-  border: 2px solid var(--status-border-color);;
-  /* box-sizing: border-box; */
-  /* border: 2px solid var(--status-border-color); */
-  border-right: none;
-  border-left: none;
 }
 
 #status label[for="status-5"] {
   background-color: var(--status-6-color);
 
-  /* border: 2px solid var(--status-border-color);; */
-  /* box-sizing: border-box; */
-  /* margin-left: 15px; */
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+
   border-left: none;
-
-  /* padding: 0.25rem 0 0 0.75rem; */
-
-  /* border: 2px solid var(--status-border-color); */
 }
 
 #status label[for="status-6"]{
   background-color: var(--status-7-color);
-  margin-left: 10px;
-  /* width: 32px; */
-  /* height: 32px; */
+
   border-radius: 10px;
 
-  /* padding: 0.25rem 0 0 0.75rem; */
-
-  /* /~ to get the same size as others ~/ */
-  /* border: 2px solid transparent; */
-  
+  margin-left: 10px;
 }
-
-#status label[for="status-3"],
-#status label[for="status-4"] {
-  display: none;
-}
-
-/* #status label[for="status-5"] { */
-  /* line-height: 1.6; */
-/* } */
-/* #status label[for="status-6"] { */
-  /* line-height: 1.9; */
-/* } */
 
 #status label[for="status-5"],
 #status label[for="status-6"] {
   /* font-size: 1.1rem; */
   /* text-align: center; */
   color: #fff;
+  font-size: 0;
+}
+
+
+#status label[for="status-3"],
+#status label[for="status-4"] {
+  display: none;
+}
+
+#status label[for="status-5"]::after {
+  content: "✔";
+  font-size: 1rem;
+}
+
+#status label[for="status-6"]::after {
+  content: "✖";
+  font-size: 1rem;
 }
 
 /* translation popup */
@@ -388,11 +362,11 @@ form td {
 }
 
 table#term {
-    /* width: calc(100% - 2.3rem) !important; */
-    width: 100% !important;
-    /* border-bottom: 2px solid #d6edff; */
-    /* padding-right: 2.3rem; */
-    /* padding-bottom: 1.5rem !important; */
+  /* width: calc(100% - 2.3rem) !important; */
+  width: 100% !important;
+  /* border-bottom: 2px solid #d6edff; */
+  /* padding-right: 2.3rem; */
+  /* padding-bottom: 1.5rem !important; */
 }
 
 #submit {
