@@ -421,3 +421,7 @@ tr.odd {
 a.book-title {
   color: inherit;
 }
+
+#footerMarkRestAsKnownNextPage {
+  display: none;
+}
