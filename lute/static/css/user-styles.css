@@ -422,6 +422,9 @@ a.book-title {
   color: inherit;
 }
 
-#footerMarkRestAsKnownNextPage {
+#footerMarkRestAsKnownNextPage,
+#footerMarkRestAsKnown,
+#final_page_controls > h2,
+#final_page_controls > h2 + p {
   display: none;
 }
