@@ -55,7 +55,7 @@ div#reading-header {
     margin-bottom: 2.8rem;
     /* border-bottom: 2px solid #d6edff; */
     padding: 0 1.5rem 0.4rem 1.5rem;
-    border-bottom: 4px solid #d6edff;
+    /* border-bottom: 4px solid #d6edff; */
 }
 
 th,
@@ -427,4 +427,42 @@ a.book-title {
 #final_page_controls > h2,
 #final_page_controls > h2 + p {
   display: none;
+}
+
+#read_pane_right::after {
+  content: '';
+  background-color: #dbefff;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  width: 11px;
+  height: 110px;
+  cursor: col-resize;
+  border-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+#read_pane_right {
+  border-left: 1px solid #dbefff;
+}
+
+.dictframecontainer::after {
+  content: '';
+  background-color: #dbefff;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 11px;
+  width: 60px;
+  cursor: row-resize;
+  transform: translate(-50%, -100%);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.dictframecontainer {
+  border-top: 1px solid #dbefff;
+  overflow: unset;
 }
