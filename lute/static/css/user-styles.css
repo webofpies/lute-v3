@@ -418,7 +418,8 @@ tr.odd {
   background-color: aliceblue !important;
 }
 
-a.book-title {
+a.book-title,
+.sub-menu a {
   color: inherit;
 }
 
