@@ -3,8 +3,7 @@ Term import.
 """
 
 import os
-import tempfile
-from flask import Blueprint, render_template, flash, redirect
+from flask import Blueprint, current_app, render_template, flash, redirect
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 from wtforms.validators import DataRequired
@@ -27,9 +26,11 @@ def term_import_index():
     if form.validate_on_submit():
         text_file = form.text_file.data
         if text_file:
-            temp_file_name = tempfile.mkstemp()[1]
+            temp_file_name = os.path.join(
+                current_app.env_config.temppath, "import_terms.txt"
+            )
+            text_file.save(temp_file_name)
             try:
-                text_file.save(temp_file_name)
                 stats = import_file(temp_file_name)
                 flash(
                     f"Imported {stats['created']} terms (skipped {stats['skipped']})",
@@ -38,7 +39,5 @@ def term_import_index():
                 return redirect("/term/index", 302)
             except BadImportFileError as e:
                 flash(f"Error on import: {str(e)}", "notice")
-            finally:
-                os.unlink(temp_file_name)
 
     return render_template("termimport/index.html", form=form)
