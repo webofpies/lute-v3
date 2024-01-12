@@ -27,6 +27,11 @@
   /* font-weight: 700; */
 /* } */
 
+#term-form #text,
+#headertexttitle {
+  font-weight: 500;
+}
+
 span.status0 {
   background-color: var(--status-0-color);
 }
