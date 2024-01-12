@@ -219,6 +219,19 @@ span.status5 {
 
 .reading_header_container {
   background-color: var(--background-color);
+  align-items: end;
+}
+
+.reading_header_left {
+  align-items: flex-end;
+}
+
+.hamburger-btn {
+  border: 1px solid #79b7e7;
+}
+
+span.hamburger {
+  background: #79b7e7;
 }
 
 div#thetext {
@@ -276,7 +289,7 @@ a.book-title,
 
 #read_pane_right::after {
   content: '';
-  background-color: #dbefff;
+  background-color: #79b7e7;
   position: absolute;
   left: 0;
   top: 50%;
@@ -295,7 +308,7 @@ a.book-title,
 
 .dictframecontainer::after {
   content: '';
-  background-color: #dbefff;
+  background-color: #79b7e7;
   position: absolute;
   top: 0;
   left: 50%;
