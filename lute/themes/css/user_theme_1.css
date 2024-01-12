@@ -4,8 +4,8 @@
 body {
   font-family: "Rubik";
 
-  background-color: #fff;
-  color: #343a40;
+  --background-color: #fff;
+  --color: #343a40;
 
   --status-0-color: #d1f3f8;
   --status-1-color: #ffe8d5;
@@ -14,8 +14,7 @@ body {
 
   --status-6-color: #62c874e3;
   --status-7-color: #fa5252cd;
-}
 
-span.textitem {
-  font-size: 1.3rem;
+  background-color: var(--background-color);
+  color: var(--color);
 }
