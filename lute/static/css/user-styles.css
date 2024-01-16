@@ -58,6 +58,14 @@ span.status5 {
   background-color: var(--status-5-color);
 }
 
+/* disable blue bottom border*/
+span.status0,
+span.status1, 
+span.status2, 
+span.status3 {
+  border: none !important;
+}
+
 #status input[type="radio"] {
   display: none;
   /* opacity: 0; */
@@ -244,6 +252,10 @@ span.textitem {
   margin-bottom: 0.1em;
   border-radius: 2px;
 }
+
+/* .wordhover { */
+  /* border: none !important; */
+/* } */
 
 /* select only text elements (not whitespace or punctuations */
 .textsentence span:not([class="textitem"]) {
