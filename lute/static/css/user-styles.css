@@ -32,31 +32,16 @@
   font-weight: 500;
 }
 
-/* span.status0 { */
-  /* background-color: var(--status-0-color); */
-/* } */
-
-/* span.status1 { */
-  /* background-color: var(--status-1-color); */
-/* } */
-
-/* span.status2 { */
-  /* background-color: var(--status-2-color); */
-/* } */
+#status label[for="status-3"],
+#status label[for="status-4"] {
+  display: none;
+}
 
 span.status3 {
   /* background-color: var(--status-3-color); */
   text-decoration: underline 4px var(--status-2-color);
   background-color: transparent;
 }
-
-/* span.status4 { */
-  /* background-color: var(--status-4-color); */
-/* } */
-
-/* span.status5 { */
-  /* background-color: var(--status-5-color); */
-/* } */
 
 /* disable blue bottom border*/
 span.status0,
@@ -65,149 +50,6 @@ span.status2,
 span.status3 {
   border: none !important;
 }
-
-/* #status input[type="radio"] { */
-  /* display: none; */
-  /* /~ opacity: 0; ~/ */
-  /* /~ transform: translateX(10px); ~/ */
-/* } */
-
-#status label[for="status-4"],
-#status label[for="status-5"] {
-  display: none;
-}
-
-/* #status { */
-  /* --status-border-color: #828e904d; */
-  /* --status-border-radius: 5px; */
-  /* /~ width: min-content; ~/ */
-  /* /~ padding: 0.2rem; ~/ */
-  /* /~ padding-left: 0; ~/ */
-  /* gap: 0; /~ resets gap present in styles.css ~/ */
-/* } */
-
-/* #status li { */
-  /* /~ display: flex; ~/ */
-  /* /~ align-items: center; ~/ */
-  
-  /* margin: 0; */
-  /* position: relative; */
-/* } */
-
-/* #status label { */
-  /* display: flex; */
-  /* align-items: center; */
-  /* justify-content: center; */
-  /* border: 2px solid var(--status-border-color); */
-  /* color: #797f86; */
-  /* width: 30px; */
-  /* height: 30px; */
-  /* /~ text-align: center; ~/ */
-  /* box-sizing: border-box; */
-  /* /~ padding: 3px 0 3px; ~/ */
-/* } */
-
-/* #status input[type="radio"]:checked + label { */
-  /* font-weight: 700; */
-  /* color: #3c3c3c; */
-  /* box-shadow: inset 0 0 0 2px #4e4f51c4; */
-  /* /~ padding: 5px 0 5px; ~/ */
-  /* border: none; */
-  /* /~ border: 2px solid #42a8ba4d; ~/ */
-  /* /~ border: 2px solid #1f92a5; ~/ */
-  /* /~ line-height: 2; ~/ */
-/* } */
-
-/* #status input[type="radio"]#status-5:checked + label, */
-/* #status input[type="radio"]#status-6:checked + label { */
-  /* color: #fff; */
-  /* font-weight: normal; */
-/* } */
-
-/* /~ #status input[type="radio"]#status-5:checked + label { ~/ */
-  /* /~ /~ box-shadow: inset 0 0 0 2px #229336; ~/ ~/ */
-  /* /~ /~ line-height: 1.8; ~/ ~/ */
-  /* /~ /~ padding-right: 2px; ~/ ~/ */
-/* /~ } ~/ */
-
-/* /~ #status input[type="radio"]#status-0:checked + label { ~/ */
-  /* /~ /~ box-shadow: inset 0 0 0 2px #229336; ~/ ~/ */
-  /* /~ /~ line-height: 1.8; ~/ ~/ */
-  /* /~ /~ padding-left: 2px; ~/ ~/ */
-/* /~ } ~/ */
-
-/* #status label[for="status-1"], */
-/* #status label[for="status-2"], */
-/* #status label[for="status-3"], */
-/* #status label[for="status-4"] { */
-  /* border-right: none; */
-  /* border-left: none; */
-/* } */
-
-/* #status label[for="status-0"] { */
-  /* background-color: var(--status-1-color); */
-
-  /* border-top-left-radius: var(--status-border-radius); */
-  /* border-bottom-left-radius: var(--status-border-radius); */
-
-  /* border-right: none; */
-/* } */
-
-/* #status label[for="status-1"] { */
-  /* background-color: var(--status-2-color); */
-/* } */
-
-/* #status label[for="status-2"] { */
-  /* background-color: var(--status-3-color); */
-/* } */
-
-/* #status label[for="status-3"] { */
-  /* background-color: var(--status-4-color); */
-/* } */
-
-/* #status label[for="status-4"] { */
-  /* background-color: var(--status-5-color); */
-/* } */
-
-/* #status label[for="status-5"] { */
-  /* background-color: var(--status-6-color); */
-
-  /* border-top-right-radius: var(--status-border-radius); */
-  /* border-bottom-right-radius: var(--status-border-radius); */
-
-  /* border-left: none; */
-/* } */
-
-/* #status label[for="status-6"]{ */
-  /* background-color: var(--status-7-color); */
-
-  /* border-radius: var(--status-border-radius); */
-
-  /* margin-left: 10px; */
-/* } */
-
-/* #status label[for="status-5"], */
-/* #status label[for="status-6"] { */
-  /* /~ font-size: 1.1rem; ~/ */
-  /* /~ text-align: center; ~/ */
-  /* color: #fff; */
-  /* font-size: 0; */
-/* } */
-
-/* /~ #status label[for="status-3"], ~/ */
-/* /~ #status label[for="status-4"] { ~/ */
-  /* /~ display: none; ~/ */
-/* /~ } ~/ */
-
-/* #status label[for="status-5"]::after { */
-  /* content: "✔"; */
-  /* font-size: 1rem; */
-/* } */
-
-/* #status label[for="status-6"]::after { */
-  /* content: "✖"; */
-  /* font-size: 1rem; */
-/* } */
 
 #submit {
   padding: 0.4rem 1.2rem;
