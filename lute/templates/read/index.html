@@ -4,6 +4,12 @@
 
 {% block body %}
 
+<script src="https://unpkg.com/@popperjs/core@2" defer></script>
+<script src="https://unpkg.com/tippy.js@6" defer></script>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/shift-away-subtle.css"/>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/light-border.css"/>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/themes/material.css"/>
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/player.js') }}" charset="utf-8" defer></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/resize.js') }}" charset="utf-8" defer></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/text-options.js') }}" charset="utf-8" defer></script>

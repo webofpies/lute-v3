@@ -94,28 +94,71 @@ function prepareTextInteractions(pos) {
 
   $(document).on('keydown', handle_keydown);
 
-  $('#thetext').tooltip({
-    position: pos,
-    items: '.word.showtooltip',
-    show: { easing: 'easeOutCirc' },
-    content: function (setContent) { tooltip_textitem_hover_content($(this), setContent); }
-  });
+  // $('#thetext').tooltip({
+  //   position: pos,
+  //   items: '.word.showtooltip',
+  //   show: { easing: 'easeOutCirc' },
+  //   content: function (setContent) { tooltip_textitem_hover_content($(this), setContent); }
+  // });
+
+  tippy(".word.showtooltip", {
+    // content(reference) {
+    //   (setContent) => tooltip_textitem_hover_content(reference, setContent);
+    // },
+    content: "Loading...",
+    onShow(instance) {fetchToolTipContent(instance);},
+
+    // },
+    // content: function(reference) {
+    //   const elid = parseInt(reference.dataset.wid);
+    //   fetch(`/read/termpopup/${elid}`, {
+    //     method: 'GET'
+    //   })
+    //   .then(response => response.text())
+    //   .then(data => {
+    //     // console.log(data);
+    //     return data;
+    //   });
+      // .then(data => {
+      //   return data.message;
+      // }
+      // ;
+    // },
+    allowHTML: true,
+    placement: "bottom",
+    arrow: true,
+    animation: "shift-away-subtle",
+    interactive: true,
+    appendTo: document.body, //needed for interactive mode to work
+    theme: "light-border",
+  })
 }
 
+function fetchToolTipContent(instance) {
+  const elid = parseInt(instance.reference.dataset.wid);
+  fetch(`/read/termpopup/${elid}`, {
+    method: 'GET'
+  })
+  .then(response => response.text())
+  .then(data => {
+    instance.setContent(data);
+  });
+}
 
 /**
  * Build the html content for jquery-ui tooltip.
  */
-let tooltip_textitem_hover_content = function (el, setContent) {
-  elid = parseInt(el.data('wid'));
-  $.ajax({
-    url: `/read/termpopup/${elid}`,
-    type: 'get',
-    success: function(response) {
-      setContent(response);
-    }
-  });
-}
+// let tooltip_textitem_hover_content = function (el) {
+//   console.log(el);
+//   const elid = parseInt(el.dataset.wid);
+//   return $.ajax({
+//     url: `/read/termpopup/${elid}`,
+//     type: 'get',
+//     success: function(response) {
+//       return response;
+//     }
+//   });
+// }
 
 
 function showEditFrame(el, extra_args = {}) {
