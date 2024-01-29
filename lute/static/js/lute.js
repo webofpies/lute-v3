@@ -93,37 +93,16 @@ function prepareTextInteractions(tooltipPlacement) {
   $(document).on('keydown', handle_keydown);
 
   tippy(".word.showtooltip", {
-    // content(reference) {
-    //   (setContent) => tooltip_textitem_hover_content(reference, setContent);
-    // },
-    // content: "Loading...",
-    // onShow(instance) {fetchToolTipContent(instance);},
-    // content(reference) { return fetchToolTipContent(reference); },
-    // content: "",
+    content: "...",
     onCreate(instance) { setTooltipContent(instance); },
-    // },
-    // content: function(reference) {
-    //   const elid = parseInt(reference.dataset.wid);
-    //   fetch(`/read/termpopup/${elid}`, {
-    //     method: 'GET'
-    //   })
-    //   .then(response => response.text())
-    //   .then(data => {
-    //     // console.log(data);
-    //     return data;
-    //   });
-      // .then(data => {
-      //   return data.message;
-      // }
-      // ;
-    // },
-    allowHTML: true,
     placement: tooltipPlacement,
-    arrow: true,
+    theme: "user-theme",
     animation: "shift-away-subtle",
+    delay: [100, 0],
+    arrow: true,
+    allowHTML: true,
     interactive: true,
     appendTo: document.body, //needed for interactive mode to work
-    theme: "light-border",
   });
 }
 
