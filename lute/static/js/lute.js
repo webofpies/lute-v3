@@ -73,10 +73,8 @@ let clear_frames = function() {
 /** 
  * Prepare the interaction events with the text.
  *
- * pos = position hash, e.g.
- * {my: 'center bottom', at: 'center top-10', collision: 'flipfit flip'}
  */
-function prepareTextInteractions(pos) {
+function prepareTextInteractions(tooltipPlacement) {
   const t = $('#thetext');
   // Using "t.on" here because .word elements
   // are added and removed dynamically, and "t.on"
@@ -94,20 +92,15 @@ function prepareTextInteractions(pos) {
 
   $(document).on('keydown', handle_keydown);
 
-  // $('#thetext').tooltip({
-  //   position: pos,
-  //   items: '.word.showtooltip',
-  //   show: { easing: 'easeOutCirc' },
-  //   content: function (setContent) { tooltip_textitem_hover_content($(this), setContent); }
-  // });
-
   tippy(".word.showtooltip", {
     // content(reference) {
     //   (setContent) => tooltip_textitem_hover_content(reference, setContent);
     // },
-    content: "Loading...",
-    onShow(instance) {fetchToolTipContent(instance);},
-
+    // content: "Loading...",
+    // onShow(instance) {fetchToolTipContent(instance);},
+    // content(reference) { return fetchToolTipContent(reference); },
+    // content: "",
+    onCreate(instance) { setTooltipContent(instance); },
     // },
     // content: function(reference) {
     //   const elid = parseInt(reference.dataset.wid);
@@ -125,41 +118,23 @@ function prepareTextInteractions(pos) {
       // ;
     // },
     allowHTML: true,
-    placement: "bottom",
+    placement: tooltipPlacement,
     arrow: true,
     animation: "shift-away-subtle",
     interactive: true,
     appendTo: document.body, //needed for interactive mode to work
     theme: "light-border",
-  })
-}
-
-function fetchToolTipContent(instance) {
-  const elid = parseInt(instance.reference.dataset.wid);
-  fetch(`/read/termpopup/${elid}`, {
-    method: 'GET'
-  })
-  .then(response => response.text())
-  .then(data => {
-    instance.setContent(data);
   });
 }
 
-/**
- * Build the html content for jquery-ui tooltip.
- */
-// let tooltip_textitem_hover_content = function (el) {
-//   console.log(el);
-//   const elid = parseInt(el.dataset.wid);
-//   return $.ajax({
-//     url: `/read/termpopup/${elid}`,
-//     type: 'get',
-//     success: function(response) {
-//       return response;
-//     }
-//   });
-// }
-
+async function setTooltipContent(tippyInstance) {
+  const elid = parseInt(tippyInstance.reference.dataset.wid);
+  const response = await fetch(`/read/termpopup/${elid}`, {
+    method: 'GET'
+  });
+  const data = await response.text();
+  tippyInstance.setContent(data);
+}
 
 function showEditFrame(el, extra_args = {}) {
   const lid = parseInt(el.data('lang-id'));
