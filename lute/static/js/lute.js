@@ -72,7 +72,6 @@ let clear_frames = function() {
 
 /** 
  * Prepare the interaction events with the text.
- *
  */
 function prepareTextInteractions(tooltipPlacement) {
   const t = $('#thetext');

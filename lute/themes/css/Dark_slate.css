@@ -109,3 +109,10 @@ textarea,
 span.hamburger {
   background-color: #F3F4F4;
 }
+
+.tippy-box[data-theme~="user-theme"] {
+  --tippy-font-color: var(--font-color);
+  --tippy-bg-color: var(--background-color);
+  --tippy-border-color: var(--dark-grey);
+  --tippy-shadow-color: #2b2b2b;
+}

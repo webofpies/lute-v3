@@ -661,12 +661,6 @@ img
     margin-left: 20pt;
 }
 
-/* Widening the tooltip. */
-div.ui-tooltip {
-    max-width: 400px !important;
-    z-index: 1000; /*higher than audio because of words on the bottom, but lower than header and side menu */
-}
-
 .tooltip-image {
     max-width: 150px;
     max-height: 150px;
@@ -1417,10 +1411,6 @@ input[type="checkbox"][disabled] + label {
         height: 7.5rem;
         z-index: 1001;
         box-shadow: 0 0 12px 0 #dfdfdf;
-    }
-
-    div.ui-tooltip {
-        z-index: 1002;
     }
 
     #read_pane_left {

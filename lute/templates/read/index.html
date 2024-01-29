@@ -207,13 +207,14 @@
   });
 
   $(document).ready(function () {
+    if (mediaTablet.matches) {tooltipPos = "top";}
+
     const theTextReloadObs = new MutationObserver((mutationList, observer) => {
       if (scrollYBeforeReload) window.scrollTo(0, scrollYBeforeReload);
+      prepareTextInteractions(tooltipPos);
     });
     
     theTextReloadObs.observe(theText, {childList: true, subtree: true});
-
-    if (mediaTablet.matches) {tooltipPos = "top";}
 
     if (have_audio_file()) {
       // Don't actually load the source -- for some reason,
@@ -415,10 +416,6 @@
         set_page_fraction();
         set_footer_control_visibility();
         show_hide_title(actualPage);
-
-        if (initial_page_load) {
-          prepareTextInteractions(tooltipPos);
-        }
 
         // Magic hack for player source to load consistently
         // in Firefox.

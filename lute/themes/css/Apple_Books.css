@@ -32,3 +32,10 @@ span.status2 { background-color: var(--status-2-color); } /* yellow highlight */
 span.status3 { background-color: var(--status-3-color); } /* green highlight */
 span.status4 { background-color: var(--status-4-color); } /* blue highlight */
 span.status5 { background-color: var(--status-5-color); } /* purple highlight */
+
+.tippy-box[data-theme~="user-theme"] {
+  --tippy-font-color: var(--font-color);
+  --tippy-bg-color: #ffffff;
+  --tippy-border-color: #c6bda9;
+  --tippy-shadow-color: #00000042;
+}

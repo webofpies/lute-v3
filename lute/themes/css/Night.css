@@ -113,3 +113,10 @@ span.status99 { background-color: transparent; } /* transparent */
 span.hamburger {
   background-color: #F3F4F4;
 }
+
+.tippy-box[data-theme~="user-theme"] {
+  --tippy-font-color: var(--font-color);
+  --tippy-bg-color: var(--background-color);
+  --tippy-border-color: #6a6a6a;
+  --tippy-shadow-color: #000;
+}
