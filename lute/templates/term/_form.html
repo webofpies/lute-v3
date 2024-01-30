@@ -1,9 +1,3 @@
-{% for field_name, field_errors in form.errors.items() %}
-{% for error in field_errors %}
-<div class="flash-notice-narrow">{{ error }}</div>
-{% endfor %}
-{% endfor %}
-
 <div id="term-form-container">
   <form id="term-form" name="term_form" method="POST">
     {{ form.hidden_tag() }}
@@ -430,4 +424,56 @@
     });
   }
 
+</script>
+
+<script>
+  const defField = document.getElementById("text");
+  
+  function hasTermChanged() {
+    const currentTerm = defField.value;
+    const actualTerm = defField.getAttribute("value");
+    if (currentTerm) {
+      if (currentTerm.toLowerCase() !== actualTerm.toLowerCase()) {
+        return true;
+      } 
+    }
+  }
+
+  const ti = tippy(defField, {
+    onCreate(instance) { instance.disable(); },
+    content: "Can only change term case",
+    placement: "bottom-start",
+    theme: "flash-theme",
+    animation: "shift-away-subtle",
+    arrow: true,
+    popperOptions: {
+        modifiers: [{
+          name: 'placeArrow',
+          enabled: true,
+          phase: 'main',
+          fn({ state }) {
+            state.modifiersData.arrow = {x: 10, centerOffset: 0};
+          },
+        }],
+      },
+    trigger: "click",
+    hideOnClick: false,
+  });
+
+  
+  defField.addEventListener("input", function () {
+    if (hasTermChanged()) {
+      ti.enable();
+      ti.show();
+
+      defField.style.backgroundColor = "#ff8484";
+      document.querySelector(".term-element-box #submit").setAttribute("disabled", "")
+      document.querySelector(".term-element-box #delete").setAttribute("disabled", "")
+    } else {
+      ti.disable();
+      defField.style.removeProperty("background-color");
+      document.querySelector(".term-element-box #submit").removeAttribute("disabled")
+      document.querySelector(".term-element-box #delete").removeAttribute("disabled")
+    }
+  })
 </script>

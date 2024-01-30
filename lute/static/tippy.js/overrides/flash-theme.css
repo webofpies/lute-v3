@@ -1,0 +1,7 @@
+@import url("user-theme.css");
+
+.tippy-box[data-theme~="flash-theme"] {
+  --tippy-font-color: #141414;
+  --tippy-bg-color: #fdf7c1;
+  --tippy-border-color: #f8cdcd;
+}

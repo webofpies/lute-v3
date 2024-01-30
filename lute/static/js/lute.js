@@ -97,11 +97,11 @@ function prepareTextInteractions(tooltipPlacement) {
     placement: tooltipPlacement,
     theme: "user-theme",
     animation: "shift-away-subtle",
-    delay: [100, 0],
+    delay: [10, 0],
     arrow: true,
     allowHTML: true,
-    interactive: true,
-    appendTo: document.body, //needed for interactive mode to work
+    // interactive: true,
+    // appendTo: document.body, //needed for interactive mode to work
   });
 }
 
