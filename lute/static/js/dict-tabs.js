@@ -354,11 +354,21 @@ function isURLExternal(dictURL) {
   return (dictURL.charAt(0) == '*') ? true : false; 
 }
 
+/** Get the dict domain if available. */
 function getDictURLDomain(url) {
-  const cleanURLString = url.split("*").splice(-1)[0];
-  const urlObj = new URL(cleanURLString);
-
-  return urlObj.hostname;
+  const clean_url = url.split("*").splice(-1)[0];
+  try {
+    const urlObj = new URL(clean_url);
+    return urlObj.hostname;
+  }
+  catch(err) {
+    // Handle test/non-http dictionaries.
+    // Return the first 10 chars, just to keep text length reasonable.
+    let d = clean_url.slice(0, 10);
+    if (d.length < clean_url.length)
+      d += '...';
+    return d;
+  }
 }
 
 function getFavicon(domain) {
