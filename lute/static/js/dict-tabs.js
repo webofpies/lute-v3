@@ -1,20 +1,26 @@
 "use strict";
 
 /** Get the dict domain if available. */
-function getDictURLDomain(url) {
+function get_dict_info(url) {
+  let info = {}
+
+  let domain = null;
   const clean_url = url.split("*").splice(-1)[0];
   try {
     const urlObj = new URL(clean_url);
-    return urlObj.hostname;
+    domain = urlObj.hostname;
   }
   catch(err) {
     // Handle test/non-http dictionaries.
     // Return the first 10 chars, just to keep text length reasonable.
-    let d = clean_url.slice(0, 10);
-    if (d.length < clean_url.length)
-      d += '...';
-    return d;
+    domain = clean_url.slice(0, 10);
+    if (domain.length < clean_url.length)
+      domain += '...';
+    return domain;
   }
+
+  info.domain = domain;
+  return info;
 }
 
 function getFavicon(domain) {
@@ -57,7 +63,8 @@ function createDictTabs(num = 0) {
   dictTabsLayoutContainer.style.gridTemplateColumns = `repeat(${columnCount}, minmax(2rem, 8rem))`;
 
   TABBED_DICTS.forEach((dict, index) => {
-    const domain = getDictURLDomain(dict);
+    const info = get_dict_info(dict);
+    const domain = info.domain;
     const faviconURL = getFavicon(domain);
     let iFrame = null;
     let btnLabel = domain.split("www.").splice(-1)[0];
@@ -81,8 +88,9 @@ function createDictTabs(num = 0) {
     if (!isAllExternal) {
       iFrame = createIFrame("listframe", iFramesContainer);
     }
-   
-    const domain = getDictURLDomain(LISTED_DICTS[0]);
+
+    const info = get_dict_info(LISTED_DICTS[0]);
+    const domain = info.domain;
     const faviconURL = getFavicon(domain);
     const btn = createTabBtn(domain.split("www.").splice(-1)[0], 
                               dictTabsLayoutContainer, 
@@ -189,7 +197,8 @@ function listMenuClick(event, listMenuContainer, btn, dictTabButtons, iFrame) {
   listMenuContainer.classList.add("dict-select-list-hide");
 
   const optionVal = clickedOption.dataset.dictId;
-  const domain = getDictURLDomain(TERM_DICTS[optionVal]);
+  const info = get_dict_info(TERM_DICTS[optionVal]);
+  const domain = info.domain;
   const btnLabel = domain.split("www.").splice(-1)[0];
   const faviconURL = getFavicon(domain);
   const faviconEl = createImg(faviconURL, "dict-btn-fav-img"); // img elements get deleted after "change" event. so we create them after each change
@@ -228,7 +237,8 @@ function createDictListMenu(dicts) {
     const menuItem = document.createElement("p");
     menuItem.classList.add("dict-select-option");
     const origIndex = TERM_DICTS.indexOf(dict);
-    const domain = getDictURLDomain(dict);
+    const info = get_dict_info(dict);
+    const domain = info.domain;
     const faviconURL = getFavicon(domain);
     const faviconEl = createImg(faviconURL, "dict-btn-fav-img");
     menuItem.textContent = domain.split("www.").splice(-1)[0];
