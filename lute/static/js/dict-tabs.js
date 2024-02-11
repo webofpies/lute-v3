@@ -2,24 +2,30 @@
 
 /** Get the dict domain if available. */
 function get_dict_info(url) {
-  let info = {}
+  let info = {
+    favicon: null,
+    label: null,
+    isExternal: null
+  }
 
   let domain = null;
   const clean_url = url.split("*").splice(-1)[0];
   try {
     const urlObj = new URL(clean_url);
-    domain = urlObj.hostname;
+    const hostname = urlObj.hostname;
+    info.favicon = "call_image_builder(hostname)";
+    info.label = "splitting_code(hostname)";
+    info.isExternal = false;  // check url
   }
   catch(err) {
     // Handle test/non-http dictionaries.
     // Return the first 10 chars, just to keep text length reasonable.
-    domain = clean_url.slice(0, 10);
-    if (domain.length < clean_url.length)
-      domain += '...';
-    return domain;
+    let label = clean_url.slice(0, 10);
+    if (label.length < clean_url.length)
+      label += '...';
+    info.label = label;
   }
 
-  info.domain = domain;
   return info;
 }
 
