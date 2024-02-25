@@ -1,4 +1,69 @@
 
+# 3.2.2 (2024-02-21)
+
+Feature changes:
+
+* Move 'Export CSV' into term Actions menu.
+* Issue #271: Fix multiword select in some text locations
+* Issue #240: Use datatables for language listing.
+* Issue #221: Don't scroll reading pane on term delete.
+* Issue #269: Fix embedded translation dict.
+
+
+# 3.2.1 (2024-02-19)
+
+Feature changes:
+
+* #238: add "Focus mode".  From @webofpies in #262, #268.
+* #266: Add backup file download link.
+* #237: Show last backup date, add listing.  By @sakolkar in #227.
+* Improve dictionary UI, use tabs.  With @webofpies in #264.
+* #5: Support variable number of dictionaries.
+* #261: fix rtl language controls for book add, edit, page edit.
+* #223: resize text areas horiz and vert.
+
+Back end changes:
+
+* schema, js changes for dictionary tabs.
+
+
+# 3.1.4 (2024-02-11)
+
+Feature changes:
+
+* Issue 25: click term image and Delete/Backspace to delete.
+* Issue 214: user must press Return to create parent tag.
+* Issue 215: arrow changes status for hovered.
+* Issue 213: no hovered elements if clicked.
+* Issue 216: parent paste should show dropdown for hints.
+* Show parent suggestions after single char input.
+
+
+# 3.1.3 (2024-02-07)
+
+Feature changes:
+
+* [#182](https://github.com/jzohrab/lute-v3/issues/182): Confirm book archive.
+* [#174](https://github.com/jzohrab/lute-v3/issues/174): Add bulk term deletion.
+* [#205](https://github.com/jzohrab/lute-v3/issues/205): Add Actions menu to term listing to simplify adding actions.
+* [#175](https://github.com/jzohrab/lute-v3/issues/175): Keep blank lines of imported texts when rendering page for reading.
+* [#202](https://github.com/jzohrab/lute-v3/issues/202): Include all books in cli export.
+* [#191](https://github.com/jzohrab/lute-v3/issues/191): Scroll back to top on "mark as read".
+* [#177](https://github.com/jzohrab/lute-v3/issues/177): Show word count on book listing stats bar hover.
+* [#164[(https://github.com/jzohrab/lute-v3/issues/164): Hit backspace to edit pasted parent tag.
+* Add "(all)" to term status filter.
+* [#166](https://github.com/jzohrab/lute-v3/issues/166): Keep returns in term translation in Terms listing.
+
+Bug fixes:
+
+* [#170](https://github.com/jzohrab/lute-v3/issues/170): Fix arrow keys for RTL languages.
+* [#207](https://github.com/jzohrab/lute-v3/issues/207): Move title to right for RTL languages.
+
+Back end changes:
+
+* Simplify lute.js, remove state tracking
+
+
 # 3.1.2 (2024-02-01)
 
 * Bugfix: only recalc texts.TxWordCount for valid parsers.

@@ -21,7 +21,7 @@
 
     <tr>
       <td>{{ form.title.label }}</td>
-      <td>{{ form.title(class="form-control") }}</td>
+      <td>{{ form.title(class="form-control", dir=title_direction) }}</td>
     </tr>
 
     <tr>
@@ -60,6 +60,7 @@
       placeholder: 'Tags',
       editTags: false,
       autoComplete: { rightKey: true, tabKey: true },
+      dropdown: { enabled: 1 },
       enforceWhitelist: false,
       whitelist: TAGS
     });  // end tagify
