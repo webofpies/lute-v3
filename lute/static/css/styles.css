@@ -150,6 +150,16 @@ div#divbooktable {
     margin-left: auto;
 }
 
+#defaultLanguageSelect {
+    text-align: left;
+    padding: 4px;  /* copied padding from datatables css. */
+}
+
+div.toolbar {
+    float: right;
+    margin-right: 1rem;
+}
+
 /* blank space to hang completed_book bullets while maintaining proper justification on the whole column */
 a.book-title:before {
     content: '';
@@ -1817,6 +1827,8 @@ input[type="checkbox"][disabled] + label {
         bottom: 0;
         left: 0;
         opacity: 0;
+        /* for touch drag resize to work */
+        touch-action: none;
     }
 
     #read_pane_right::after {
@@ -1832,26 +1844,40 @@ input[type="checkbox"][disabled] + label {
     }
 
     /*drag button*/
-    #read_pane_right::before {
+    #read_pane_right::before,
+    .dictcontainer::before {
         content: '';
         background-color: #79b7e7;
         position: absolute;
-        right: 0;
         top: 0;
-        transform: translateY(-100%);
-        width: 50px;
-        height: 42px;
         cursor: row-resize;
-        border-top-left-radius: 5px;
+        
         background-image: url("/static/icn/drag-handle.svg");
         background-position: center;
         background-repeat: no-repeat;
+    }
+
+    #read_pane_right::before {
+        right: 0;
+        transform: translate(0, -100%);
+        width: 50px;
+        height: 42px;
+        border-top-left-radius: 5px;
         background-size: 91%;
+    }
+
+    .dictcontainer::before {
+        left: 50%;
+        width: 100px;
+        height: 25px;
+        transform: translate(-50%, -85%);
+        background-size: 30%;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
     }
 
     .dictcontainer::after {
         background-color: #79b7e7;
-        height: 6px;
     }
 
     #dicttabs {
@@ -2038,4 +2064,33 @@ input[type="checkbox"][disabled] + label {
 
 div.dt-buttons {
     display: none;
+}
+
+
+/** Term image search ****************/
+
+div#termimagesearch p.termimagesearchtitle {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+div#termimagesearch .initial {
+    border: solid 2px transparent;
+}
+
+div#termimagesearch .highlight {
+    border: solid 2px red !important;
+}
+
+div#termimagesearch .saved {
+    border: solid 2px green !important;
+}
+
+div#termimagesearch span > img {
+    display:inline;
+}
+
+div#termimagesearch span.imageAction:hover {
+    color: #C00000;
+    cursor: pointer;
 }
