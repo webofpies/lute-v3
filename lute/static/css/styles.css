@@ -738,6 +738,17 @@ img
     background: yellow !important;
 }
 
+.textitem.sentence {
+    opacity: 0.3;
+}
+
+.textitem.selected-sentence {
+    background-color: #79b7e79c;
+    border-radius: 0;
+    /* color: #1a1a1a; */
+    /* border: transparent; */
+}
+
 #termtags
 {
     width: 340px;
