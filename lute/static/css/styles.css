@@ -25,6 +25,9 @@ body {
     --form-border-color: #ddd;
     --form-border-radius: 3px;
 
+    --sentence-bg-color: #b0d7f6;
+    --sentence-font-color: #1f1f1f;
+
     background-color: var(--background-color);
     color: var(--font-color);
 
@@ -686,8 +689,7 @@ span.textitem {
     /* color: #C00000; */
 /* } */
 
-.hide
-{
+.hide {
     display: none;
 }
 
@@ -716,57 +718,52 @@ a:focus {
 a:active {
     color: #C00000;
 }
- 
- 
-img
-{
+
+img {
     border: 0pt none;
 }
 
-.wordhover
-{
+.wordhover {
     border-bottom: 1px solid blue !important;
 }
 
-.kwordmarked
-{
-    border-bottom: 1px solid red !important;
-}
-
-.newmultiterm
-{
+.newmultiterm {
     background: yellow !important;
 }
 
-.textitem.sentence {
-    opacity: 0.3;
+span.sentence {
+    opacity: 0.3 !important;
+    color: var(--font-color) !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
 }
 
-.textitem.selected-sentence {
-    background-color: #79b7e79c;
-    border-radius: 0;
-    /* color: #1a1a1a; */
-    /* border: transparent; */
+span.selected-sentence {
+    background-color: var(--sentence-bg-color) !important;
+    color: var(--sentence-font-color) !important;
+    border-radius: 0 !important;
+    border-color: transparent !important;
 }
 
-#termtags
-{
+span.kwordmarked {
+    background-color: yellow !important;
+}
+
+#termtags {
     width: 340px;
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 2px;
 }
 
-#texttags
-{
+#texttags {
     width: 340px;
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: 2px;
 }
 
-.nowrap
-{
+.nowrap {
     white-space: nowrap;
     margin-left: 20pt;
 }

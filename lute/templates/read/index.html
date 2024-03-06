@@ -225,6 +225,14 @@
     
     theTextReloadObs.observe(theText, {childList: true, subtree: true});
 
+    // equivalent of tapping ESC. click anywhere on the reading pane except a word to return to hover mode
+    readPaneLeft.addEventListener("mousedown", (e) => {
+      readPaneLeft.removeEventListener("mouseup", start_hover_mode);
+      if (e.target.closest(".textitem")) return;
+
+      readPaneLeft.addEventListener("mouseup", start_hover_mode);
+    });
+
     if (mediaTablet.matches) {
       tooltipPos = {my: 'center bottom', at: 'center top-10', collision: 'flipfit flip'};
     }
