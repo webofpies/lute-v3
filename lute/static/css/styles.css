@@ -29,7 +29,7 @@ body {
     --active-sentence-font-color: #1f1f1f;
 
     --marked-word-color: #ffe066;
-    --marked-sentence-color: yellow;
+    --multiterm-color: yellow;
 
     background-color: var(--background-color);
     color: var(--font-color);
@@ -732,7 +732,7 @@ img {
 }
 
 .newmultiterm {
-    background: var(--marked-sentence-color) !important;
+    background: var(--multiterm-color) !important;
 }
 
 span.sentence {
