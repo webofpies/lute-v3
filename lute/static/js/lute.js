@@ -22,7 +22,7 @@ let LUTE_CURR_TERM_DATA_ORDER = -1;  // initially not set.
  * this method on reload to reset the cursor etc.
  */
 function start_hover_mode(should_clear_frames = true) {
-  $('.textitem').removeClass('selected-sentence');
+  $('.textitem').removeClass('active-sentence');
   $('.textitem').removeClass('sentence');
   $('span.kwordmarked').removeClass('kwordmarked');
 
@@ -200,7 +200,7 @@ function hover_out(e) {
 
 let word_clicked = function(el, e) {
   el.removeClass('wordhover');
-  $('.textitem').removeClass('selected-sentence');
+  $('.textitem').removeClass('active-sentence');
   $('.textitem').removeClass('sentence');
 
   save_curr_data_order(el);
@@ -220,8 +220,8 @@ let word_clicked = function(el, e) {
     // Only one element should be marked clicked.
     $('span.kwordmarked').removeClass('kwordmarked');
     // mark textitem sentence
-    $(`.textitem[data-sentence-id="${el.data("sentence-id")}"]`).addClass("selected-sentence");
-    $(".textitem:not(.selected-sentence)").addClass("sentence");
+    $(`.textitem[data-sentence-id="${el.data("sentence-id")}"]`).addClass("active-sentence");
+    $(".textitem:not(.active-sentence)").addClass("sentence");
 
     showEditFrame(el);
   }
@@ -262,6 +262,11 @@ let get_selected_in_range = function(start_el, end_el) {
 function select_over(e) {
   if (selection_start_el == null)
     return;  // Not selecting
+
+  $('.textitem').removeClass('active-sentence');
+  $('.textitem').removeClass('sentence');
+  $('.textitem').removeClass('kwordmarked');
+
   $('.newmultiterm').removeClass('newmultiterm');
   const selected = get_selected_in_range(selection_start_el, $(this));
   selected.addClass('newmultiterm');
@@ -276,7 +281,7 @@ function select_ended(e) {
   }
 
   $('span.kwordmarked').removeClass('kwordmarked');
-  $('.textitem').removeClass('selected-sentence');
+  $('.textitem').removeClass('active-sentence');
   $('.textitem').removeClass('sentence');
 
   const selected = get_selected_in_range(selection_start_el, $(this));
@@ -376,7 +381,7 @@ let move_cursor = function(shiftby) {
   // Adjust all screen state.
   $('span.newmultiterm').removeClass('newmultiterm');
   $('span.kwordmarked').removeClass('kwordmarked');
-  $('span.textitem').removeClass('selected-sentence');
+  $('span.textitem').removeClass('active-sentence');
   $('span.textitem').removeClass('sentence');
   $('span.wordhover').removeClass('wordhover');
   remove_status_highlights();
