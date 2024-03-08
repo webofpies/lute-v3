@@ -29,6 +29,7 @@ body {
     --active-sentence-font-color: #1f1f1f;
 
     --marked-word-color: #ffe066;
+    --hovered-word-color: blue;
     --multiterm-color: yellow;
 
     background-color: var(--background-color);
@@ -727,31 +728,33 @@ img {
     border: 0pt none;
 }
 
-.wordhover {
-    border-bottom: 1px solid blue !important;
-}
-
 .newmultiterm {
     background: var(--multiterm-color) !important;
 }
 
-span.sentence {
+.sentence,
+.active-sentence {
+    border-color: transparent !important;
+    text-decoration: none !important;
+}
+
+.sentence {
     opacity: 0.3 !important;
     color: var(--font-color) !important;
     background-color: transparent !important;
-    border-color: transparent !important;
-    text-decoration: none;
 }
 
-span.active-sentence {
-    background-color: var(--active-sentence-bg-color) !important;
-    color: var(--active-sentence-font-color) !important;
+.active-sentence {
     border-radius: 0 !important;
-    border-color: transparent !important;
-    text-decoration: none;
+    color: var(--active-sentence-font-color) !important;
+    background-color: var(--active-sentence-bg-color) !important;
 }
 
-span.kwordmarked {
+.wordhover:not(.kwordmarked) {
+    border-bottom: 1px solid var(--hovered-word-color) !important;
+}
+
+.kwordmarked {
     background-color: var(--marked-word-color) !important;
 }
 

@@ -183,9 +183,9 @@ function hover_over_add_status_class(e) {
 
 function hover_over(e) {
   $('span.wordhover').removeClass('wordhover');
+  $(this).addClass('wordhover');
   const marked_count = $('span.kwordmarked').toArray().length;
   if (marked_count == 0) {
-    $(this).addClass('wordhover');
     save_curr_data_order($(this));
   }
 }
@@ -281,8 +281,6 @@ function select_ended(e) {
   }
 
   $('span.kwordmarked').removeClass('kwordmarked');
-  $('.textitem').removeClass('active-sentence');
-  $('.textitem').removeClass('sentence');
 
   const selected = get_selected_in_range(selection_start_el, $(this));
   if (e.shiftKey) {
