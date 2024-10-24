@@ -209,7 +209,7 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
         updates["language_id"] = self.language_ids[lang]
         b = self.browser
         self._fill_term_form(b, updates)
-        b.find_by_css("#submit").first.click()
+        b.find_by_css("#btnsubmit").first.click()
 
     def get_term_table_content(self):
         "Get term table content."
@@ -240,16 +240,24 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
 
         def _to_string(t):
             "Create string for token, eg 'cat (2)'."
+
+            # Note that selenium's t.text accessor strips leading/trailing whitespace,
+            # so if a span contains " ", t.text returns "".  We need the actual
+            # inner html.
+            # pylint: disable=protected-access
+            inner_html = t._element.get_attribute("innerHTML")
+            zws = "\u200B"
+            inner_html = inner_html.replace(zws, "")
+
             status = [
                 c.replace("status", "")
                 for c in t["class"].split(" ")
                 if c.startswith("status") and c != "status0"
             ]
             if len(status) == 0:
-                return t.text
-            assert len(status) == 1, f"should only have 1 status on {t.text}"
-            status = status[0]
-            return f"{t.text} ({status})"
+                return inner_html
+            assert len(status) == 1, f"should only have 1 status on {inner_html}"
+            return f"{inner_html} ({status[0]})"
 
         etext = [_to_string(e) for e in elements]
         ret = "/".join(etext)
@@ -286,32 +294,17 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
 
     def press_hotkey(self, hotkey):
         "Send a hotkey."
-        el = self.browser.find_by_tag("body")
-        map_to_js_keycode = {
-            "1": 49,
-            "2": 50,
-            "3": 51,
-            "4": 52,
-            "5": 53,
-            "i": 73,
-            "w": 87,
-            "c": 67,
-            "t": 84,
-            "m": 77,
-            "h": 72,
-            "up": 38,
-            "down": 40,
-        }
-        jscode = map_to_js_keycode[hotkey.lower()]
-        shift_pressed = "true" if hotkey in ["C", "T"] else "false"
-
-        # This was the only way I could get this to work:
+        event_parts = [
+            "type: 'keydown'",
+            f"key: '{hotkey.lower()}'",
+        ]
+        if hotkey in ["C", "T"]:
+            event_parts.append("shiftKey: true")
         script = f"""jQuery.event.trigger({{
-          type: 'keydown',
-          which: {jscode},
-          shiftKey: '{shift_pressed}'
+          {', '.join(event_parts)}
         }});"""
         # pylint: disable=protected-access
+        el = self.browser.find_by_tag("body")
         self.browser.execute_script(script, el._element)
         time.sleep(0.2)  # Or it's too fast.
         # print(script)
@@ -332,7 +325,7 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
             time.sleep(0.4)  # Hack, test failing.
             self._fill_term_form(iframe, updates)
             time.sleep(0.4)  # Hack, test failing.
-            iframe.find_by_css("#submit").first.click()
+            iframe.find_by_css("#btnsubmit").first.click()
             time.sleep(0.4)  # Hack, test failing.
 
             # Only refresh the reading frame if everything was ok.
@@ -359,7 +352,7 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
 
         To see this data, run the acc. tests with '-s', eg:
 
-        pytest tests/acceptance/test_smoke.py --port=5000 -s
+        pytest tests/acceptance/test_smoke.py --port=5001 -s
         """
         now = time.perf_counter()
         since_start = now - self.start

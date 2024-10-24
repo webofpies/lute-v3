@@ -227,6 +227,7 @@ table#booktable:not(:has(a.completed_book)) a.book-title:before {
 
 .refreshed {
     background-image: url("../icn/waiting2.gif");
+    background-repeat: no-repeat;
 }
 
 .book-action-dropdown {
@@ -729,7 +730,6 @@ span.textsentence {
 span.textitem {
     font-size: 16px;
     color: var(--font-color);
-    display:inline-block;
 
     /* disallow select, only allow mouse-down-drag-up to define multiword
    terms. */
@@ -1207,6 +1207,23 @@ table input:not([type="checkbox"]) {
 #termimport td:first-child,
 .settingstable td:first-child {
     width: 20rem;
+}
+
+#shortcutstable th {
+    text-align: left;
+}
+
+#shortcutstable .settingcategory {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#shortcutstable input[type=text] {
+    max-width: 8rem;
+}
+
+.dupShortcut {
+    background-color: #FFCCCB;
 }
 
 #book td:first-child,
@@ -1775,7 +1792,8 @@ input[type="checkbox"][disabled] + label {
 
 #current_theme, 
 #japanese_reading, 
-#backup_count, 
+#backup_count,
+#stats_calc_sample_size,
 #test_mecab_btn,
 #parser_type,
 #language_id,
@@ -2032,6 +2050,10 @@ input[type="checkbox"][disabled] + label {
 
 #booktable td:has(.status-bar-container) {
     padding-right: 1.5rem;
+}
+
+.book-stats-ajax-cell {
+    font-style: italic;
 }
 
 .status-bar-container-empty {

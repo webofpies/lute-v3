@@ -1,4 +1,79 @@
 
+# 3.5.7 (2024-10-21)
+
+Feature changes:
+
+* #141: allow customized shortcuts
+* #495: add new shortcuts: translate page, edit page, copy page text, add bookmark, delete term
+
+Tweaks:
+
+* #497: Change default port to 5001.
+* #500: show  popup for ignored terms with data
+* Add version to startup console.
+
+
+# 3.5.6 (2024-10-13)
+
+Feature changes:
+
+* Add CLI tool to bulk import books from a CSV file.  See [the manual](https://luteorg.github.io/lute-manual/usage/command-line-jobs.html) for notes.  By @bwkimmel in #491
+
+Tweaks:
+
+* #103: click parent term auto-saves child
+* #467: allow change of book audio file
+
+Misc code:
+
+* #492: split prod and dev requirements
+* #490: build docker images using source code, not pypi
+* Add template for language parser plugins
+
+
+# 3.5.5 (2024-10-06)
+
+Feature changes:
+
+* #405: add UserSetting for book stats sample size.
+
+There was a big refactor/rewrite of much of the book stats
+calculation code.  The calculation isn't instantaneous,
+but as the graphs are ajaxed in now, it should suffice.
+
+Tweaks:
+
+* Show term popup if parent is set.
+* Ajax in book stats on home page for speed.
+* Simplify datatables rendering.
+
+Fixes:
+
+* #487: Use term IDs for deletes.
+* #488: Handle Japanese "repeat" kanji character.
+
+
+# 3.5.4 (2024-10-06)
+
+Botched release: forgot to update `pyproject.toml`, process updated.
+
+
+# 3.5.3 (2024-09-20)
+
+Tweaks:
+
+* #324: convert pending term parent text to tag on save, if not a real tag yet.
+* #480: persist user book table settings.
+* #482: don't rearrange whole reading page when adding multiword term.
+
+Fixes:
+
+* #483: docker build always uses latest pypi lute.
+* #479: fix pyproject.toml start script reference.
+* Interpret IS_DOCKER flag correctly.
+* #474: fix missing component term error.
+
+
 # 3.5.2 (2024-08-26)
 
 Tweaks:

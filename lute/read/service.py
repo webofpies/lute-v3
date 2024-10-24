@@ -7,7 +7,7 @@ from lute.models.term import Term, Status
 from lute.models.book import Text
 from lute.book.stats import mark_stale
 from lute.read.render.service import get_paragraphs, find_all_Terms_in_string
-from lute.read.render.renderable_calculator import TokenLocator
+from lute.read.render.calculate_textitems import get_string_indexes
 from lute.term.model import Repository
 from lute.db import db
 
@@ -26,7 +26,7 @@ def set_unknowns_to_known(text: Text):
         ti.term
         for para in paragraphs
         for sentence in para
-        for ti in sentence.textitems
+        for ti in sentence
         if ti.is_word and ti.term.status == 0
     ]
 
@@ -64,7 +64,7 @@ def _save_new_status_0_terms(paragraphs):
         ti
         for para in paragraphs
         for sentence in para
-        for ti in sentence.textitems
+        for ti in sentence
         if ti.is_word and ti.term.id is None and ti.term.status == 0
     ]
 
@@ -93,8 +93,21 @@ def start_reading(dbbook, pagenum, db_session):
 
 
 def get_popup_data(termid):
-    "Get the data necessary to render a term popup."
+    "Get popup data, or None if popup shouldn't be shown."
     term = Term.find(termid)
+
+    if term.status == Status.UNKNOWN:
+        return None
+
+    def has_popup_data(cterm):
+        return (
+            (cterm.translation or "").strip() != ""
+            or (cterm.romanization or "").strip() != ""
+            or cterm.get_current_image() is not None
+        )
+
+    if not has_popup_data(term) and len(term.parents) == 0:
+        return None
 
     term_tags = [tt.text for tt in term.term_tags]
 
@@ -117,14 +130,17 @@ def get_popup_data(termid):
 
     def sort_components(components):
         # Sort components by min position in string and length.
-        subj = TokenLocator.make_string(term.text)
-        tocloc = TokenLocator(term.language, subj)
         component_and_pos = []
         for c in components:
-            locs = tocloc.locate_string(c.text)
-            # pylint: disable=consider-using-generator
-            index = min([loc["index"] for loc in locs])
-            component_and_pos.append([c, index])
+            c_indices = [
+                loc[1] for loc in get_string_indexes([c.text_lc], term.text_lc)
+            ]
+
+            # Sometimes the components aren't found
+            # in the string, which makes no sense ...
+            # ref https://github.com/LuteOrg/lute-v3/issues/474
+            if len(c_indices) > 0:
+                component_and_pos.append([c, min(c_indices)])
 
         def compare(a, b):
             # Lowest position (closest to front of string) sorts first.

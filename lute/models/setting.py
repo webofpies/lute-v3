@@ -162,6 +162,37 @@ class UserSetting(SettingBase):
             # Behaviour:
             "open_popup_in_new_tab": False,
             "stop_audio_on_term_form_open": True,
+            "stats_calc_sample_size": 5,
+            # Keyboard shortcuts.  Those defined in the initial
+            # release have default values.  New hotkeys added after
+            # the initial release have empty values, because users may
+            # have already set up their hotkeys, and we can't assume
+            # that a key combination hasn't already been assigned.
+            "hotkey_StartHover": "escape",
+            "hotkey_PrevWord": "arrowleft",
+            "hotkey_NextWord": "arrowright",
+            "hotkey_StatusUp": "arrowup",
+            "hotkey_StatusDown": "arrowdown",
+            "hotkey_Bookmark": "b",
+            "hotkey_CopySentence": "c",
+            "hotkey_CopyPara": "shift+c",
+            "hotkey_TranslateSentence": "t",
+            "hotkey_TranslatePara": "shift+t",
+            "hotkey_NextTheme": "m",
+            "hotkey_ToggleHighlight": "h",
+            "hotkey_ToggleFocus": "f",
+            "hotkey_Status1": "1",
+            "hotkey_Status2": "2",
+            "hotkey_Status3": "3",
+            "hotkey_Status4": "4",
+            "hotkey_Status5": "5",
+            "hotkey_StatusIgnore": "i",
+            "hotkey_StatusWellKnown": "w",
+            # New hotkeys:
+            "hotkey_CopyPage": "",
+            "hotkey_DeleteTerm": "",
+            "hotkey_EditPage": "",
+            "hotkey_TranslatePage": "",
         }
         for k, v in keys_and_defaults.items():
             if not UserSetting.key_exists(k):

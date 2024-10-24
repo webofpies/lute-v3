@@ -2,14 +2,64 @@
 Term popup data tests.
 """
 
-from lute.models.term import Term
+from lute.models.term import Term, Status
 from lute.read.service import get_popup_data
 from lute.db import db
+
+
+def test_popup_data_is_none_if_no_data(spanish, app_context):
+    "Return None if no popup."
+    t = Term(spanish, "gato")
+    db.session.add(t)
+    db.session.commit()
+
+    d = get_popup_data(t.id)
+    assert d is None, "No data, no popup"
+
+    t.translation = "hello"
+    d = get_popup_data(t.id)
+    assert d is not None, "Have data, popup"
+
+
+def test_popup_shown_if_parent_exists_even_if_no_other_data(spanish, app_context):
+    "I always want to know if a parent has been set."
+    t = Term(spanish, "gato")
+    db.session.add(t)
+    db.session.commit()
+    d = get_popup_data(t.id)
+    assert d is None, "No data, no popup"
+
+    p = Term(spanish, "perro")
+    t.parents.append(p)
+    db.session.add(t)
+    db.session.commit()
+    d = get_popup_data(t.id)
+    assert d is not None, "Has parent, popup, even if no other data."
+
+
+def test_popup_data_is_none_for_unknown(spanish, app_context):
+    "Return None if no-popup statuses."
+    t = Term(spanish, "gato")
+    db.session.add(t)
+    db.session.commit()
+    t.translation = "hello"
+    d = get_popup_data(t.id)
+    assert d is not None, "Have data, popup"
+
+    t.status = Status.UNKNOWN
+    d = get_popup_data(t.id)
+    assert d is None, "No popup for UNKNOWN words"
+
+    for s in [1, Status.IGNORED]:
+        t.status = s
+        d = get_popup_data(t.id)
+        assert d is not None, f"Have data for status {s}"
 
 
 def test_term_with_no_parents(spanish, app_context):
     "Keep the lights on test, smoke only."
     t = Term(spanish, "gato")
+    t.translation = "cat"
     db.session.add(t)
     db.session.commit()
 
@@ -101,6 +151,7 @@ def assert_components(d, expected, msg=""):
 def test_single_term_not_included_in_own_components(spanish, app_context):
     "Keep the lights on test, smoke only."
     t = Term(spanish, "gato")
+    t.translation = "cat"
     db.session.add(t)
     db.session.commit()
 
@@ -111,6 +162,7 @@ def test_single_term_not_included_in_own_components(spanish, app_context):
 def test_component_without_translation_not_returned(spanish, app_context):
     "Component word is returned."
     t = Term(spanish, "un gato")
+    t.translation = "a cat"
     db.session.add(t)
     make_terms([("gato", "")], spanish)
     db.session.commit()
@@ -122,6 +174,7 @@ def test_component_without_translation_not_returned(spanish, app_context):
 def test_component_word_with_translation_returned(spanish, app_context):
     "Component word is returned."
     t = Term(spanish, "un gato")
+    t.translation = "a cat"
     db.session.add(t)
     make_terms([("gato", "cat")], spanish)
     db.session.commit()
@@ -133,6 +186,7 @@ def test_component_word_with_translation_returned(spanish, app_context):
 def test_nested_multiword_components(spanish, app_context):
     "Complete components are returned."
     t = Term(spanish, "un gato gordo")
+    t.translation = "a fat cat"
     db.session.add(t)
     make_terms([("gato", "cat"), ("gat", "x"), ("un gato", "a cat")], spanish)
     db.session.commit()
@@ -144,6 +198,7 @@ def test_nested_multiword_components(spanish, app_context):
 def test_multiword_components_returned_in_order_of_appearance(spanish, app_context):
     "Complete components are returned."
     t = Term(spanish, "un gato gordo")
+    t.translation = "a fat cat"
     db.session.add(t)
     make_terms(
         [
@@ -165,6 +220,7 @@ def test_multiword_components_returned_in_order_of_appearance(spanish, app_conte
 def test_components_only_returned_once(spanish, app_context):
     "Component not returned multiple times if present multiple times."
     t = Term(spanish, "un gato gordo gato")
+    t.translation = "a cat fat cat"
     db.session.add(t)
     make_terms([("gato", "cat")], spanish)
     db.session.commit()
