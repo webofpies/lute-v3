@@ -12,7 +12,9 @@ function HeaderMenu({ label, children }) {
       transitionProps={{ exitDuration: 0 }}
       withinPortal>
       <Menu.Target>
-        <UnstyledButton className={classes.link} onClick={(event) => event.preventDefault()}>
+        <UnstyledButton
+          className={classes.link}
+          onClick={(event) => event.preventDefault()}>
           <Center>
             <span className={classes.linkLabel}>{label}</span>
             <IconChevronDown size="0.9rem" stroke={1.5} />

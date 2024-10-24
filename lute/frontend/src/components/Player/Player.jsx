@@ -45,14 +45,18 @@ function reducer(state, action) {
     case "bookmarkSaved":
       return {
         ...state,
-        bookmarks: [...state.bookmarks, { value: action.payload }].toSorted(function (a, b) {
-          return a.value - b.value;
-        }),
+        bookmarks: [...state.bookmarks, { value: action.payload }].toSorted(
+          function (a, b) {
+            return a.value - b.value;
+          }
+        ),
       };
     case "bookmarkRemoved":
       return {
         ...state,
-        bookmarks: state.bookmarks.filter((mark) => mark.value !== action.payload),
+        bookmarks: state.bookmarks.filter(
+          (mark) => mark.value !== action.payload
+        ),
       };
     case "bookmarkActive":
       return {
@@ -111,7 +115,10 @@ function Player({ book }) {
   }
 
   function handlePlaybackRateChange(delta) {
-    const playbackRate = Math.min(Math.max((audio.playbackRate += delta), 0.1), 10);
+    const playbackRate = Math.min(
+      Math.max((audio.playbackRate += delta), 0.1),
+      10
+    );
     audio.playbackRate = playbackRate;
     dispatch({ type: "rateChanged", payload: playbackRate });
   }
@@ -157,7 +164,11 @@ function Player({ book }) {
   return (
     <Flex align="center" gap="1.5rem" className={classes["main-container"]}>
       <ActionIcon onClick={handlePlayPause} radius="50%" size="5rem">
-        {state.playing ? <IconPlayerPauseFilled size="60%" /> : <IconPlayerPlayFilled size="60%" />}
+        {state.playing ? (
+          <IconPlayerPauseFilled size="60%" />
+        ) : (
+          <IconPlayerPlayFilled size="60%" />
+        )}
       </ActionIcon>
       <Stack className={classes["mid-container"]}>
         <Stack gap="0.2rem" className={classes["timeline-container"]}>
@@ -172,7 +183,10 @@ function Player({ book }) {
             styles={{
               mark: { backgroundColor: "orangered" },
               thumb: { display: "none" },
-              track: { overflow: "hidden", borderRadius: "var(--slider-radius)" },
+              track: {
+                overflow: "hidden",
+                borderRadius: "var(--slider-radius)",
+              },
               root: { padding: 0, height: "var(--slider-size)" },
             }}
             // radius="md"
@@ -194,7 +208,10 @@ function Player({ book }) {
           gap="0.8rem"
           className={classes["mind-controls-container"]}>
           {/* SKIP BACK BUTTON */}
-          <ActionIcon onClick={() => (audio.currentTime = 0)} radius="50%" size="2rem">
+          <ActionIcon
+            onClick={() => (audio.currentTime = 0)}
+            radius="50%"
+            size="2rem">
             <IconPlayerSkipBackFilled size="60%" />
           </ActionIcon>
           {/* JUMP TO TIME */}
@@ -215,7 +232,9 @@ function Player({ book }) {
             </ActionIconGroup>
             {/* JUMP TO TIME SELECT */}
             <Select
-              onChange={(_value, option) => dispatch({ type: "skipAmount", payload: option.value })}
+              onChange={(_value, option) =>
+                dispatch({ type: "skipAmount", payload: option.value })
+              }
               allowDeselect={false}
               styles={{ root: { width: "5rem" } }}
               checkIconPosition="right"
@@ -274,18 +293,33 @@ function Player({ book }) {
           styles={{ thumb: { borderWidth: "2px" } }}
         />
         <ActionIconGroup className={classes["bookmark-container"]}>
-          <ActionIcon bg="transparent" onClick={handleSaveRemoveBookmark} radius={0}>
+          <ActionIcon
+            bg="transparent"
+            onClick={handleSaveRemoveBookmark}
+            radius={0}>
             {state.bookmarkActive ? (
-              <IconBookmarkFilled size="100%" color="var(--mantine-color-blue-filled)" />
+              <IconBookmarkFilled
+                size="100%"
+                color="var(--mantine-color-blue-filled)"
+              />
             ) : (
-              <IconBookmark size="100%" color="var(--mantine-color-blue-filled)" />
+              <IconBookmark
+                size="100%"
+                color="var(--mantine-color-blue-filled)"
+              />
             )}
           </ActionIcon>
           <ActionIconGroup>
-            <ActionIcon onClick={() => handleSkipToBookmark("prev")} radius="50%" size="1.5rem">
+            <ActionIcon
+              onClick={() => handleSkipToBookmark("prev")}
+              radius="50%"
+              size="1.5rem">
               <IconChevronLeft />
             </ActionIcon>
-            <ActionIcon onClick={() => handleSkipToBookmark("next")} radius="50%" size="1.5rem">
+            <ActionIcon
+              onClick={() => handleSkipToBookmark("next")}
+              radius="50%"
+              size="1.5rem">
               <IconChevronRight />
             </ActionIcon>
           </ActionIconGroup>

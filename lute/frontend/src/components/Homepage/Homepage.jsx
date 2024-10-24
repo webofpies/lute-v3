@@ -19,7 +19,6 @@ export default function Homepage() {
     staleTime: Infinity,
   });
 
-  // if (isPending) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
 
   return (

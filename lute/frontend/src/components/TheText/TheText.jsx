@@ -12,14 +12,7 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
   const currentTermDataOrderRef = useRef(-1);
   const selectedMultiTermRef = useRef({});
 
-  const {
-    isPending,
-    isFetching,
-    error,
-    data,
-    // isPlaceholderData,
-    // isSuccess,
-  } = useQuery({
+  const { isPending, isFetching, error, data } = useQuery({
     queryKey: ["pageData", book.id, page],
     queryFn: async () => {
       const response = await fetch(

@@ -1,13 +1,9 @@
 import { memo } from "react";
-// import { useQuery } from "@tanstack/react-query";
 import { Image, rem, Tabs, Text } from "@mantine/core";
 import { IconExternalLink } from "@tabler/icons-react";
 import DictIFrame from "./DictIFrame";
-// import { useQueries } from "@tanstack/react-query";
-// import DictPopup from "./DictPopup";
 
 function DictPane({ dicts, term }) {
-  console.log(term, "term");
   return (
     <Tabs defaultValue="0">
       <Tabs.List
@@ -39,14 +35,7 @@ function DictPane({ dicts, term }) {
                   w={16}
                   src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}></Image>
               }>
-              <Text
-                size="sm"
-                style={{
-                  // whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  // textOverflow: "clip",
-                  // minWidth: "0",
-                }}>
+              <Text size="sm" style={{ overflow: "hidden" }}>
                 {dict.label}
               </Text>
             </Tabs.Tab>

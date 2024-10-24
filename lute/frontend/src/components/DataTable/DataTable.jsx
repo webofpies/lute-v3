@@ -1,14 +1,32 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Table, UnstyledButton, Group, Text, Center, TextInput, rem, keys } from "@mantine/core";
-import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from "@tabler/icons-react";
+import {
+  Table,
+  UnstyledButton,
+  Group,
+  Text,
+  Center,
+  TextInput,
+  rem,
+  keys,
+} from "@mantine/core";
+import {
+  IconSelector,
+  IconChevronDown,
+  IconChevronUp,
+  IconSearch,
+} from "@tabler/icons-react";
 import classes from "./DataTable.module.css";
 import StatsBar from "../StatsBar/StatsBar";
 
 const EXCLUDED_KEYS = ["id"];
 
 function Th({ children, reversed, sorted, onSort, columnWidth }) {
-  const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
+  const Icon = sorted
+    ? reversed
+      ? IconChevronUp
+      : IconChevronDown
+    : IconSelector;
   return (
     <Table.Th
       style={{ width: columnWidth && columnWidth, whiteSpace: "nowrap" }}
@@ -28,14 +46,18 @@ function Th({ children, reversed, sorted, onSort, columnWidth }) {
 }
 
 function excludeKeys(obj, keysToExclude) {
-  return Object.fromEntries(Object.entries(obj).filter(([key]) => !keysToExclude.includes(key)));
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !keysToExclude.includes(key))
+  );
 }
 
 function filterData(data, search, keysToExclude) {
   const query = search.toLowerCase().trim();
   const d = excludeKeys(data[0], keysToExclude);
 
-  return data.filter((item) => keys(d).some((key) => item[key].toLowerCase().includes(query)));
+  return data.filter((item) =>
+    keys(d).some((key) => item[key].toLowerCase().includes(query))
+  );
 }
 
 function sortData(data, payload) {
@@ -75,7 +97,9 @@ export default function DataTable({ data }) {
   const handleSearchChange = (event) => {
     const { value } = event.currentTarget;
     setSearch(value);
-    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
+    setSortedData(
+      sortData(data, { sortBy, reversed: reverseSortDirection, search: value })
+    );
   };
 
   const rows = sortedData.map((book) => (
@@ -99,7 +123,12 @@ export default function DataTable({ data }) {
       <TextInput
         placeholder="Search by any field"
         mb="md"
-        leftSection={<IconSearch style={{ width: rem(16), height: rem(16) }} stroke={1.5} />}
+        leftSection={
+          <IconSearch
+            style={{ width: rem(16), height: rem(16) }}
+            stroke={1.5}
+          />
+        }
         value={search}
         onChange={handleSearchChange}
       />

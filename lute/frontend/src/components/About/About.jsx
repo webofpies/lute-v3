@@ -36,8 +36,8 @@ function About() {
             {data.isDocker && (
               <Text component="p">
                 <em>
-                  Note these are paths in your container, not on the host. You mounted host paths
-                  when you started the container.
+                  Note these are paths in your container, not on the host. You
+                  mounted host paths when you started the container.
                 </em>
               </Text>
             )}

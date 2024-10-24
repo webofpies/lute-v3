@@ -23,7 +23,9 @@ export default function PopupInfo({ data }) {
         <img key={index} className="tooltip-image" src={img} alt="" />
       ))}
 
-      {data.translation && <p style={{ whiteSpace: "pre-wrap" }}>{data.translation}</p>}
+      {data.translation && (
+        <p style={{ whiteSpace: "pre-wrap" }}>{data.translation}</p>
+      )}
 
       <p>
         {data.term_tags.map((t, index) => (

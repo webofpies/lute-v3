@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Drawer } from "@mantine/core";
 import { memo } from "react";
 import DrawerMenuContent from "./DrawerMenuContent";

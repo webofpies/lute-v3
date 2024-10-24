@@ -56,14 +56,22 @@ export default function HeaderMenuBar({ openVersionModal }) {
               </Menu.Item>
             </HeaderMenu>
             <HeaderMenu label="About">
-              <Menu.Item onClick={openVersionModal}>Version and software info</Menu.Item>
+              <Menu.Item onClick={openVersionModal}>
+                Version and software info
+              </Menu.Item>
               <Menu.Item>
                 <NavLink to="/stats">Statistics</NavLink>
               </Menu.Item>
-              <Menu.Item component="a" href="https://luteorg.github.io/lute-manual" target="_blank">
+              <Menu.Item
+                component="a"
+                href="https://luteorg.github.io/lute-manual"
+                target="_blank">
                 Docs
               </Menu.Item>
-              <MenuItem component="a" href="https://discord.gg/CzFUQP5m8u" target="_blank">
+              <MenuItem
+                component="a"
+                href="https://discord.gg/CzFUQP5m8u"
+                target="_blank">
                 Discord
               </MenuItem>
             </HeaderMenu>

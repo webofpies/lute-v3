@@ -2,7 +2,6 @@ export function createInteractionFunctions(
   selectionStartRef,
   currentTermDataOrderRef,
   selectedMultiTermRef
-  // onSetSelectedTermID
 ) {
   function startHoverMode() {
     removeAllContainingClass("kwordmarked");

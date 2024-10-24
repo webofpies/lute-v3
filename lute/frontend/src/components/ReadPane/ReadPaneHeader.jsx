@@ -4,13 +4,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import ReadSlider from "./ReadSlider";
 
-function ReadPaneHeader({
-  open,
-  currentPage,
-  book,
-  setCurrentPage,
-  // isPlaceholder
-}) {
+function ReadPaneHeader({ open, currentPage, book, setCurrentPage }) {
   return (
     <Group gap={10} mb="xl" align="flex-end">
       <ActionIcon onClick={open} variant="default" size="lg">
@@ -26,30 +20,18 @@ function ReadPaneHeader({
           style={{ paddingInline: "2.1rem", fontSize: "0.9rem" }}>
           <Grid.Col span="auto">
             {currentPage > 1 && (
-              <Text
-                component="h1"
-                fw="normal"
-                size="inherit"
-                lineClamp={1} // lineClamp changes lineHeight
-                // style={{ lineHeight: 1.4 }}
-              >
+              <Text component="h1" fw="normal" size="inherit" lineClamp={1}>
                 {book.title}
               </Text>
             )}
           </Grid.Col>
           <Grid.Col span="fit-content">
-            <Text
-              component="span"
-              fw={500}
-              size="inherit">{`${currentPage}/${book.page_count}`}</Text>
+            <Text component="span" fw={500} size="inherit">
+              {`${currentPage}/${book.page_count}`}
+            </Text>
           </Grid.Col>
         </Grid>
-        <ReadSlider
-          book={book}
-          page={currentPage}
-          onSetPage={setCurrentPage}
-          // isPlaceholder={isPlaceholder}
-        />
+        <ReadSlider book={book} page={currentPage} onSetPage={setCurrentPage} />
       </Stack>
     </Group>
   );

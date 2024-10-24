@@ -2,8 +2,6 @@ import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { memo } from "react";
 import PopupDropdown from "./PopupDropdown";
-// import PopupInfo from "./PopupInfo";
-// import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function Popup({ children, id }) {
   const [opened, { close, open }] = useDisclosure(false);

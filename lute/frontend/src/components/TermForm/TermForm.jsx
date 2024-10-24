@@ -16,10 +16,7 @@ import {
   Checkbox,
 } from "@mantine/core";
 import { memo, useEffect } from "react";
-// import { useQuery } from "@tanstack/react-query";
-// import { useState } from "react";
 
-// function TermForm({ termID, onSetTerm }) {
 function TermForm({ termData }) {
   const form = useForm({
     mode: "uncontrolled",

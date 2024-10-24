@@ -22,23 +22,22 @@ const barTitles = {
 };
 
 function StatsBar({ book }) {
-  const {
-    // isPending,
-    isFetching,
-    // isSuccess,
-    error,
-    data,
-  } = useQuery({
+  const { isFetching, error, data } = useQuery({
     queryKey: ["bookStats", book.id],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5000/book/${book.id}/stats`);
+      const response = await fetch(
+        `http://localhost:5000/book/${book.id}/stats`
+      );
       const data = await response.json();
 
       const statCounts = { ...data };
       statCounts["99"] = statCounts["98"] + statCounts["99"];
       delete statCounts["98"];
 
-      const totalCount = Object.values(statCounts).reduce((acc, val) => acc + val, 0);
+      const totalCount = Object.values(statCounts).reduce(
+        (acc, val) => acc + val,
+        0
+      );
       if (totalCount === 0) {
         return null;
       }
@@ -54,7 +53,6 @@ function StatsBar({ book }) {
     staleTime: Infinity,
   });
 
-  // if (isPending) return <Loader />;
   if (error) return "An error has occurred: " + error.message;
 
   return isFetching ? (
@@ -77,14 +75,17 @@ function StatsBar({ book }) {
           return (
             percent >= 1 && (
               <Tooltip key={index} label={msg}>
-                <Progress.Section value={percent} color={statusColors[status]}></Progress.Section>
+                <Progress.Section
+                  value={percent}
+                  color={statusColors[status]}
+                />
               </Tooltip>
             )
           );
         })
       ) : (
         <Tooltip label="Please open the book to calculate stats">
-          <Progress.Section></Progress.Section>
+          <Progress.Section />
         </Tooltip>
       )}
     </Progress.Root>
