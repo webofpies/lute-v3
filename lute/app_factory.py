@@ -285,6 +285,19 @@ def _add_base_routes(app, app_config):
             404,
         )
 
+    # API for React
+    @app.route("/api/appinfo")
+    def version():
+        ac = current_app.env_config
+        return jsonify(
+            {
+                "version": lute.__version__,
+                "datapath": ac.datapath,
+                "database": ac.dbfilename,
+                "isDocker": ac.is_docker,
+            }
+        )
+
 
 def _create_app(app_config, extra_config):
     """

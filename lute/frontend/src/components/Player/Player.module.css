@@ -1,0 +1,51 @@
+.main-container {
+  width: min-content;
+  background-color: #80c3ff;
+  padding: 0.6rem;
+  border-radius: 5px;
+  justify-content: space-between;
+  padding-inline: 1.5rem;
+
+  margin-inline: auto;
+  margin-bottom: 1.6rem;
+}
+
+.mid-container {
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: aliceblue;
+  border-radius: 5px;
+  width: max-content;
+  flex: 1;
+}
+
+.mid-contols-container {
+  padding-inline: 1.5rem;
+}
+
+.timeline-container {
+  background-color: #add9ff;
+  padding: 0.4rem;
+  border-radius: 5px;
+  padding-inline: 1rem;
+}
+
+.skip-container {
+  width: min-content;
+  background-color: #add9ff;
+  padding: 0.3rem;
+  border-radius: 5px;
+  gap: 0.5rem;
+}
+
+.right-container {
+  gap: 1rem;
+}
+
+.bookmark-container {
+  gap: 0.3rem;
+  padding: 0.3rem;
+  background-color: aliceblue;
+  border-radius: 3px;
+  align-items: center;
+}

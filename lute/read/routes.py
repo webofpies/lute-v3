@@ -2,9 +2,11 @@
 /read endpoints.
 """
 
+from urllib.parse import urlparse
 from datetime import datetime
 from flask import Blueprint, flash, request, render_template, redirect, jsonify
 from lute.read.service import set_unknowns_to_known, start_reading, get_popup_data
+from lute.read.render.service import get_paragraphs
 from lute.read.forms import TextForm
 from lute.term.model import Repository
 from lute.term.routes import handle_term_form
@@ -252,4 +254,185 @@ def edit_page(bookid, pagenum):
     text_dir = "rtl" if book.language.right_to_left else "ltr"
     return render_template(
         "read/page_edit_form.html", hide_top_menu=True, form=form, text_dir=text_dir
+    )
+
+
+# API for React
+@bp.route("/<int:bookid>/info", methods=["GET"])
+def book_info(bookid):
+    "book object to json"
+
+    book = Book.find(bookid)
+    if book is None:
+        return redirect("/", 302)
+
+    page_num = 1
+    text = book.texts[0]
+    if book.current_tx_id:
+        text = Text.find(book.current_tx_id)
+        page_num = text.order
+
+    lang = book.language
+    show_highlights = bool(int(UserSetting.get_value("show_highlights")))
+    term_dicts = lang.all_dictionaries()[lang.id]["term"]
+
+    def get_dict_info(dictURL, dictID):
+        is_external = dictURL[0] == "*"
+        url = dictURL.replace("*", "")
+        # label = url if len(url) <= 10 else f"{url[:10]}..."
+        hostname = urlparse(url).hostname
+        label = hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
+
+        return {
+            "id": dictID,
+            "url": url,
+            "label": label,
+            "isExternal": is_external,
+            "hostname": hostname,
+        }
+
+    dicts = [get_dict_info(dict, index) for index, dict in enumerate(term_dicts)]
+
+    # print(vars(book))
+
+    book_dict = {
+        "id": book.id,
+        "title": book.title,
+        "page_count": book.page_count,
+        "page_num": page_num,
+        "show_highlights": show_highlights,
+        "lang_id": lang.id,
+        "term_dicts": dicts,
+        "is_rtl": lang.right_to_left,
+        "sentence_dict_uris": lang.sentence_dict_uris,
+        "audio_filename": book.audio_filename,
+        "audio_current_pos": (
+            float(book.audio_current_pos) if book.audio_current_pos else 0
+        ),
+        "audio_bookmarks": (
+            [float(x) for x in book.audio_bookmarks.split(";")]
+            if book.audio_bookmarks
+            else []
+        ),
+    }
+
+    # print(book_dict)
+
+    return jsonify(book_dict)
+
+
+@bp.route("/<int:bookid>/<int:pagenum>/pageinfo", methods=["GET"])
+def page_info(bookid, pagenum):
+    "send book info in json"
+    book = Book.find(bookid)
+    if book is None:
+        return redirect("/", 302)
+
+    paragraphs = get_page_paragraphs(bookid, pagenum)
+    paras = [
+        [
+            {
+                "sentence_id": sentence.sentence_id,
+                "textitems": [
+                    {
+                        "id": textitem.span_id,
+                        "html_display_text": textitem.html_display_text,
+                        "class": textitem.html_class_string,
+                        "data-lang-id": textitem.lang_id,
+                        "data-paragraph-id": textitem.para_id,
+                        "data-sentence-id": textitem.se_id,
+                        "data-text": textitem.text,
+                        "data-status-class": textitem.status_class,
+                        "data-order": textitem.order,
+                        "data-wid": textitem.wo_id,
+                    }
+                    for textitem in sentence.textitems
+                ],
+            }
+            for sentence in paragraph
+        ]
+        for paragraph in paragraphs
+    ]
+
+    return jsonify(paras)
+
+
+def get_page_paragraphs(bookid, pagenum):
+    "does what it says"
+    book = Book.find(bookid)
+    text = book.text_at_page(pagenum)
+    lang = text.book.language
+
+    return get_paragraphs(text.text, lang)
+
+
+@bp.route("/terms/<int:term_id>", methods=["GET", "POST"])
+def term_info(term_id):
+    """
+    term info for term form
+    """
+    repo = Repository(db)
+    term = repo.load(term_id)
+    # print(f"editing term {term_id}", flush=True)
+    if term.status == 0:
+        term.status = 1
+    # print(vars(term), "term")
+    # print(repo, "repo")
+    return {
+        "text": term.text,
+        "textLC": term.text_lc,
+        "originalText": term.original_text,
+        "status": term.status,
+        "translation": term.translation,
+        "romanization": term.romanization,
+        "syncStatus": term.sync_status,
+        "termTags": term.term_tags,
+        "parents": term.parents,
+        "currentImg": term.current_image,
+    }
+
+
+@bp.route("/terms/<int:langid>/<text>", methods=["GET", "POST"])
+def multiterm_info(langid, text):
+    """
+    multiterm info for term form
+    """
+    repo = Repository(db)
+    term = repo.find_or_new(langid, text)
+    if term.status == 0:
+        term.status = 1
+
+    return {
+        "text": term.text,
+        "textLC": term.text_lc,
+        "originalText": term.original_text,
+        "status": term.status,
+        "translation": term.translation,
+        "romanization": term.romanization,
+        "syncStatus": term.sync_status,
+        "termTags": term.term_tags,
+        "parents": term.parents,
+        "currentImg": term.current_image,
+    }
+
+
+@bp.route("/popup/<int:termid>", methods=["GET"])
+def popup_content(termid):
+    """
+    Show a term popup for the given DBTerm.
+    """
+    d = get_popup_data(termid)
+
+    return jsonify(
+        {
+            "term": d["term"].text,
+            "translation": d["term"].translation,
+            "romanization": d["term"].romanization,
+            "flashmsg": d["flashmsg"],
+            "term_tags": d["term_tags"],
+            "term_images": d["term_images"],
+            "parentdata": d["parentdata"],
+            "parentterms": d["parentterms"],
+            "componentdata": d["components"],
+        }
     )

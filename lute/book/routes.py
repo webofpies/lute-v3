@@ -13,6 +13,7 @@ from flask import (
 )
 from lute.utils.data_tables import DataTablesFlaskParamParser
 from lute.book import service
+from lute.book.stats import get_status_distribution
 from lute.book.datatables import get_data_tables_list
 from lute.book.forms import NewBookForm, EditBookForm
 import lute.utils.formutils
@@ -184,3 +185,31 @@ def delete(bookid):
     db.session.delete(b)
     db.session.commit()
     return redirect("/", 302)
+
+
+# API for React
+@bp.route("/books", methods=["GET"])
+def all_books():
+    "Hacky listing."
+    results = []
+    books = db.session.query(DBBook).all()
+
+    for b in books:
+        row = {
+            "id": b.id,
+            "title": b.title,
+            "language": b.language.name,
+            "wordCount": sum([text.word_count for text in b.texts]),
+            # "tags": b.book_tags, // doesn't work
+            # "statusDistribution": get_status_distribution(b)
+        }
+        results.append(row)
+    return jsonify(results)
+
+
+@bp.route("/<int:bookid>/stats", methods=["GET"])
+def book_stats(bookid):
+    "Calc stats for the book using the status distribution."
+    book = DBBook.find(bookid)
+    status_distribution = get_status_distribution(book)
+    return jsonify(status_distribution)
