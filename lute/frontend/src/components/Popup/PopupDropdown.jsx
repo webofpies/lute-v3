@@ -7,7 +7,7 @@ export default function PopupDropdown({ id }) {
   const { isFetching, data } = useQuery({
     queryKey: ["popupData", id],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5000/read/popup/${id}`);
+      const response = await fetch(`http://localhost:5001/read/popup/${id}`);
       return await response.json();
     },
     enabled: show && id !== null,

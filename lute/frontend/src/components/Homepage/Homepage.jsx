@@ -13,7 +13,7 @@ export default function Homepage() {
   const { isPending, isFetching, error, data } = useQuery({
     queryKey: ["allBooks"],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5000/book/books`);
+      const response = await fetch(`http://localhost:5001/book/books`);
       return await response.json();
     },
     staleTime: Infinity,

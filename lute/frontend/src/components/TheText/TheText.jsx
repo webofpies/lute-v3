@@ -16,7 +16,7 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
     queryKey: ["pageData", book.id, page],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:5000/read/${book.id}/${page}/pageinfo`
+        `http://localhost:5001/read/${book.id}/${page}/pageinfo`
       );
       return await response.json();
     },

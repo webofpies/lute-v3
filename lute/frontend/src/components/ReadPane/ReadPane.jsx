@@ -26,7 +26,7 @@ export default function ReadPane() {
   } = useQuery({
     queryKey: ["bookData", id],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5000/read/${id}/info`);
+      const response = await fetch(`http://localhost:5001/read/${id}/info`);
       return await response.json();
     },
   });
