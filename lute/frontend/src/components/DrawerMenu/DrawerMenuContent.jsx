@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import {
+  ActionIcon,
   Box,
   Center,
   Code,
@@ -11,9 +12,10 @@ import {
   Stack,
   Text,
   ThemeIcon,
+  Tooltip,
   UnstyledButton,
 } from "@mantine/core";
-import DrawerButtonGrp from "./DrawerButtonGrp";
+// import DrawerButtonGrp from "./DrawerButtonGrp";
 import classes from "./DrawerMenu.module.css";
 import {
   IconBaselineDensityMedium,
@@ -32,6 +34,11 @@ import {
 } from "@tabler/icons-react";
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  adjustFontSize,
+  adjustLineHeight,
+  setColumnCount,
+} from "../../textOptions";
 
 const linkData = [
   {
@@ -99,24 +106,90 @@ function DrawerMenuContent() {
           <Center>
             <Stack>
               <Group>
-                <DrawerButtonGrp
-                  tooltip={"Adjust font size"}
-                  icons={[IconTextDecrease, IconTextIncrease]}
-                />
-                <DrawerButtonGrp
-                  tooltip={"Adjust line height"}
-                  icons={[IconBaselineDensityMedium, IconBaselineDensitySmall]}
-                />
+                <Tooltip label="Adjust font size">
+                  <ActionIcon.Group>
+                    <ActionIcon
+                      onClick={() => adjustFontSize(-1)}
+                      variant="light"
+                      size="lg">
+                      <IconTextDecrease
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                    <ActionIcon
+                      onClick={() => adjustFontSize(1)}
+                      variant="light"
+                      size="lg">
+                      <IconTextIncrease
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </ActionIcon.Group>
+                </Tooltip>
+                <Tooltip label="Adjust line height">
+                  <ActionIcon.Group>
+                    <ActionIcon
+                      onClick={() => adjustLineHeight(-0.1)}
+                      variant="light"
+                      size="lg">
+                      <IconBaselineDensityMedium
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                    <ActionIcon
+                      onClick={() => adjustLineHeight(0.1)}
+                      variant="light"
+                      size="lg">
+                      <IconBaselineDensitySmall
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </ActionIcon.Group>
+                </Tooltip>
               </Group>
               <Group>
-                <DrawerButtonGrp
-                  tooltip={"Adjust content width"}
-                  icons={[IconViewportNarrow, IconViewportWide]}
-                />
-                <DrawerButtonGrp
-                  tooltip={"Change column count"}
-                  icons={[IconCaretLeftFilled, IconCaretRightFilled]}
-                />
+                <Tooltip label="Adjust content width">
+                  <ActionIcon.Group>
+                    <ActionIcon variant="light" size="lg">
+                      <IconViewportNarrow
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                    <ActionIcon variant="light" size="lg">
+                      <IconViewportWide
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </ActionIcon.Group>
+                </Tooltip>
+                <Tooltip label="Change column count">
+                  <ActionIcon.Group>
+                    <ActionIcon
+                      onClick={() => setColumnCount(1)}
+                      variant="light"
+                      size="lg">
+                      <IconCaretLeftFilled
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                    <ActionIcon
+                      onClick={() => setColumnCount(2)}
+                      variant="light"
+                      size="lg">
+                      <IconCaretRightFilled
+                        style={{ width: "70%", height: "70%" }}
+                        stroke={1.5}
+                      />
+                    </ActionIcon>
+                  </ActionIcon.Group>
+                </Tooltip>
               </Group>
             </Stack>
           </Center>

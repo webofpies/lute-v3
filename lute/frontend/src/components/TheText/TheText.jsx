@@ -14,13 +14,14 @@ import {
   selectEnded,
   selectedMultiTerm,
 } from "../../lute";
+import {
+  adjustFontSize,
+  adjustLineHeight,
+  setColumnCount,
+} from "../../textOptions";
 
 function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
-  useEffect(() => {
-    startHoverMode();
-  }, [page]);
-
-  const { isPending, isFetching, error, data } = useQuery({
+  const { isPending, isFetching, isSuccess, error, data } = useQuery({
     queryKey: ["pageData", book.id, page],
     queryFn: async () => {
       const response = await fetch(
@@ -30,6 +31,15 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
     },
     refetchOnWindowFocus: false,
     placeholderData: keepPreviousData,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      startHoverMode();
+      adjustFontSize(0);
+      adjustLineHeight(0);
+      setColumnCount(null);
+    }
   });
 
   if (isPending) return <TextSkeleton />;
@@ -72,7 +82,7 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
         <div id={"thetext"} style={{ textAlign: "left" }}>
           {data.map((paragraph, index) => {
             return (
-              <p key={index}>
+              <p key={index} className="textparagraph">
                 {paragraph.map((sentence, index) => (
                   <span
                     key={`sent_${index + 1}`}
