@@ -4,7 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Box, LoadingOverlay, Title } from "@mantine/core";
 import TextSkeleton from "./TextSkeleton";
 import TextItemPopup from "../Popup/TextItemPopup";
-import TextItem from "./TextItem";
+// import TextItem from "./TextItem";
 import {
   startHoverMode,
   hoverOut,
@@ -94,32 +94,23 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
                     key={`sent_${index + 1}`}
                     className="textsentence"
                     id={`sent_${index + 1}`}>
-                    {sentence.map((textitem) =>
-                      textitem.isWord ? (
-                        <TextItemPopup
-                          onMouseDown={selectionStarted}
-                          onMouseUp={(e) => {
-                            selectEnded(e);
-                            handleSetTerm(textitem);
-                          }}
-                          onMouseOver={(e) => {
-                            selectionOver(e);
-                            hoverOver(e);
-                          }}
-                          onMouseOut={hoverOut}
-                          key={textitem.id}
-                          data={textitem}
-                          highlightsOn={highlightsOn}
-                        />
-                      ) : (
-                        // non-word spans
-                        <TextItem
-                          key={textitem.id}
-                          data={textitem}
-                          highlightsOn={highlightsOn}
-                        />
-                      )
-                    )}
+                    {sentence.map((textitem) => (
+                      <TextItemPopup
+                        onMouseDown={selectionStarted}
+                        onMouseUp={(e) => {
+                          selectEnded(e);
+                          handleSetTerm(textitem);
+                        }}
+                        onMouseOver={(e) => {
+                          selectionOver(e);
+                          hoverOver(e);
+                        }}
+                        onMouseOut={hoverOut}
+                        key={textitem.id}
+                        data={textitem}
+                        highlightsOn={highlightsOn}
+                      />
+                    ))}
                   </span>
                 ))}
                 <span className="textitem">{"\u200B"}</span>
