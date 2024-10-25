@@ -1,123 +1,103 @@
-export function createInteractionFunctions(
-  selectionStartRef,
-  currentTermDataOrderRef,
-  selectedMultiTermRef
-) {
-  function startHoverMode() {
-    removeAllContainingClass("kwordmarked");
+let selectionStart = null;
+let currentTermDataOrder = -1;
+let selectedMultiTerm = {};
 
-    const words = Array.from(document.querySelectorAll(".word"));
-    const currentWord = words.filter((word) => {
-      return word.dataset.order === currentTermDataOrderRef.current;
-    });
+function startHoverMode() {
+  removeAllContainingClass("kwordmarked");
 
-    if (currentWord.length === 1) {
-      const w = currentWord[0];
-      w.classList.add("wordhover");
-      w.classList.add(w.dataset.statusClass);
-    }
+  const words = Array.from(document.querySelectorAll(".word"));
+  const currentWord = words.filter(
+    (word) => word.dataset.order === currentTermDataOrder
+  );
 
-    // if (hideDictPane) {
-    //   onSetSelectedTermID(null);
-    // }
+  if (currentWord.length === 1) {
+    const w = currentWord[0];
+    w.classList.add("wordhover");
+    w.classList.add(w.dataset.statusClass);
+  }
 
+  removeAllContainingClass("newmultiterm");
+  selectionStart = null;
+}
+
+function selectionStarted(e) {
+  removeAllContainingClass("newmultiterm");
+  selectionStart = null;
+  e.target.classList.add("newmultiterm");
+  selectionStart = e.target;
+  currentTermDataOrder = e.target.dataset.order;
+}
+
+function selectionOver(e) {
+  if (selectionStart == null) return; // Not selecting
+  removeAllContainingClass("newmultiterm");
+  const selected = getSelectedInRange(selectionStart, e.target);
+  selected.forEach((el) => el.classList.add("newmultiterm"));
+}
+
+function selectEnded(e) {
+  if (selectionStart.getAttribute("id") === e.target.getAttribute("id")) {
     removeAllContainingClass("newmultiterm");
-    selectionStartRef.current = null;
+    selectionStart = null;
+    selectedMultiTerm = {};
+    wordClicked(e);
+    return;
   }
 
-  function selectionStarted(e) {
-    removeAllContainingClass("newmultiterm");
-    selectionStartRef.current = null;
-    e.target.classList.add("newmultiterm");
-    selectionStartRef.current = e.target;
-    currentTermDataOrderRef.current = e.target.dataset.order;
+  removeAllContainingClass("kwordmarked");
+
+  const selected = getSelectedInRange(selectionStart, e.target);
+  if (e.key === "Shift") {
+    // copy text (selected)
+    startHoverMode();
+    return;
   }
 
-  function selectionOver(e) {
-    if (selectionStartRef.current == null) return; // Not selecting
-    removeAllContainingClass("newmultiterm");
-    const selected = getSelectedInRange(selectionStartRef.current, e.target);
-    selected.forEach((el) => el.classList.add("newmultiterm"));
-  }
+  selectedMultiTerm = getSelectedMultiTerm(selected);
+  selectionStart = null;
+}
 
-  function selectEnded(e) {
-    if (
-      selectionStartRef.current.getAttribute("id") ===
-      e.target.getAttribute("id")
-    ) {
-      removeAllContainingClass("newmultiterm");
-      selectionStartRef.current = null;
-      selectedMultiTermRef.current = {};
-      wordClicked(e);
-      return;
-    }
+function getSelectedMultiTerm(selected) {
+  const textParts = selected.map((el) => el.dataset.text);
+  const text = textParts.join("").trim();
+  const langID = parseInt(selected[0].dataset.langId);
+  return { text, langID };
+}
 
-    removeAllContainingClass("kwordmarked");
+function wordClicked(e) {
+  e.target.classList.remove("wordhover");
+  currentTermDataOrder = e.target.dataset.order;
 
-    const selected = getSelectedInRange(selectionStartRef.current, e.target);
-    if (e.key === "Shift") {
-      // copy text (selected)
-      startHoverMode();
-      return;
-    }
-
-    // selected.length > 0 && show_multiword_term_edit_form(selected);
-    selectedMultiTermRef.current = getSelectedMultiTerm(selected);
-    selectionStartRef.current = null;
-  }
-
-  function getSelectedMultiTerm(selected) {
-    const textParts = selected.map((el) => el.dataset.text);
-    const text = textParts.join("").trim();
-    const langID = parseInt(selected[0].dataset.langId);
-    return { text, langID };
-  }
-
-  function wordClicked(e) {
-    e.target.classList.remove("wordhover");
-    currentTermDataOrderRef.current = e.target.dataset.order;
-
-    if (e.target.classList.contains("kwordmarked")) {
-      e.target.classList.remove("kwordmarked");
-
-      if (document.querySelectorAll(".kwordmarked").length === 0) {
-        e.target.classList.add("wordhover");
-        startHoverMode();
-      }
-      return;
-    }
-
-    // Not already clicked.
-    if (e.key !== "Shift") {
-      // Only one element should be marked clicked.
-      removeAllContainingClass("kwordmarked");
-      // e.target.dataset.wid && onSetSelectedTermID(e.target.dataset.wid);
-    }
-
-    e.target.classList.add("kwordmarked");
-  }
-
-  function hoverOver(e) {
-    removeAllContainingClass("wordhover");
+  if (e.target.classList.contains("kwordmarked")) {
+    e.target.classList.remove("kwordmarked");
 
     if (document.querySelectorAll(".kwordmarked").length === 0) {
       e.target.classList.add("wordhover");
-      console.log("asdsd");
-      currentTermDataOrderRef.current = e.target.dataset.order;
+      startHoverMode();
     }
+    return;
   }
 
-  function hoverOut() {
-    removeAllContainingClass("wordhover");
+  // Not already clicked.
+  if (e.key !== "Shift") {
+    // Only one element should be marked clicked.
+    removeAllContainingClass("kwordmarked");
   }
 
-  return {
-    hoverOut,
-    hoverOver,
-    selectionStarted,
-    selectionOver,
-    selectEnded,
-  };
+  e.target.classList.add("kwordmarked");
+}
+
+function hoverOver(e) {
+  removeAllContainingClass("wordhover");
+
+  if (document.querySelectorAll(".kwordmarked").length === 0) {
+    e.target.classList.add("wordhover");
+    currentTermDataOrder = e.target.dataset.order;
+  }
+}
+
+function hoverOut() {
+  removeAllContainingClass("wordhover");
 }
 
 function getSelectedInRange(startEl, endEl) {
@@ -139,3 +119,13 @@ function removeAllContainingClass(className) {
   const elements = Array.from(document.querySelectorAll(`.${className}`));
   elements.forEach((element) => element.classList.remove(`${className}`));
 }
+
+export {
+  startHoverMode,
+  selectionStarted,
+  selectionOver,
+  selectEnded,
+  hoverOver,
+  hoverOut,
+  selectedMultiTerm,
+};

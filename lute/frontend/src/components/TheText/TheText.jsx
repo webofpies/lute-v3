@@ -1,16 +1,24 @@
 // lute\templates\read\page_content.html
-import { memo, useRef } from "react";
+import { memo, useEffect } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Box, LoadingOverlay, Title } from "@mantine/core";
 import TextSkeleton from "./TextSkeleton";
 import TextItemPopup from "../Popup/TextItemPopup";
 import TextItem from "./TextItem";
-import { createInteractionFunctions } from "../../lute";
+import {
+  startHoverMode,
+  hoverOut,
+  hoverOver,
+  selectionStarted,
+  selectionOver,
+  selectEnded,
+  selectedMultiTerm,
+} from "../../lute";
 
 function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
-  const selectionStartRef = useRef(null);
-  const currentTermDataOrderRef = useRef(-1);
-  const selectedMultiTermRef = useRef({});
+  useEffect(() => {
+    startHoverMode();
+  }, [page]);
 
   const { isPending, isFetching, error, data } = useQuery({
     queryKey: ["pageData", book.id, page],
@@ -27,20 +35,13 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
   if (isPending) return <TextSkeleton />;
   if (error) return "An error has occurred: " + error.message;
 
-  const { hoverOut, hoverOver, selectionStarted, selectionOver, selectEnded } =
-    createInteractionFunctions(
-      selectionStartRef,
-      currentTermDataOrderRef,
-      selectedMultiTermRef
-    );
-
   function handleSetTerm(textitem) {
     const termID = textitem.wid;
-    if (selectedMultiTermRef.current.text) {
+    if (selectedMultiTerm.text) {
       onSetActiveTerm({
-        data: selectedMultiTermRef.current.text,
+        data: selectedMultiTerm.text,
         multi: true,
-        langID: selectedMultiTermRef.current.langID,
+        langID: selectedMultiTerm.langID,
       });
     } else {
       if (termID && activeTerm.data === termID) {
@@ -74,9 +75,9 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
               <p key={index}>
                 {paragraph.map((sentence, index) => (
                   <span
-                    key={`sent_${index}`}
+                    key={`sent_${index + 1}`}
                     className="textsentence"
-                    id={`sent_${index}`}>
+                    id={`sent_${index + 1}`}>
                     {sentence.map((textitem) =>
                       textitem.isWord ? (
                         <TextItemPopup
