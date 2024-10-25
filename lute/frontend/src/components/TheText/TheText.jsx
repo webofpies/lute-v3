@@ -85,7 +85,7 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
           zIndex={1000}
           overlayProps={{ radius: "sm", blur: 0 }}
         />
-        <div id={"thetext"} style={{ textAlign: "left" }}>
+        <div id={"thetext"}>
           {data.map((paragraph, index) => {
             return (
               <p key={index} className="textparagraph">
