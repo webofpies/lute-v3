@@ -20,7 +20,7 @@ import {
   setColumnCount,
 } from "../../textOptions";
 
-function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
+function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
   const { isPending, isFetching, isSuccess, error, data } = useQuery({
     queryKey: ["pageData", book.id, page],
     queryFn: async () => {
@@ -47,19 +47,25 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
 
   function handleSetTerm(textitem) {
     const termID = textitem.wid;
-    if (selectedMultiTerm.text) {
-      onSetActiveTerm({
-        data: selectedMultiTerm.text,
-        multi: true,
-        langID: selectedMultiTerm.langID,
-      });
-    } else {
-      if (termID && activeTerm.data === termID) {
-        onSetActiveTerm({ data: null, multi: false });
-      } else {
-        onSetActiveTerm({ data: termID, multi: false });
+
+    onSetActiveTerm((prev) => {
+      if (prev.data === termID) {
+        return { data: null };
       }
-    }
+
+      if (selectedMultiTerm.text) {
+        return {
+          data: selectedMultiTerm.text,
+          multi: true,
+          langID: selectedMultiTerm.langID,
+        };
+      } else {
+        return {
+          data: termID,
+          multi: false,
+        };
+      }
+    });
   }
 
   return (

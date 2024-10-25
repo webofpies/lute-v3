@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Center, Loader } from "@mantine/core";
@@ -71,7 +71,6 @@ export default function ReadPane() {
                 book={book}
                 page={currentPage}
                 highlightsOn={highlightsOn}
-                activeTerm={activeTerm}
                 onSetActiveTerm={setActiveTerm}
               />
             </>
