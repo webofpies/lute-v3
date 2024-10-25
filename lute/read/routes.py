@@ -11,6 +11,7 @@ from lute.read.forms import TextForm
 from lute.term.model import Repository
 from lute.term.routes import handle_term_form
 from lute.models.book import Book, Text
+from lute.models.term import Term, Status
 from lute.models.setting import UserSetting
 from lute.db import db
 
@@ -333,30 +334,53 @@ def page_info(bookid, pagenum):
     paragraphs = get_page_paragraphs(bookid, pagenum)
     paras = [
         [
-            {
-                "sentence_id": sentence.sentence_id,
-                "textitems": [
-                    {
-                        "id": textitem.span_id,
-                        "html_display_text": textitem.html_display_text,
-                        "class": textitem.html_class_string,
-                        "data-lang-id": textitem.lang_id,
-                        "data-paragraph-id": textitem.para_id,
-                        "data-sentence-id": textitem.se_id,
-                        "data-text": textitem.text,
-                        "data-status-class": textitem.status_class,
-                        "data-order": textitem.order,
-                        "data-wid": textitem.wo_id,
-                    }
-                    for textitem in sentence.textitems
-                ],
-            }
+            [
+                {
+                    "id": textitem.span_id,
+                    "displayText": textitem.html_display_text,
+                    "classes": getattr(textitem, "html_class_string", ""),
+                    "langId": getattr(textitem, "lang_id", ""),
+                    "paragraphId": textitem.paragraph_number,
+                    "sentenceId": textitem.sentence_number,
+                    "text": textitem.text,
+                    "statusClass": textitem.status_class,
+                    "order": textitem.index,
+                    "wid": textitem.wo_id,
+                    "isWord": textitem.is_word,
+                    "hasPopup": has_popup(textitem.wo_id) if textitem.wo_id else False,
+                }
+                for textitem in sentence
+            ]
             for sentence in paragraph
         ]
         for paragraph in paragraphs
     ]
 
     return jsonify(paras)
+
+
+def has_popup(termid):
+    """
+    checks if term has popup
+
+    to know whether to create the Popover or not beforehand
+    """
+    term = Term.find(termid)
+
+    if term.status == Status.UNKNOWN:
+        return None
+
+    def has_popup_data(cterm):
+        return (
+            (cterm.translation or "").strip() != ""
+            or (cterm.romanization or "").strip() != ""
+            or cterm.get_current_image() is not None
+        )
+
+    if not has_popup_data(term) and len(term.parents) == 0:
+        return None
+
+    return True
 
 
 def get_page_paragraphs(bookid, pagenum):

@@ -3,34 +3,14 @@ import TextItem from "../TheText/TextItem";
 import Popup from "./Popup";
 
 function TextItemPopup(props) {
-  // const [show, setShow] = useState(false);
+  const { data, highlightsOn, ...restProps } = props;
 
-  const {
-    textitem,
-    highlightsOn,
-    // selectedTermID,
-    // onSetSelectedTermID,
-    ...restProps
-  } = props;
-
-  return textitem.class.includes("showtooltip") ? (
-    <Popup
-      key={textitem.id}
-      id={textitem["data-wid"]}
-      // show={textitem.class.includes("showtooltip")}
-    >
-      <TextItem {...restProps} data={textitem} highlightsOn={highlightsOn} />
+  return data.hasPopup ? (
+    <Popup key={data.id} id={data.wid}>
+      <TextItem {...restProps} data={data} highlightsOn={highlightsOn} />
     </Popup>
   ) : (
-    <TextItem
-      {...restProps}
-      // onMouseOver={(e) => {
-      //   // onMouseOver(e);
-      //   setShow(true);
-      // }}
-      data={textitem}
-      highlightsOn={highlightsOn}
-    />
+    <TextItem {...restProps} data={data} highlightsOn={highlightsOn} />
   );
 }
 

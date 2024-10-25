@@ -34,8 +34,8 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
       selectedMultiTermRef
     );
 
-  function handleSetTerm(e, textitem) {
-    const termID = textitem["data-wid"];
+  function handleSetTerm(textitem) {
+    const termID = textitem.wid;
     if (selectedMultiTermRef.current.text) {
       onSetActiveTerm({
         data: selectedMultiTermRef.current.text,
@@ -72,18 +72,18 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
           {data.map((paragraph, index) => {
             return (
               <p key={index}>
-                {paragraph.map((sentence) => (
+                {paragraph.map((sentence, index) => (
                   <span
-                    key={`sent_${sentence.sentence_id}`}
+                    key={`sent_${index}`}
                     className="textsentence"
-                    id={`sent_${sentence.sentence_id}`}>
-                    {sentence.textitems.map((textitem) =>
-                      textitem.class.includes("word") ? (
+                    id={`sent_${index}`}>
+                    {sentence.map((textitem) =>
+                      textitem.isWord ? (
                         <TextItemPopup
                           onMouseDown={selectionStarted}
                           onMouseUp={(e) => {
                             selectEnded(e);
-                            handleSetTerm(e, textitem);
+                            handleSetTerm(textitem);
                           }}
                           onMouseOver={(e) => {
                             selectionOver(e);
@@ -91,7 +91,7 @@ function TheText({ book, page, highlightsOn, activeTerm, onSetActiveTerm }) {
                           }}
                           onMouseOut={hoverOut}
                           key={textitem.id}
-                          textitem={textitem}
+                          data={textitem}
                           highlightsOn={highlightsOn}
                         />
                       ) : (

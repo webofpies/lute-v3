@@ -5,7 +5,7 @@ function About() {
   const { isPending, isFetching, error, data, isSuccess } = useQuery({
     queryKey: ["version"],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5000/api/appinfo`);
+      const response = await fetch(`http://localhost:5001/api/appinfo`);
       return await response.json();
     },
     staleTime: Infinity,

@@ -333,7 +333,7 @@ function useInitializePlayer(book) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    audio.src = `http://localhost:5000/useraudio/stream/${book.id}`;
+    audio.src = `http://localhost:5001/useraudio/stream/${book.id}`;
 
     // retrieve last position
     const position = book.audio_current_pos || 0;

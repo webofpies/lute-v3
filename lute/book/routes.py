@@ -13,7 +13,7 @@ from flask import (
 )
 from lute.utils.data_tables import DataTablesFlaskParamParser
 from lute.book import service
-from lute.book.stats import get_status_distribution
+from lute.book.stats import calc_status_distribution
 from lute.book.datatables import get_data_tables_list
 from lute.book.forms import NewBookForm, EditBookForm
 from lute.book.stats import get_stats
@@ -230,5 +230,5 @@ def all_books():
 def book_stats(bookid):
     "Calc stats for the book using the status distribution."
     book = DBBook.find(bookid)
-    status_distribution = get_status_distribution(book)
+    status_distribution = calc_status_distribution(book)
     return jsonify(status_distribution)
