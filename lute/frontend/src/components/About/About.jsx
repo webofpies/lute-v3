@@ -16,7 +16,7 @@ function About() {
   return (
     <>
       <Text component="p" size="lg">
-        LUTE: Learning Using Texts v3
+        <b>LUTE</b>: Learning Using Texts v3
       </Text>
 
       <Box pos="relative" h="100%" mt="md">
@@ -25,13 +25,13 @@ function About() {
         {isSuccess && (
           <>
             <Text component="p" size="md">
-              Version: {data.version}
+              <b>Version</b>: {data.version}
             </Text>
             <Text component="p" size="md">
-              Data path: {data.datapath}
+              <b>Data path</b>: {data.datapath}
             </Text>
             <Text component="p" size="md">
-              Database: {data.database}
+              <b>Database</b>: {data.database}
             </Text>
             {data.isDocker && (
               <Text component="p">
@@ -47,7 +47,8 @@ function About() {
 
       <Stack mt="md" gap={0}>
         <Text component="p">
-          Repository: <a href="https://github.com/jzohrab/lute-v3">lute-v3</a>
+          <b>Repository</b>:{" "}
+          <a href="https://github.com/jzohrab/lute-v3">lute-v3</a>
         </Text>
         <Text component="p">Lute is released under the MIT License.</Text>
       </Stack>

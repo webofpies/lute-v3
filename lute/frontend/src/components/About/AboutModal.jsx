@@ -6,8 +6,8 @@ function AboutModal({ opened, close }) {
     <Modal.Root opened={opened} onClose={close}>
       <Modal.Overlay backgroundOpacity={0.55} blur={3} />
       <Modal.Content p="lg" flex="none">
-        <Modal.Header>
-          <Modal.Title fw={700} fz="xl">
+        <Modal.Header styles={{ alignItems: "flex-start" }}>
+          <Modal.Title fw={700} fz="1.5rem" mb="lg">
             About Lute
           </Modal.Title>
           <Modal.CloseButton />
