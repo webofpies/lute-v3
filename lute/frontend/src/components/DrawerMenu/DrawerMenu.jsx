@@ -5,6 +5,7 @@ import DrawerMenuContent from "./DrawerMenuContent";
 function DrawerMenu({ opened, close }) {
   return (
     <Drawer.Root
+      lockScroll={false}
       opened={opened}
       onClose={close}
       size="250"

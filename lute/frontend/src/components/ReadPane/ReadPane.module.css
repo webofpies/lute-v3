@@ -1,12 +1,8 @@
 .paneLeft {
   padding: 1rem 3rem;
-  width: 50%;
 }
 
 .paneRight {
-  display: grid;
-  grid-template-rows: 0.5fr 1fr;
-  width: 50%;
   height: 100%;
   position: fixed;
   right: 0;

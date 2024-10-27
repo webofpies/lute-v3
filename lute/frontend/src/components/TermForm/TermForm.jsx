@@ -48,7 +48,7 @@ function TermForm({ termData }) {
 
   return (
     <form>
-      <Stack justify="center" gap={5} pt="1.4rem" pb="1.4rem" pr="1.4rem">
+      <Stack justify="center" gap={5} pt="1rem" pl="1.3rem" pr="1.3rem">
         <TextInput
           placeholder="Term"
           withAsterisk
@@ -60,8 +60,12 @@ function TermForm({ termData }) {
           key={form.key("parents")}
           {...form.getInputProps("parents")}
         />
-        <Grid align="flex-start" justify="center" gutter={"0.5rem"}>
-          <Grid.Col span={11}>
+        <Grid
+          align="flex-start"
+          justify="center"
+          gutter={"0.5rem"}
+          styles={{ inner: { flexWrap: "nowrap" } }}>
+          <Grid.Col span={11} flex="1">
             <Textarea
               resize="vertical"
               placeholder="Translation"
@@ -69,10 +73,10 @@ function TermForm({ termData }) {
               {...form.getInputProps("translation")}
             />
           </Grid.Col>
-          <Grid.Col span={1}>
+          <Grid.Col span={1} miw="48px">
             <Image
               w="100%"
-              // h="100%"
+              maw="50px"
               styles={{
                 root: { aspectRatio: 1 },
               }}
@@ -80,7 +84,7 @@ function TermForm({ termData }) {
             />
           </Grid.Col>
         </Grid>
-        <Group gap="1.5rem">
+        <Group gap="1.5rem" style={{ rowGap: "0.6rem" }}>
           <Radio.Group
             defaultValue="1"
             name="status"

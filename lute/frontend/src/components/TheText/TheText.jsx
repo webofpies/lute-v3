@@ -70,7 +70,7 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
 
   return (
     <>
-      <Box pos="relative" h="100%">
+      <Box pos="relative">
         {page === 1 && (
           <Title
             style={{ overflowWrap: "break-word" }}

@@ -6,7 +6,11 @@ import ReadSlider from "./ReadSlider";
 
 function ReadPaneHeader({ open, currentPage, book, setCurrentPage }) {
   return (
-    <Group gap={10} mb="xl" align="flex-end">
+    <Group
+      gap={10}
+      mb="xl"
+      align="flex-end"
+      styles={{ root: { flexWrap: "nowrap" } }}>
       <ActionIcon onClick={open} variant="default" size="lg">
         <IconMenu2 style={{ width: "70%", height: "70%" }} stroke={1.5} />
       </ActionIcon>
@@ -17,7 +21,8 @@ function ReadPaneHeader({ open, currentPage, book, setCurrentPage }) {
         <Grid
           align="center"
           gutter={0}
-          style={{ paddingInline: "2.1rem", fontSize: "0.9rem" }}>
+          style={{ paddingInline: "2.1rem", fontSize: "0.9rem" }}
+          styles={{ inner: { flexWrap: "nowrap" } }}>
           <Grid.Col span="auto">
             {currentPage > 1 && (
               <Text component="h1" fw="normal" size="inherit" lineClamp={1}>

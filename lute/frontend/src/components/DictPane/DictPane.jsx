@@ -5,7 +5,17 @@ import DictIFrame from "./DictIFrame";
 
 function DictPane({ dicts, term }) {
   return (
-    <Tabs defaultValue="0">
+    <Tabs
+      defaultValue="0"
+      styles={{
+        root: {
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+          zIndex: 2,
+          flex: 1,
+        },
+      }}>
       <Tabs.List
         style={{
           display: "grid",
@@ -33,7 +43,8 @@ function DictPane({ dicts, term }) {
                 <Image
                   h={16}
                   w={16}
-                  src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}></Image>
+                  src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
+                />
               }>
               <Text size="sm" style={{ overflow: "hidden" }}>
                 {dict.label}
@@ -47,7 +58,7 @@ function DictPane({ dicts, term }) {
         return (
           !dict.isExternal && (
             <Tabs.Panel
-              h="100%"
+              style={{ height: "100%" }}
               key={dict.label}
               id={String(index)}
               value={String(index)}>
