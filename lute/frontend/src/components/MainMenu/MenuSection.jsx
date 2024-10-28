@@ -1,8 +1,8 @@
 import { Center, Menu, UnstyledButton } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import classes from "./HeaderMenuBar.module.css";
+import classes from "./MainMenuBar.module.css";
 
-function HeaderMenu({ label, children }) {
+function MenuSection({ label, children }) {
   return (
     <Menu
       trigger="hover"
@@ -26,4 +26,4 @@ function HeaderMenu({ label, children }) {
   );
 }
 
-export default HeaderMenu;
+export default MenuSection;

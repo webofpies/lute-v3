@@ -1,7 +1,7 @@
 import { Menu, Group, Burger, Container, Image, MenuItem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import classes from "./HeaderMenuBar.module.css";
-import HeaderMenu from "./HeaderMenu";
+import classes from "./MainMenuBar.module.css";
+import MenuSection from "./MenuSection";
 import { NavLink } from "react-router-dom";
 
 export default function HeaderMenuBar({ openVersionModal }) {
@@ -17,7 +17,7 @@ export default function HeaderMenuBar({ openVersionModal }) {
           </Group>
           <Group gap={5} visibleFrom="sm">
             <NavLink className={classes.link}>Home</NavLink>
-            <HeaderMenu label="Book">
+            <MenuSection label="Book">
               <Menu.Item>
                 <NavLink to="/book/new">Create New Book</NavLink>
               </Menu.Item>
@@ -27,8 +27,8 @@ export default function HeaderMenuBar({ openVersionModal }) {
               <Menu.Item>
                 <NavLink to="/book/archived">Book Archive</NavLink>
               </Menu.Item>
-            </HeaderMenu>
-            <HeaderMenu label="Terms">
+            </MenuSection>
+            <MenuSection label="Terms">
               <Menu.Item>
                 <NavLink to="/term/index">Terms</NavLink>
               </Menu.Item>
@@ -38,24 +38,24 @@ export default function HeaderMenuBar({ openVersionModal }) {
               <Menu.Item>
                 <NavLink to="/termtag/index">Term Tags</NavLink>
               </Menu.Item>
-            </HeaderMenu>
-            <HeaderMenu label="Settings">
+            </MenuSection>
+            <MenuSection label="Settings">
               <Menu.Item>
                 <NavLink to="/language/index">Languages</NavLink>
               </Menu.Item>
               <Menu.Item>
                 <NavLink to="/settings/index">Settings</NavLink>
               </Menu.Item>
-            </HeaderMenu>
-            <HeaderMenu label="Backup">
+            </MenuSection>
+            <MenuSection label="Backup">
               <Menu.Item>
                 <NavLink to="/backup/index">Backups</NavLink>
               </Menu.Item>
               <Menu.Item>
                 <NavLink to="/backup/backup?type=manual">Create Backup</NavLink>
               </Menu.Item>
-            </HeaderMenu>
-            <HeaderMenu label="About">
+            </MenuSection>
+            <MenuSection label="About">
               <Menu.Item onClick={openVersionModal}>
                 Version and software info
               </Menu.Item>
@@ -74,7 +74,7 @@ export default function HeaderMenuBar({ openVersionModal }) {
                 target="_blank">
                 Discord
               </MenuItem>
-            </HeaderMenu>
+            </MenuSection>
           </Group>
           <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
         </div>

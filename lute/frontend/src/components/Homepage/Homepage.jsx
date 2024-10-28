@@ -1,6 +1,6 @@
 import { Center, Loader } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import HeaderMenuBar from "../HeaderMenu/HeaderMenuBar";
+import MainMenuBar from "../MainMenu/MainMenuBar";
 import DataTablePaginated from "../DataTable/DataTablePaginated";
 import AboutModal from "../About/AboutModal";
 import { useDisclosure } from "@mantine/hooks";
@@ -23,7 +23,7 @@ export default function Homepage() {
 
   return (
     <>
-      <HeaderMenuBar openVersionModal={open} />
+      <MainMenuBar openVersionModal={open} />
       <AboutModal opened={opened} close={close} />
       {isFetching || isPending ? (
         <Center>
