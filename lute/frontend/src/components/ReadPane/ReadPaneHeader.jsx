@@ -27,13 +27,13 @@ function ReadPaneHeader({ open, currentPage, book, setCurrentPage, width }) {
           styles={{ inner: { flexWrap: "nowrap" } }}>
           <Grid.Col span="auto">
             {currentPage > 1 && (
-              <Text component="h1" fw="normal" size="inherit" lineClamp={1}>
+              <Text component="h1" fw="normal" fz="inherit" lineClamp={1}>
                 {book.title}
               </Text>
             )}
           </Grid.Col>
           <Grid.Col span="fit-content">
-            <Text component="span" fw={500} size="inherit">
+            <Text component="span" fw={500} fz="inherit">
               {`${currentPage}/${book.page_count}`}
             </Text>
           </Grid.Col>
