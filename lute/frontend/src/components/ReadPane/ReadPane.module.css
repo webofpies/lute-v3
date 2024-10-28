@@ -1,5 +1,6 @@
 .paneLeft {
-  padding: 1rem 3rem;
+  padding: 0 3rem 3rem 3rem;
+  overflow: hidden; /*to hide header shadow*/
 }
 
 .paneRight {
@@ -7,4 +8,27 @@
   position: fixed;
   right: 0;
   top: 0;
+}
+
+.header {
+  background-color: white;
+  padding-block: 1.2rem 1.6rem;
+  padding-inline: 3rem;
+  box-shadow: 0 0px 8px -3px #2929299c;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 54.9081%;
+  z-index: 4; /* needs to be enough to be over the player*/
+}
+
+.vdivider {
+  cursor: ew-resize;
+  background-color: var(--mantine-color-blue-filled);
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  translate: -6px;
+  z-index: 12;
 }

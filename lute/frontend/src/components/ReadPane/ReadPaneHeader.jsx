@@ -3,13 +3,15 @@ import { IconMenu2 } from "@tabler/icons-react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import ReadSlider from "./ReadSlider";
+import styles from "./ReadPane.module.css";
 
-function ReadPaneHeader({ open, currentPage, book, setCurrentPage }) {
+function ReadPaneHeader({ open, currentPage, book, setCurrentPage, width }) {
   return (
     <Group
       gap={10}
-      mb="xl"
       align="flex-end"
+      className={styles.header}
+      style={{ width: `${width}%` }}
       styles={{ root: { flexWrap: "nowrap" } }}>
       <ActionIcon onClick={open} variant="default" size="lg">
         <IconMenu2 style={{ width: "70%", height: "70%" }} stroke={1.5} />

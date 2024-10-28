@@ -1,10 +1,9 @@
 // lute\templates\read\page_content.html
 import { memo, useEffect } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Box, LoadingOverlay, Title } from "@mantine/core";
+import { Box, LoadingOverlay } from "@mantine/core";
 import TextSkeleton from "./TextSkeleton";
 import TextItemPopup from "../Popup/TextItemPopup";
-// import TextItem from "./TextItem";
 import {
   startHoverMode,
   hoverOut,
@@ -71,15 +70,6 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
   return (
     <>
       <Box pos="relative">
-        {page === 1 && (
-          <Title
-            style={{ overflowWrap: "break-word" }}
-            size="xl"
-            mb="lg"
-            dir={book.is_rtl ? "rtl" : ""}>
-            {book.title}
-          </Title>
-        )}
         <LoadingOverlay
           visible={isFetching}
           zIndex={1000}

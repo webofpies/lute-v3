@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { Center, Divider, Loader } from "@mantine/core";
+import { Center, Divider, Loader, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
@@ -99,29 +99,34 @@ export default function ReadPane() {
                 currentPage={currentPage}
                 book={book}
                 setCurrentPage={setCurrentPage}
+                width={width}
               />
-              {book.audio_filename && <Player book={book} />}
-              <TheText
-                book={book}
-                page={currentPage}
-                highlightsOn={highlightsOn}
-                onSetActiveTerm={setActiveTerm}
-              />
+              <div style={{ marginTop: "8rem" }}>
+                {book.audio_filename && <Player book={book} />}
+                {currentPage === 1 && (
+                  <Title
+                    style={{ overflowWrap: "break-word" }}
+                    size="xl"
+                    mb="lg"
+                    dir={book.is_rtl ? "rtl" : ""}>
+                    {book.title}
+                  </Title>
+                )}
+                <TheText
+                  book={book}
+                  page={currentPage}
+                  highlightsOn={highlightsOn}
+                  onSetActiveTerm={setActiveTerm}
+                />
+              </div>
             </>
           )}
         </div>
 
         <Divider
-          style={{
-            cursor: "ew-resize",
-            backgroundColor: "var(--mantine-color-blue-filled)",
-            position: "fixed",
-            top: 0,
-            left: `${width}%`,
-            height: "100vh",
-            translate: `-6px`,
-          }}
+          style={{ left: `${width}%` }}
           styles={{ root: { width: "6px", border: "none" } }}
+          className={styles.vdivider}
           orientation="vertical"
           onMouseDown={handleResize}
         />
