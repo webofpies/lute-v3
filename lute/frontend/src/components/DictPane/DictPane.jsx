@@ -11,8 +11,6 @@ function DictPane({ dicts, term }) {
         root: {
           display: "flex",
           flexDirection: "column",
-          minHeight: 0,
-          zIndex: 2,
           flex: 1,
         },
       }}>

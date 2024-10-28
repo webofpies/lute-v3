@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Center, Divider, Loader } from "@mantine/core";
@@ -19,12 +19,15 @@ export default function ReadPane() {
   const [highlightsOn, setHighlightsOn] = useState(true);
   const [activeTerm, setActiveTerm] = useState({ data: null, multi: false });
   const [width, setWidth] = useState(50);
+  const paneLeftRef = useRef();
+  const paneRightRef = useRef();
 
   const { ref, x } = useMouse();
 
   function handleResize(e) {
     e.preventDefault();
-    ref.current.style.pointerEvents = "none";
+    paneLeftRef.current.style.pointerEvents = "none";
+    paneRightRef.current.style.pointerEvents = "none";
 
     const containerHeight = parseFloat(
       window.getComputedStyle(ref.current).getPropertyValue("width")
@@ -37,11 +40,12 @@ export default function ReadPane() {
       setWidth(clamp(newWidth, 5, 95));
     }
 
-    document.addEventListener("mousemove", resize);
+    ref.current.addEventListener("mousemove", resize);
 
-    document.addEventListener("mouseup", () => {
-      document.removeEventListener("mousemove", resize);
-      ref.current.style.pointerEvents = "unset";
+    ref.current.addEventListener("mouseup", () => {
+      ref.current.removeEventListener("mousemove", resize);
+      paneLeftRef.current.style.pointerEvents = "unset";
+      paneRightRef.current.style.pointerEvents = "unset";
     });
   }
 
@@ -80,7 +84,10 @@ export default function ReadPane() {
       />
 
       <div ref={ref}>
-        <div className={styles.paneLeft} style={{ width: `${width}%` }}>
+        <div
+          ref={paneLeftRef}
+          className={styles.paneLeft}
+          style={{ width: `${width}%` }}>
           {isPending ? (
             <Center>
               <Loader color="blue" />
@@ -119,13 +126,12 @@ export default function ReadPane() {
           onMouseDown={handleResize}
         />
 
-        {activeTerm.data && (
-          <div
-            className={styles.paneRight}
-            style={{ width: `${100 - width}%` }}>
-            <LearnPane book={book} termData={activeTerm} />
-          </div>
-        )}
+        <div
+          ref={paneRightRef}
+          className={styles.paneRight}
+          style={{ width: `${100 - width}%` }}>
+          {activeTerm.data && <LearnPane book={book} termData={activeTerm} />}
+        </div>
       </div>
     </>
   );
