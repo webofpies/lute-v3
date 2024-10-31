@@ -1,15 +1,10 @@
 import { Center, Loader } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import MainMenuBar from "../MainMenu/MainMenuBar";
 import DataTablePaginated from "../DataTable/DataTablePaginated";
-import AboutModal from "../About/AboutModal";
-import { useDisclosure } from "@mantine/hooks";
 
 const NUM_OF_ITEMS_PER_PAGE = 8;
 
-export default function Homepage() {
-  const [opened, { open, close }] = useDisclosure(false);
-
+export default function BookTable() {
   const { isPending, isFetching, error, data } = useQuery({
     queryKey: ["allBooks"],
     queryFn: async () => {
@@ -23,8 +18,6 @@ export default function Homepage() {
 
   return (
     <>
-      <MainMenuBar openVersionModal={open} />
-      <AboutModal opened={opened} close={close} />
       {isFetching || isPending ? (
         <Center>
           <Loader size="xl" />

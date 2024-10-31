@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { getPressedKeysAsString } from "../../utils";
 
-function Shortcuts() {
+function ShortcutsForm() {
   const { isSuccess, error, data } = useQuery({
     queryKey: ["shortcuts"],
     queryFn: async () => {
@@ -143,4 +143,4 @@ function matches(entry, entries) {
   );
 }
 
-export default Shortcuts;
+export default ShortcutsForm;

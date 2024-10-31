@@ -3,12 +3,13 @@ import { createTheme, MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@mantine/core/styles.css";
 import "./index.css";
-import Homepage from "./components/Homepage/Homepage";
 import { lazy, Suspense } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import Shortcuts from "./components/Shortcuts/Shortcuts";
+import Layout from "./pages/Layout";
+import Homepage from "./pages/Homepage";
 
 const ReadPane = lazy(() => import("./components/ReadPane/ReadPane"));
+const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
@@ -18,11 +19,18 @@ const theme = createTheme({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Homepage />,
-  },
-  {
-    path: "/settings/shortcuts",
-    element: <Shortcuts />,
+    element: <Layout />,
+    children: [
+      { index: true, element: <Homepage /> },
+      {
+        path: "/settings/shortcuts",
+        element: (
+          <Suspense>
+            <Shortcuts />
+          </Suspense>
+        ),
+      },
+    ],
   },
   {
     path: "/read/:id",

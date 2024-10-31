@@ -1,22 +1,46 @@
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, Group, Burger, Container, Image, MenuItem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./MainMenuBar.module.css";
 import MenuSection from "./MenuSection";
-import { NavLink } from "react-router-dom";
 
 export default function HeaderMenuBar({ openVersionModal }) {
   const [opened, { toggle }] = useDisclosure(false);
+  const { pathname } = useLocation();
+
+  const pathNames = {
+    "/": "Lute",
+    "/book/new": "Create New Book",
+    "/book/import_webpage": "Import Webpage",
+    "/book/archived": "Book Archive",
+
+    "/term/index": "Terms",
+    "/termimport/index": "Import Terms",
+    "/termtag/index": "Term Tags",
+
+    "/language/index": "Languages",
+    "/settings/index": "Settings",
+    "/settings/shortcuts": "Shortcuts",
+
+    "/backup/index": "Backups",
+
+    "/stats": "Statistics",
+  };
 
   return (
     <header className={classes.header}>
       <Container size="xl">
         <div className={classes.inner}>
           <Group>
-            <Image w="auto" h="3rem" src="/images/logo.png" />
-            <h1>Lute</h1>
+            <Link to="/">
+              <Image w="auto" h="3rem" src="/images/logo.png" />
+            </Link>
+            <h1>{pathNames[pathname]}</h1>
           </Group>
           <Group gap={5} visibleFrom="sm">
-            <NavLink className={classes.link}>Home</NavLink>
+            <NavLink to="/" className={classes.link}>
+              Home
+            </NavLink>
             <MenuSection label="Book">
               <Menu.Item>
                 <NavLink to="/book/new">Create New Book</NavLink>
