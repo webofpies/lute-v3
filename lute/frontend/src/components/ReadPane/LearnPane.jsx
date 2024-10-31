@@ -47,13 +47,13 @@ function LearnPane({ book, termData }) {
       gap={0}
       dir="column"
       style={{ position: "relative", height: "100%" }}>
+      <LoadingOverlay
+        visible={isFetching}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
       {isSuccess && (
         <>
-          <LoadingOverlay
-            visible={isFetching}
-            zIndex={1000}
-            overlayProps={{ radius: "sm", blur: 2 }}
-          />
           <div ref={termFormRef} style={{ height: `${height}%` }}>
             <TermForm termData={data} />
           </div>

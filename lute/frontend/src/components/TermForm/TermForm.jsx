@@ -15,18 +15,15 @@ import {
   CheckIcon,
   Checkbox,
 } from "@mantine/core";
-import { memo, useEffect } from "react";
+import { memo } from "react";
 
 function TermForm({ termData }) {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      text: "",
-      translation: "",
-      parents: [],
-      status: "",
-      syncStatus: "",
-      tags: [],
+      ...termData,
+      status: String(termData.status),
+      syncStatus: String(termData.syncStatus),
     },
 
     // validate: {
@@ -37,14 +34,6 @@ function TermForm({ termData }) {
     //   age: isInRange({ min: 18, max: 99 }, "You must be 18-99 years old to register"),
     // },
   });
-
-  useEffect(() => {
-    form.setValues({
-      ...termData,
-      status: String(termData.status),
-      syncStatus: String(termData.syncStatus),
-    });
-  }, [termData.text]);
 
   return (
     <form>
