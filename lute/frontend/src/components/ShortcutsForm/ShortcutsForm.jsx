@@ -80,7 +80,7 @@ function ShortcutsForm() {
         uncheck its checkbox. Click Save when done.
       </p>
       <form onSubmit={form.onSubmit(console.log())}>
-        <Group align="flex-start">
+        <Group align="flex-stretch" wrap="nowrap">
           {isSuccess &&
             data.map((category) => {
               return (
@@ -125,7 +125,7 @@ function ShortcutsForm() {
               );
             })}
         </Group>
-        <Group justify="flex-end" mt="sm" gap="xs">
+        <Group justify="flex-end" mt="xl" gap="xs">
           <Button>Cancel</Button>
           <Button type="submit">Save</Button>
         </Group>
