@@ -46,6 +46,9 @@ export default function HeaderMenuBar({ openVersionModal }) {
               <Menu.Item>
                 <NavLink to="/settings/index">Settings</NavLink>
               </Menu.Item>
+              <Menu.Item>
+                <NavLink to="/settings/shortcuts">Keyboard Shortcuts</NavLink>
+              </Menu.Item>
             </MenuSection>
             <MenuSection label="Backup">
               <Menu.Item>
