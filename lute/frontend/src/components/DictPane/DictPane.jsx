@@ -7,20 +7,8 @@ import classes from "./DictPane.module.css";
 
 function DictPane({ dicts, term }) {
   return (
-    <Tabs
-      defaultValue="0"
-      styles={{
-        root: {
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-        },
-      }}>
-      <Tabs.List
-        className={classes.flex}
-        style={{
-          flexWrap: "nowrap",
-        }}>
+    <Tabs defaultValue="0" classNames={{ root: classes.tabs }}>
+      <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
         <div
           style={{
             display: "grid",

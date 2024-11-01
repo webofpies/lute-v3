@@ -5,6 +5,7 @@ import { useMouse } from "@mantine/hooks";
 import { clamp } from "../../utils";
 import DictPane from "../DictPane/DictPane";
 import TermForm from "../TermForm/TermForm";
+import styles from "./ReadPane.module.css";
 
 function LearnPane({ book, termData }) {
   const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
@@ -66,15 +67,7 @@ function LearnPane({ book, termData }) {
             orientation="horizontal"
             onMouseDown={handleResize}
           />
-          <div
-            ref={dictPaneRef}
-            style={{
-              flex: 1,
-              display: "flex",
-              flexDirection: "column",
-              minHeight: 0,
-              zIndex: 2,
-            }}>
+          <div ref={dictPaneRef} className={styles.dictPane}>
             <DictPane term={data.text} dicts={book.term_dicts} />
           </div>
         </>

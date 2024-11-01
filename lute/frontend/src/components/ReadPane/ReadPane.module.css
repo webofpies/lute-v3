@@ -32,3 +32,11 @@
   translate: -6px;
   z-index: 12;
 }
+
+.dictPane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  z-index: 2;
+}

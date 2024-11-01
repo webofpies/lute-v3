@@ -2,3 +2,13 @@
   display: flex;
   justify-content: space-between;
 }
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.tabList {
+  flex-wrap: nowrap;
+}
