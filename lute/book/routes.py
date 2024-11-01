@@ -219,7 +219,10 @@ def all_books():
             "title": b.title,
             "language": b.language.name,
             "wordCount": sum([text.word_count for text in b.texts]),
-            # "tags": b.book_tags, // doesn't work
+            "tags": [
+                {"id": tag.id, "text": tag.text, "comment": tag.comment}
+                for tag in b.book_tags
+            ],
             # "statusDistribution": get_status_distribution(b)
         }
         results.append(row)

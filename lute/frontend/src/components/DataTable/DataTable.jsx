@@ -110,7 +110,7 @@ export default function DataTable({ data }) {
         </Link>
       </Table.Td>
       <Table.Td> {book.language}</Table.Td>
-      <Table.Td>{book.tags}</Table.Td>
+      <Table.Td>{book.tags.map((tag) => tag.text).join(", ")}</Table.Td>
       <Table.Td>{book.wordCount}</Table.Td>
       <Table.Td>
         <StatsBar book={book} />
