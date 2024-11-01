@@ -318,3 +318,38 @@ def delete(termid):
     repo.delete(term)
     repo.commit()
     return redirect("/term/index", 302)
+
+
+# API for React
+@bp.route("/sent/<int:langid>/<text>", methods=["GET"])
+def get_sentences(langid, text):
+    "Get sentences for terms."
+    repo = Repository(db)
+    # Use find_or_new(): if the user clicks on a parent tag
+    # in the term form, and the parent does not exist yet, then
+    # we're creating a new term.
+    t = repo.find_or_new(langid, text)
+    refs = repo.find_references(t)
+
+    # Transform data for output, to
+    # { "term": [refs], "children": [refs], "parent1": [refs], "parent2" ... }
+    refdata = [(f'"{text}"', refs["term"]), (f'"{text}" child terms', refs["children"])]
+    for p in refs["parents"]:
+        refdata.append((f"\"{p['term']}\"", p["refs"]))
+
+    refcount = sum(len(ref[1]) for ref in refdata)
+    references = [
+        {
+            "dto": {
+                "sentence": dto.sentence,
+                "bookId": dto.book_id,
+                "pageNumber": dto.page_number,
+                "title": dto.title,
+            },
+            "term": k,
+        }
+        for k, dtos in refdata
+        for dto in dtos
+    ]
+
+    return jsonify({"text": text, "references": references if refcount > 0 else []})

@@ -1,7 +1,9 @@
 import { memo } from "react";
 import { Image, rem, Tabs, Text } from "@mantine/core";
-import { IconExternalLink } from "@tabler/icons-react";
+import { IconExternalLink, IconPhoto } from "@tabler/icons-react";
 import DictIFrame from "./DictIFrame";
+import Sentences from "./Sentences";
+import classes from "./DictPane.module.css";
 
 function DictPane({ dicts, term }) {
   return (
@@ -15,41 +17,66 @@ function DictPane({ dicts, term }) {
         },
       }}>
       <Tabs.List
+        className={classes.flex}
         style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${dicts.length}, minmax(2rem, 8rem))`,
+          flexWrap: "nowrap",
         }}>
-        {dicts.map((dict, index) => {
-          return (
-            <Tabs.Tab
-              styles={{ tabLabel: { minWidth: 0 } }}
-              style={{ display: "flex", justifyContent: "space-between" }}
-              onClick={() => {
-                dict.isExternal && handleExternal(getLookupURL(dict.url, term));
-              }}
-              key={dict.label}
-              id={String(index)}
-              value={String(index)}
-              rightSection={
-                dict.isExternal ? (
-                  <IconExternalLink size={rem(16)} stroke={1.6} />
-                ) : (
-                  ""
-                )
-              }
-              leftSection={
-                <Image
-                  h={16}
-                  w={16}
-                  src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
-                />
-              }>
-              <Text size="sm" style={{ overflow: "hidden" }}>
-                {dict.label}
-              </Text>
-            </Tabs.Tab>
-          );
-        })}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${dicts.length}, minmax(2rem, 8rem))`,
+          }}>
+          {dicts.map((dict, index) => {
+            return (
+              <Tabs.Tab
+                className={classes.flex}
+                styles={{ tabLabel: { minWidth: 0 } }}
+                onClick={() => {
+                  dict.isExternal &&
+                    handleExternal(getLookupURL(dict.url, term));
+                }}
+                key={dict.label}
+                id={String(index)}
+                value={String(index)}
+                rightSection={
+                  dict.isExternal ? (
+                    <IconExternalLink size={rem(16)} stroke={1.6} />
+                  ) : (
+                    ""
+                  )
+                }
+                leftSection={
+                  <Image
+                    h={16}
+                    w={16}
+                    src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
+                  />
+                }>
+                <Text size="sm" style={{ overflow: "hidden" }}>
+                  {dict.label}
+                </Text>
+              </Tabs.Tab>
+            );
+          })}
+        </div>
+        <div style={{ display: "flex" }}>
+          <Tabs.Tab
+            className={classes.flex}
+            styles={{ tabLabel: { minWidth: 0 } }}
+            id="sentencesTab"
+            value="sentencesTab">
+            <Text size="sm" style={{ overflow: "hidden" }}>
+              Sentences
+            </Text>
+          </Tabs.Tab>
+          <Tabs.Tab
+            className={classes.flex}
+            styles={{ tabLabel: { minWidth: 0 } }}
+            id="imagesTab"
+            value="imagesTab">
+            <IconPhoto />
+          </Tabs.Tab>
+        </div>
       </Tabs.List>
 
       {dicts.map((dict, index) => {
@@ -65,6 +92,16 @@ function DictPane({ dicts, term }) {
           )
         );
       })}
+      <Tabs.Panel
+        style={{ height: "100%" }}
+        id="sentencesTab"
+        value="sentencesTab">
+        {/* <Sentences /> */}
+        SENTENCES
+      </Tabs.Panel>
+      <Tabs.Panel style={{ height: "100%" }} id="imagesTab" value="imagesTab">
+        IMAGES
+      </Tabs.Panel>
     </Tabs>
   );
 }
