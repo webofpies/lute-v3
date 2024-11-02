@@ -28,11 +28,11 @@ function Sentences({ references, text }) {
                 <p className="term">{k}</p>
                 <ul className="sentencelist">
                   {dtos.map((dto) => (
-                    <li key={dto.book_id} style={{ marginTop: "4px" }}>
+                    <li key={dto.bookId} style={{ marginTop: "4px" }}>
                       {dto.sentence}
                       <br />
                       <a
-                        href={`/read/${dto.book_id}/page/${dto.page_number}`}
+                        href={`/read/${dto.bookId}/page/${dto.pageNumber}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
