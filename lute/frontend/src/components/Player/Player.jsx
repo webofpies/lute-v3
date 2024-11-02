@@ -336,12 +336,12 @@ function useInitializePlayer(book) {
     audio.src = `http://localhost:5001/useraudio/stream/${book.id}`;
 
     // retrieve last position
-    const position = book.audio_current_pos || 0;
+    const position = book.audio.position || 0;
     audio.currentTime = position;
     dispatch({ type: "timeChanged", payload: position });
     // retrieve bookmarks
-    book.audio_bookmarks.length > 0 &&
-      book.audio_bookmarks.forEach((bookmark) =>
+    book.audio.bookmarks.length > 0 &&
+      book.audio.bookmarks.forEach((bookmark) =>
         dispatch({ type: "bookmarkSaved", payload: bookmark })
       );
 
@@ -365,7 +365,7 @@ function useInitializePlayer(book) {
       audio.removeEventListener("timeupdate", timeUpdateCallback);
       audio.removeEventListener("loadedmetadata", loadedMetadataCallback);
     };
-  }, [book.audio_bookmarks, book.audio_current_pos, book.id]);
+  }, [book.audio.bookmarks, book.audio.position, book.id]);
 
   return [state, dispatch];
 }

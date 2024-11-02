@@ -276,7 +276,7 @@ def book_info(bookid):
         page_num = text.order
 
     lang = book.language
-    show_highlights = bool(int(UserSetting.get_value("show_highlights")))
+    # show_highlights = bool(int(UserSetting.get_value("show_highlights")))
     term_dicts = lang.all_dictionaries()[lang.id]["term"]
 
     def get_dict_info(dictURL, dictID):
@@ -294,32 +294,31 @@ def book_info(bookid):
             "hostname": hostname,
         }
 
-    dicts = [get_dict_info(dict, index) for index, dict in enumerate(term_dicts)]
-
-    # print(vars(book))
+    term_dicts = [get_dict_info(dict, index) for index, dict in enumerate(term_dicts)]
+    sentence_dicts = [
+        get_dict_info(dict, index) for index, dict in enumerate(lang.sentence_dict_uris)
+    ]
 
     book_dict = {
         "id": book.id,
         "title": book.title,
-        "page_count": book.page_count,
-        "page_num": page_num,
-        "show_highlights": show_highlights,
-        "lang_id": lang.id,
-        "term_dicts": dicts,
-        "is_rtl": lang.right_to_left,
-        "sentence_dict_uris": lang.sentence_dict_uris,
-        "audio_filename": book.audio_filename,
-        "audio_current_pos": (
-            float(book.audio_current_pos) if book.audio_current_pos else 0
-        ),
-        "audio_bookmarks": (
-            [float(x) for x in book.audio_bookmarks.split(";")]
-            if book.audio_bookmarks
-            else []
-        ),
+        "pageCount": book.page_count,
+        "currentPage": page_num,
+        "languageId": lang.id,
+        "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
+        "isRightToLeft": lang.right_to_left,
+        "audio": {
+            "name": book.audio_filename,
+            "position": (
+                float(book.audio_current_pos) if book.audio_current_pos else 0
+            ),
+            "bookmarks": (
+                [float(x) for x in book.audio_bookmarks.split(";")]
+                if book.audio_bookmarks
+                else []
+            ),
+        },
     }
-
-    # print(book_dict)
 
     return jsonify(book_dict)
 

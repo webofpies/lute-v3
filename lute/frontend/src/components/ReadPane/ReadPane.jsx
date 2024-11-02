@@ -16,7 +16,7 @@ export default function ReadPane() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
-  const [highlightsOn, setHighlightsOn] = useState(true);
+  // const [highlightsOn, setHighlightsOn] = useState(true);
   const [activeTerm, setActiveTerm] = useState({ data: null, multi: false });
   const [width, setWidth] = useState(50);
   const paneLeftRef = useRef();
@@ -78,9 +78,9 @@ export default function ReadPane() {
       <DrawerMenu
         opened={opened}
         close={close}
-        onToggleHighlights={() => {
-          setHighlightsOn((h) => !h);
-        }}
+        // onToggleHighlights={() => {
+        //   setHighlightsOn((h) => !h);
+        // }}
       />
 
       <div ref={ref}>
@@ -102,20 +102,20 @@ export default function ReadPane() {
                 width={width}
               />
               <div style={{ marginTop: "8rem" }}>
-                {book.audio_filename && <Player book={book} />}
+                {book.audio.name && <Player book={book} />}
                 {currentPage === 1 && (
                   <Title
                     style={{ overflowWrap: "break-word" }}
                     size="xl"
                     mb="lg"
-                    dir={book.is_rtl ? "rtl" : ""}>
+                    dir={book.isRightToLeft ? "rtl" : ""}>
                     {book.title}
                   </Title>
                 )}
                 <TheText
                   book={book}
                   page={currentPage}
-                  highlightsOn={highlightsOn}
+                  highlightsOn={true} //temporarily set to true
                   onSetActiveTerm={setActiveTerm}
                 />
               </div>

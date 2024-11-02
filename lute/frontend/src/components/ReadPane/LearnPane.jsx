@@ -68,7 +68,7 @@ function LearnPane({ book, termData }) {
             onMouseDown={handleResize}
           />
           <div ref={dictPaneRef} className={styles.dictPane}>
-            <DictPane term={data.text} dicts={book.term_dicts} />
+            <DictPane term={data.text} dicts={book.dictionaries.term} />
           </div>
         </>
       )}

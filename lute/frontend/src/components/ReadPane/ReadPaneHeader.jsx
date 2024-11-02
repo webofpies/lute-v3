@@ -34,7 +34,7 @@ function ReadPaneHeader({ open, currentPage, book, setCurrentPage, width }) {
           </Grid.Col>
           <Grid.Col span="fit-content">
             <Text component="span" fw={500} fz="inherit">
-              {`${currentPage}/${book.page_count}`}
+              {`${currentPage}/${book.pageCount}`}
             </Text>
           </Grid.Col>
         </Grid>

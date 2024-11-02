@@ -14,7 +14,7 @@ function ReadSlider({ book, page, onSetPage }) {
         variant="transparent"
         size="md"
         style={{ backgroundColor: "transparent" }}
-        disabled={book.page_count === 1 || page === 1}>
+        disabled={book.pageCount === 1 || page === 1}>
         <IconSquareRoundedChevronLeftFilled
           style={{ width: "100%", height: "100%" }}
           stroke={1.5}
@@ -28,19 +28,19 @@ function ReadSlider({ book, page, onSetPage }) {
         value={page}
         onChange={onSetPage}
         min={1}
-        max={book.page_count}
-        inverted={book.is_rtl}
-        disabled={book.page_count === 1}
+        max={book.pageCount}
+        inverted={book.isRightToLeft}
+        disabled={book.pageCount === 1}
         showLabelOnHover={false}
       />
       <ActionIcon
         onClick={() => {
-          onSetPage((p) => (p + 1 > book.page_count ? book.page_count : p + 1));
+          onSetPage((p) => (p + 1 > book.pageCount ? book.pageCount : p + 1));
         }}
         variant="transparent"
         size="md"
         style={{ backgroundColor: "transparent" }}
-        disabled={book.page_count === 1 || page === book.page_count}>
+        disabled={book.pageCount === 1 || page === book.pageCount}>
         <IconSquareRoundedChevronRightFilled
           style={{ width: "100%", height: "100%" }}
           stroke={1.5}
