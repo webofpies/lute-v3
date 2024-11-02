@@ -15,7 +15,6 @@ function ShortcutsForm() {
 
   const form = useForm({
     mode: "uncontrolled",
-    // initialValues: {},
     onValuesChange: () => {
       form.validate();
     },
@@ -36,11 +35,6 @@ function ShortcutsForm() {
 
   useEffect(() => {
     if (data) {
-      // data.forEach((category) => {
-      //   category.shortcuts.forEach((shortcut) => {
-      //     return form.setValues({ [shortcut.description]: shortcut.key });
-      //   });
-      // });
       const values = {};
       data.forEach((obj) => {
         Object.values(obj)[1].forEach((shortcut) => {
@@ -48,16 +42,7 @@ function ShortcutsForm() {
         });
       });
 
-      // console.log(values);
-
       form.initialize(values);
-      // console.log("INITIALIZED");
-
-      // form.validateField({
-      //   hotkey_TranslatePara: (value, values) => {
-      //     return value != 5 ? "Passwords did not match" : null;
-      //   },
-      // });
     }
   }, [data]);
 
@@ -97,8 +82,6 @@ function ShortcutsForm() {
                           {...form.getInputProps(shortcut.description)}
                           key={shortcut.description}
                           name={shortcut.description}
-                          // defaultValue={shortcut.key}
-                          // onChange={(e) => handleChangeShortcut(e)}
                           onKeyDown={handleKeyDown}
                           size="xs"
                           label={shortcut.label}
@@ -117,7 +100,6 @@ function ShortcutsForm() {
                             />
                           }
                         />
-                        {/* <Checkbox size="xs" defaultChecked /> */}
                       </Group>
                     );
                   })}
