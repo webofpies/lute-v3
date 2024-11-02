@@ -94,37 +94,22 @@ function DictPane({ dicts, term }) {
   );
 }
 
-// function load_frame(dicturl, text) {
-//   // if (contentLoaded) {
-//   //   console.log(`${label} content already loaded.`);
-//   //   return;
-//   // }
-
-//   let url = getLookupURL(dicturl, text);
-
-//   const is_bing = dicturl.indexOf("www.bing.com") != -1;
-//   if (is_bing) {
-//     // TODO handle_image_lookup_separately: don't mix term lookups with image lookups.
-//     let use_text = text;
-//     const binghash = dicturl.replace("https://www.bing.com/images/search?", "");
-//     url = `/bing/search/${LANG_ID}/${encodeURIComponent(use_text)}/${encodeURIComponent(binghash)}`;
-//   }
-
-//   // contentLoaded = true;
-//   return url;
-// }
-
 function getLookupURL(dictURL, term) {
   let url = dictURL;
+  url = url.replace("###", getCleanTermString(term));
+
+  return url;
+}
+
+function getCleanTermString(term) {
   // Terms are saved with zero-width space between each token;
   // remove that for dict searches.
   const zeroWidthSpace = "\u200b";
   const sqlZWS = "%E2%80%8B";
-  const cleantext = term.replaceAll(zeroWidthSpace, "").replace(/\s+/g, " ");
-  const searchterm = encodeURIComponent(cleantext).replaceAll(sqlZWS, "");
-  url = url.replace("###", searchterm);
+  const cleanText = term.replaceAll(zeroWidthSpace, "").replace(/\s+/g, " ");
+  const searchTerm = encodeURIComponent(cleanText).replaceAll(sqlZWS, "");
 
-  return url;
+  return searchTerm;
 }
 
 function handleExternal(url) {

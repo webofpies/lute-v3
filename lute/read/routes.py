@@ -2,7 +2,7 @@
 /read endpoints.
 """
 
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 from datetime import datetime
 from flask import Blueprint, flash, request, render_template, redirect, jsonify
 from lute.read.service import set_unknowns_to_known, start_reading, get_popup_data
@@ -285,6 +285,12 @@ def book_info(bookid):
         # label = url if len(url) <= 10 else f"{url[:10]}..."
         hostname = urlparse(url).hostname
         label = hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
+
+        if "www.bing.com" in url:
+            bing_hash = url.replace("https://www.bing.com/images/search?", "")
+            url = "http://localhost:5001/bing/search/{}/###/{}".format(
+                lang.id, quote(bing_hash, safe="()*!.'")
+            )
 
         return {
             "id": dictID,
