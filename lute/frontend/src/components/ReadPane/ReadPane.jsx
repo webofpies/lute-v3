@@ -102,7 +102,9 @@ export default function ReadPane() {
                 width={width}
               />
               <div style={{ marginTop: "8rem" }}>
-                {book.audio.name && <Player book={book} />}
+                {book.audio.name && (
+                  <Player source={{ ...book.audio, id: book.id }} />
+                )}
                 {currentPage === 1 && (
                   <Title
                     style={{ overflowWrap: "break-word" }}

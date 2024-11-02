@@ -86,8 +86,12 @@ const initialState = {
   skipAmount: "5",
 };
 
-function Player({ book }) {
-  const [state, dispatch] = useInitializePlayer(book);
+function Player({ source }) {
+  const [state, dispatch] = useInitializePlayer(
+    source.id,
+    source.position,
+    source.bookmarks
+  );
 
   useEffect(() => {
     function timeUpdateCallback() {
@@ -329,21 +333,19 @@ function Player({ book }) {
   );
 }
 
-function useInitializePlayer(book) {
+function useInitializePlayer(id, position, bookmarks) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    audio.src = `http://localhost:5001/useraudio/stream/${book.id}`;
+    audio.src = `http://localhost:5001/useraudio/stream/${id}`;
 
     // retrieve last position
-    const position = book.audio.position || 0;
     audio.currentTime = position;
     dispatch({ type: "timeChanged", payload: position });
     // retrieve bookmarks
-    book.audio.bookmarks.length > 0 &&
-      book.audio.bookmarks.forEach((bookmark) =>
-        dispatch({ type: "bookmarkSaved", payload: bookmark })
-      );
+    bookmarks.forEach((bookmark) =>
+      dispatch({ type: "bookmarkSaved", payload: bookmark })
+    );
 
     function timeUpdateCallback() {
       dispatch({ type: "timeChanged", payload: audio.currentTime });
@@ -365,7 +367,7 @@ function useInitializePlayer(book) {
       audio.removeEventListener("timeupdate", timeUpdateCallback);
       audio.removeEventListener("loadedmetadata", loadedMetadataCallback);
     };
-  }, [book.audio.bookmarks, book.audio.position, book.id]);
+  }, [bookmarks, position, id]);
 
   return [state, dispatch];
 }
