@@ -1,4 +1,5 @@
 let selectionStart = null;
+let selectionStartShiftHeld = false;
 let currentTermDataOrder = -1;
 let selectedMultiTerm = {};
 
@@ -22,9 +23,9 @@ function startHoverMode() {
 
 function selectionStarted(e) {
   removeAllContainingClass("newmultiterm");
-  selectionStart = null;
   e.target.classList.add("newmultiterm");
   selectionStart = e.target;
+  selectionStartShiftHeld = e.key === "Shift";
   currentTermDataOrder = e.target.dataset.order;
 }
 
@@ -47,7 +48,7 @@ function selectEnded(e) {
   removeAllContainingClass("kwordmarked");
 
   const selected = getSelectedInRange(selectionStart, e.target);
-  if (e.key === "Shift") {
+  if (selectionStartShiftHeld) {
     // copy text (selected)
     startHoverMode();
     return;
@@ -55,6 +56,7 @@ function selectEnded(e) {
 
   selectedMultiTerm = getSelectedMultiTerm(selected);
   selectionStart = null;
+  selectionStartShiftHeld = false;
 }
 
 function getSelectedMultiTerm(selected) {
