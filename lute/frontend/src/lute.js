@@ -59,7 +59,8 @@ function selectEnded(e) {
 
 function getSelectedMultiTerm(selected) {
   const textParts = selected.map((el) => el.dataset.text);
-  const text = textParts.join("").trim();
+  const cleanText = textParts.join("").trim();
+  const text = cleanText.replace(/\//g, "LUTESLASH");
   const langID = parseInt(selected[0].dataset.langId);
   return { text, langID };
 }
