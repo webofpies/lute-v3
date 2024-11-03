@@ -56,7 +56,8 @@ function LearnPane({ book, termData }) {
       {isSuccess && (
         <>
           <div ref={termFormRef} style={{ height: `${height}%` }}>
-            <TermForm termData={data} />
+            {/* need key to recreate the form */}
+            <TermForm key={data.text} termData={data} />
           </div>
           <Divider
             style={{
