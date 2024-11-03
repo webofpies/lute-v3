@@ -48,7 +48,7 @@ function About() {
       <Stack mt="md" gap={0}>
         <Text component="p">
           <b>Repository</b>:{" "}
-          <a href="https://github.com/jzohrab/lute-v3">lute-v3</a>
+          <a href="https://github.com/LuteOrg/lute-v3">lute-v3</a>
         </Text>
         <Text component="p">Lute is released under the MIT License.</Text>
       </Stack>
