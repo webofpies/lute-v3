@@ -20,23 +20,31 @@ function startHoverMode() {
   removeAllContainingClass("newmultiterm");
   selectionStart = null;
 }
-
-function selectionStarted(e) {
+// selection started
+function handleMouseDown(e) {
   removeAllContainingClass("newmultiterm");
   e.target.classList.add("newmultiterm");
   selectionStart = e.target;
   selectionStartShiftHeld = e.key === "Shift";
   currentTermDataOrder = e.target.dataset.order;
 }
+// mouse over during selection or without it
+function handleMouseOver(e) {
+  if (selectionStart) {
+    removeAllContainingClass("newmultiterm");
+    const selected = getSelectedInRange(selectionStart, e.target);
+    selected.forEach((el) => el.classList.add("newmultiterm"));
+  } else {
+    removeAllContainingClass("wordhover");
 
-function selectionOver(e) {
-  if (selectionStart == null) return; // Not selecting
-  removeAllContainingClass("newmultiterm");
-  const selected = getSelectedInRange(selectionStart, e.target);
-  selected.forEach((el) => el.classList.add("newmultiterm"));
+    if (document.querySelectorAll(".kwordmarked").length === 0) {
+      e.target.classList.add("wordhover");
+      currentTermDataOrder = e.target.dataset.order;
+    }
+  }
 }
-
-function selectEnded(e) {
+// selection ended
+function handleMouseUp(e) {
   if (selectionStart.getAttribute("id") === e.target.getAttribute("id")) {
     removeAllContainingClass("newmultiterm");
     selectionStart = null;
@@ -90,15 +98,6 @@ function wordClicked(e) {
   e.target.classList.add("kwordmarked");
 }
 
-function hoverOver(e) {
-  removeAllContainingClass("wordhover");
-
-  if (document.querySelectorAll(".kwordmarked").length === 0) {
-    e.target.classList.add("wordhover");
-    currentTermDataOrder = e.target.dataset.order;
-  }
-}
-
 function hoverOut() {
   removeAllContainingClass("wordhover");
 }
@@ -125,10 +124,9 @@ function removeAllContainingClass(className) {
 
 export {
   startHoverMode,
-  selectionStarted,
-  selectionOver,
-  selectEnded,
-  hoverOver,
+  handleMouseDown,
+  handleMouseOver,
+  handleMouseUp,
   hoverOut,
   selectedMultiTerm,
 };

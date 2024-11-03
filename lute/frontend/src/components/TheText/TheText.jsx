@@ -7,10 +7,9 @@ import TextItemPopup from "../Popup/TextItemPopup";
 import {
   startHoverMode,
   hoverOut,
-  hoverOver,
-  selectionStarted,
-  selectionOver,
-  selectEnded,
+  handleMouseDown,
+  handleMouseOver,
+  handleMouseUp,
   selectedMultiTerm,
 } from "../../lute";
 import {
@@ -86,15 +85,12 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
                     id={`sent_${index + 1}`}>
                     {sentence.map((textitem) => (
                       <TextItemPopup
-                        onMouseDown={selectionStarted}
+                        onMouseDown={handleMouseDown}
                         onMouseUp={(e) => {
-                          selectEnded(e);
+                          handleMouseUp(e);
                           handleSetTerm(textitem);
                         }}
-                        onMouseOver={(e) => {
-                          selectionOver(e);
-                          hoverOver(e);
-                        }}
+                        onMouseOver={handleMouseOver}
                         onMouseOut={hoverOut}
                         key={textitem.id}
                         data={textitem}
