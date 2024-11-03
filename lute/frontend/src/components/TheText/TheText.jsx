@@ -47,22 +47,22 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
     const termID = textitem.wid;
 
     onSetActiveTerm((prev) => {
-      if (prev.data === termID) {
-        return { data: null };
-      }
-
       if (selectedMultiTerm.text) {
         return {
           data: selectedMultiTerm.text,
           multi: true,
           langID: selectedMultiTerm.langID,
         };
-      } else {
-        return {
-          data: termID,
-          multi: false,
-        };
       }
+
+      if (prev.data === termID) {
+        return { data: null };
+      }
+
+      return {
+        data: termID,
+        multi: false,
+      };
     });
   }
 
