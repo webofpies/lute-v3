@@ -296,7 +296,17 @@ def keys():
     """
 
     categorized_settings = [
-        {"Navigation": ["hotkey_StartHover", "hotkey_PrevWord", "hotkey_NextWord"]},
+        {
+            "Navigation": [
+                "hotkey_StartHover",
+                "hotkey_PrevWord",
+                "hotkey_NextWord",
+                "hotkey_PrevUnknownWord",
+                "hotkey_NextUnknownWord",
+                "hotkey_PrevSentence",
+                "hotkey_NextSentence",
+            ]
+        },
         {
             "Update status": [
                 "hotkey_Status1",
@@ -340,6 +350,10 @@ def keys():
         "hotkey_StartHover": "Deselect all words",
         "hotkey_PrevWord": "Move to previous word",
         "hotkey_NextWord": "Move to next word",
+        "hotkey_PrevUnknownWord": "Move to previous unknown word",
+        "hotkey_NextUnknownWord": "Move to next unknown word",
+        "hotkey_PrevSentence": "Move to previous sentence",
+        "hotkey_NextSentence": "Move to next sentence",
         "hotkey_StatusUp": "Bump up by 1",
         "hotkey_StatusDown": "Bump down by 1",
         "hotkey_Bookmark": "Bookmark the current page",
