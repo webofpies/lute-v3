@@ -25,8 +25,8 @@ function handleMouseDown(e) {
   removeAllContainingClass("newmultiterm");
   e.target.classList.add("newmultiterm");
   selectionStart = e.target;
-  selectionStartShiftHeld = e.key === "Shift";
-  currentTermDataOrder = e.target.dataset.order;
+  selectionStartShiftHeld = e.shiftKey;
+  currentTermDataOrder = parseInt(e.target.dataset.order);
 }
 // mouse over during selection or without it
 function handleMouseOver(e) {
@@ -39,7 +39,7 @@ function handleMouseOver(e) {
 
     if (document.querySelectorAll(".kwordmarked").length === 0) {
       e.target.classList.add("wordhover");
-      currentTermDataOrder = e.target.dataset.order;
+      currentTermDataOrder = parseInt(e.target.dataset.order);
     }
   }
 }
@@ -57,7 +57,8 @@ function handleMouseUp(e) {
 
   const selected = getSelectedInRange(selectionStart, e.target);
   if (selectionStartShiftHeld) {
-    // copy text (selected)
+    const text = getTextItemsText(selected);
+    copyToClipboard(text);
     startHoverMode();
     return;
   }
@@ -77,7 +78,7 @@ function getSelectedMultiTerm(selected) {
 
 function wordClicked(e) {
   e.target.classList.remove("wordhover");
-  currentTermDataOrder = e.target.dataset.order;
+  currentTermDataOrder = parseInt(e.target.dataset.order);
 
   if (e.target.classList.contains("kwordmarked")) {
     e.target.classList.remove("kwordmarked");
@@ -120,6 +121,36 @@ function getSelectedInRange(startEl, endEl) {
 function removeAllContainingClass(className) {
   const elements = Array.from(document.querySelectorAll(`.${className}`));
   elements.forEach((element) => element.classList.remove(`${className}`));
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {})
+    .catch(() => {});
+}
+
+/** Get the text from the text items, adding "\n" between paragraphs. */
+function getTextItemsText(textItems) {
+  if (textItems.length === 0) return "";
+
+  function partitionByParagraphId(textItems) {
+    const partitioned = {};
+    textItems.forEach((item) => {
+      const id = item.dataset.paragraphId;
+      if (!partitioned[id]) partitioned[id] = [];
+      partitioned[id].push(item);
+    });
+    return partitioned;
+  }
+
+  const paras = partitionByParagraphId(textItems);
+  const paratexts = Object.entries(paras).map(([, textItems]) => {
+    const text = textItems.map((item) => item.textContent).join("");
+    return text.replace(/\u200B/g, "");
+  });
+
+  return paratexts.join("\n").trim();
 }
 
 export {
