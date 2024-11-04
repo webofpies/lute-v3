@@ -1,7 +1,6 @@
 let selectionStart = null;
 let selectionStartShiftHeld = false;
 let currentTermDataOrder = -1;
-let selectedMultiTerm = {};
 
 function startHoverMode() {
   removeAllContainingClass("kwordmarked");
@@ -46,26 +45,30 @@ function handleMouseOver(e) {
 // selection ended
 function handleMouseUp(e) {
   if (selectionStart.getAttribute("id") === e.target.getAttribute("id")) {
-    removeAllContainingClass("newmultiterm");
-    selectionStart = null;
-    selectedMultiTerm = {};
-    wordClicked(e);
-    return;
+    return singleWordClicked(e);
   }
 
   removeAllContainingClass("kwordmarked");
 
   const selected = getSelectedInRange(selectionStart, e.target);
+  // copy selected text
   if (selectionStartShiftHeld) {
     const text = getTextItemsText(selected);
     copyToClipboard(text);
     startHoverMode();
-    return;
+
+    return null;
   }
 
-  selectedMultiTerm = getSelectedMultiTerm(selected);
   selectionStart = null;
   selectionStartShiftHeld = false;
+
+  const selectedMultiTerm = getSelectedMultiTerm(selected);
+  return {
+    data: selectedMultiTerm.text,
+    langID: selectedMultiTerm.langID,
+    multi: true,
+  };
 }
 
 function getSelectedMultiTerm(selected) {
@@ -76,10 +79,14 @@ function getSelectedMultiTerm(selected) {
   return { text, langID };
 }
 
-function wordClicked(e) {
+function singleWordClicked(e) {
+  removeAllContainingClass("newmultiterm");
+  selectionStart = null;
+
   e.target.classList.remove("wordhover");
   currentTermDataOrder = parseInt(e.target.dataset.order);
 
+  // If already clicked, remove the click marker.
   if (e.target.classList.contains("kwordmarked")) {
     e.target.classList.remove("kwordmarked");
 
@@ -87,16 +94,25 @@ function wordClicked(e) {
       e.target.classList.add("wordhover");
       startHoverMode();
     }
-    return;
+    // selecting same word. sending null data for form to close
+    return { data: null };
   }
 
-  // Not already clicked.
-  if (e.key !== "Shift") {
-    // Only one element should be marked clicked.
+  // Normal click without Shift
+  if (!e.shiftKey) {
     removeAllContainingClass("kwordmarked");
+    e.target.classList.add("kwordmarked");
+
+    return {
+      data: parseInt(e.target.dataset.wid),
+      multi: false,
+    };
   }
 
+  // add mark for Shift click
   e.target.classList.add("kwordmarked");
+  // Shift click. returns null so term form doesn't do anything
+  return null;
 }
 
 function hoverOut() {
@@ -159,5 +175,4 @@ export {
   handleMouseOver,
   handleMouseUp,
   hoverOut,
-  selectedMultiTerm,
 };

@@ -10,7 +10,6 @@ import {
   handleMouseDown,
   handleMouseOver,
   handleMouseUp,
-  selectedMultiTerm,
 } from "../../lute";
 import {
   adjustFontSize,
@@ -43,27 +42,9 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
   if (isPending) return <TextSkeleton />;
   if (error) return "An error has occurred: " + error.message;
 
-  function handleSetTerm(textitem) {
-    const termID = textitem.wid;
-
-    onSetActiveTerm((prev) => {
-      if (selectedMultiTerm.text) {
-        return {
-          data: selectedMultiTerm.text,
-          multi: true,
-          langID: selectedMultiTerm.langID,
-        };
-      }
-
-      if (prev.data === termID) {
-        return { data: null };
-      }
-
-      return {
-        data: termID,
-        multi: false,
-      };
-    });
+  function handleSetTerm(selectedTerm) {
+    if (!selectedTerm) return;
+    onSetActiveTerm(selectedTerm);
   }
 
   return (
@@ -87,8 +68,8 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
                       <TextItemPopup
                         onMouseDown={handleMouseDown}
                         onMouseUp={(e) => {
-                          handleMouseUp(e);
-                          handleSetTerm(textitem);
+                          const selectedTerm = handleMouseUp(e);
+                          handleSetTerm(selectedTerm);
                         }}
                         onMouseOver={handleMouseOver}
                         onMouseOut={hoverOut}
