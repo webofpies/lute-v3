@@ -55,9 +55,20 @@ function getPressedKeysAsString(event) {
   return ret;
 }
 
+async function copyToClipboard(text) {
+  try {
+    navigator.clipboard.writeText(text);
+    return text;
+  } catch (error) {
+    console.error("Failed to copy: ", error);
+    return false;
+  }
+}
+
 export {
   getFromLocalStorage,
   convertPixelsToRem,
   clamp,
   getPressedKeysAsString,
+  copyToClipboard,
 };

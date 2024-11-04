@@ -78,9 +78,10 @@ function LearnPane({ book, termData }) {
 }
 
 function useFetchTerm(termData) {
-  const key = termData.multi
-    ? `${termData.langID}/${termData.data}`
-    : termData.data;
+  const key =
+    termData.type === "multi"
+      ? `${termData.langID}/${termData.data}`
+      : termData.data;
 
   return useQuery({
     queryKey: ["termData", key],

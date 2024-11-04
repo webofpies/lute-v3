@@ -17,7 +17,7 @@ export default function ReadPane() {
   const [currentPage, setCurrentPage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
   // const [highlightsOn, setHighlightsOn] = useState(true);
-  const [activeTerm, setActiveTerm] = useState({ data: null, multi: false });
+  const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
   const [width, setWidth] = useState(50);
   const paneLeftRef = useRef();
   const paneRightRef = useRef();

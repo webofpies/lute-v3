@@ -51,13 +51,12 @@ function handleMouseUp(e) {
   removeAllContainingClass("kwordmarked");
 
   const selected = getSelectedInRange(selectionStart, e.target);
-  // copy selected text
+  // return selected text for copy
   if (selectionStartShiftHeld) {
     const text = getTextItemsText(selected);
-    copyToClipboard(text);
     startHoverMode();
 
-    return null;
+    return { data: text, type: "copy" };
   }
 
   selectionStart = null;
@@ -67,7 +66,7 @@ function handleMouseUp(e) {
   return {
     data: selectedMultiTerm.text,
     langID: selectedMultiTerm.langID,
-    multi: true,
+    type: "multi",
   };
 }
 
@@ -105,7 +104,7 @@ function singleWordClicked(e) {
 
     return {
       data: parseInt(e.target.dataset.wid),
-      multi: false,
+      type: "single",
     };
   }
 
@@ -137,13 +136,6 @@ function getSelectedInRange(startEl, endEl) {
 function removeAllContainingClass(className) {
   const elements = Array.from(document.querySelectorAll(`.${className}`));
   elements.forEach((element) => element.classList.remove(`${className}`));
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard
-    .writeText(text)
-    .then(() => {})
-    .catch(() => {});
 }
 
 /** Get the text from the text items, adding "\n" between paragraphs. */

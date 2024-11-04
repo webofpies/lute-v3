@@ -1,7 +1,9 @@
 // lute\templates\read\page_content.html
 import { memo, useEffect } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Box, LoadingOverlay } from "@mantine/core";
+import { Box, LoadingOverlay, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { IconClipboardCheck } from "@tabler/icons-react";
 import TextSkeleton from "./TextSkeleton";
 import TextItemPopup from "../Popup/TextItemPopup";
 import {
@@ -16,6 +18,7 @@ import {
   adjustLineHeight,
   setColumnCount,
 } from "../../textOptions";
+import { copyToClipboard } from "../../utils";
 
 function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
   const { isPending, isFetching, isSuccess, error, data } = useQuery({
@@ -42,9 +45,31 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
   if (isPending) return <TextSkeleton />;
   if (error) return "An error has occurred: " + error.message;
 
-  function handleSetTerm(selectedTerm) {
-    if (!selectedTerm) return;
-    onSetActiveTerm(selectedTerm);
+  function handleSetTerm(termData) {
+    // do nothing with the form
+    if (!termData || termData.type === "copy") return;
+    onSetActiveTerm(termData);
+  }
+
+  async function handleCopyText(termData) {
+    if (termData.type !== "copy") return;
+
+    const text = await copyToClipboard(termData.data);
+    text &&
+      notifications.show({
+        title: "Selection copied to clipboard!",
+        message: (
+          <Text component="p" lineClamp={2} fz="xs">
+            {termData.data}
+          </Text>
+        ),
+        position: "bottom-center",
+        autoClose: 2000,
+        withCloseButton: false,
+        withBorder: true,
+        icon: <IconClipboardCheck />,
+        color: "green",
+      });
   }
 
   return (
@@ -68,8 +93,9 @@ function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
                       <TextItemPopup
                         onMouseDown={handleMouseDown}
                         onMouseUp={(e) => {
-                          const selectedTerm = handleMouseUp(e);
-                          handleSetTerm(selectedTerm);
+                          const termData = handleMouseUp(e);
+                          handleSetTerm(termData);
+                          handleCopyText(termData);
                         }}
                         onMouseOver={handleMouseOver}
                         onMouseOut={hoverOut}
