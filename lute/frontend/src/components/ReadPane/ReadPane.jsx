@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Center, Divider, Loader, Title } from "@mantine/core";
@@ -9,10 +9,25 @@ import LearnPane from "./LearnPane";
 import Player from "../Player/Player";
 import TheText from "../TheText/TheText";
 import styles from "./ReadPane.module.css";
-import { clamp } from "../../utils";
+import { UserSettingsContext } from "../../context/UserSettingsContext";
+import { clamp, getPressedKeysAsString } from "../../misc/utils";
+import { startHoverMode } from "../../lute";
+import {
+  moveCursor,
+  incrementStatusForMarked,
+  updateStatusForMarked,
+  handleAddBookmark,
+  handleCopy,
+  handleEditPage,
+  handleTranslate,
+  goToNextTheme,
+  toggleHighlight,
+  toggleFocus,
+} from "../../misc/keydown";
 
 export default function ReadPane() {
   const { id } = useParams();
+  const { settings } = useContext(UserSettingsContext);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
@@ -63,13 +78,28 @@ export default function ReadPane() {
   });
 
   useEffect(() => {
+    if (!isSuccess) return;
+
     const title = document.title;
-    if (isSuccess) document.title = `Reading "${book.title}"`;
+    document.title = `Reading "${book.title}"`;
+
+    function handleKeydown(e) {
+      setupKeydownEvents(e, {
+        ...settings,
+        rtl: book.isRightToLeft,
+        bookId: book.id,
+        pageNum: currentPage,
+        sentenceDicts: book.dictionaries.sentence,
+      });
+    }
+
+    document.addEventListener("keydown", handleKeydown);
 
     return () => {
       document.title = title;
+      document.removeEventListener("keydown", handleKeydown);
     };
-  }, [book, isSuccess]);
+  }, [book, isSuccess, settings, currentPage]);
 
   if (error) return "An error has occurred: " + error.message;
 
@@ -142,4 +172,53 @@ export default function ReadPane() {
       </div>
     </>
   );
+}
+
+function setupKeydownEvents(e, settings) {
+  if (document.querySelectorAll(".word").length === 0) {
+    return; // Nothing to do.
+  }
+
+  const next = settings.rtl ? -1 : 1;
+  const prev = -1 * next;
+
+  // Map of shortcuts to lambdas:
+  const map = {
+    [settings.hotkey_StartHover]: () => startHoverMode(),
+    [settings.hotkey_PrevWord]: () => moveCursor(".word", prev),
+    [settings.hotkey_NextWord]: () => moveCursor(".word", next),
+    [settings.hotkey_PrevUnknownWord]: () => moveCursor(".word.status0", prev),
+    [settings.hotkey_NextUnknownWord]: () => moveCursor(".word.status0", next),
+    [settings.hotkey_PrevSentence]: () => moveCursor(".sentencestart", prev),
+    [settings.hotkey_NextSentence]: () => moveCursor(".sentencestart", next),
+    [settings.hotkey_StatusUp]: () => incrementStatusForMarked(+1),
+    [settings.hotkey_StatusDown]: () => incrementStatusForMarked(-1),
+    [settings.hotkey_Bookmark]: () => handleAddBookmark(),
+    [settings.hotkey_CopySentence]: () => handleCopy("sentence-id"),
+    [settings.hotkey_CopyPara]: () => handleCopy("paragraph-id"),
+    [settings.hotkey_CopyPage]: () => handleCopy(null),
+    [settings.hotkey_EditPage]: () => handleEditPage(),
+    [settings.hotkey_TranslateSentence]: () => handleTranslate("sentence-id"),
+    [settings.hotkey_TranslatePara]: () => handleTranslate("paragraph-id"),
+    [settings.hotkey_TranslatePage]: () => handleTranslate(null),
+    [settings.hotkey_NextTheme]: () => goToNextTheme(),
+    [settings.hotkey_ToggleHighlight]: () => toggleHighlight(),
+    [settings.hotkey_ToggleFocus]: () => toggleFocus(),
+    [settings.hotkey_Status1]: () => updateStatusForMarked(1),
+    [settings.hotkey_Status2]: () => updateStatusForMarked(2),
+    [settings.hotkey_Status3]: () => updateStatusForMarked(3),
+    [settings.hotkey_Status4]: () => updateStatusForMarked(4),
+    [settings.hotkey_Status5]: () => updateStatusForMarked(5),
+    [settings.hotkey_StatusIgnore]: () => updateStatusForMarked(98),
+    [settings.hotkey_StatusWellKnown]: () => updateStatusForMarked(99),
+    [settings.hotkey_DeleteTerm]: () => updateStatusForMarked(0),
+  };
+
+  const key = getPressedKeysAsString(e);
+  if (key in map) {
+    // Override any existing event - e.g., if "up" arrow is in the map,
+    // don't scroll screen.
+    e.preventDefault();
+    map[key]();
+  }
 }

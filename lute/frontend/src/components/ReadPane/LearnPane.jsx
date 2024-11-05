@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Divider, LoadingOverlay, Stack } from "@mantine/core";
 import { useMouse } from "@mantine/hooks";
-import { clamp } from "../../utils";
+import { clamp } from "../../misc/utils";
 import DictPane from "../DictPane/DictPane";
 import TermForm from "../TermForm/TermForm";
 import styles from "./ReadPane.module.css";

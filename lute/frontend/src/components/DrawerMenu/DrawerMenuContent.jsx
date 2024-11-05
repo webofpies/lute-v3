@@ -38,7 +38,7 @@ import {
   adjustFontSize,
   adjustLineHeight,
   setColumnCount,
-} from "../../textOptions";
+} from "../../misc/textOptions";
 
 const linkData = [
   {

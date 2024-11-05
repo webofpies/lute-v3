@@ -17,8 +17,8 @@ import {
   adjustFontSize,
   adjustLineHeight,
   setColumnCount,
-} from "../../textOptions";
-import { copyToClipboard } from "../../utils";
+} from "../../misc/textOptions";
+import { copyToClipboard } from "../../misc/utils";
 
 function TheText({ book, page, highlightsOn, onSetActiveTerm }) {
   const { isPending, isFetching, isSuccess, error, data } = useQuery({

@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Layout from "./pages/Layout";
 import Homepage from "./pages/Homepage";
+import { UserSettingsProvider } from "./context/UserSettingsContext";
 
 const ReadPane = lazy(() => import("./components/ReadPane/ReadPane"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
@@ -52,7 +53,9 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <MantineProvider theme={theme}>
         <Notifications />
-        <RouterProvider router={router} />
+        <UserSettingsProvider>
+          <RouterProvider router={router} />
+        </UserSettingsProvider>
       </MantineProvider>
     </QueryClientProvider>
   );

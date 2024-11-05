@@ -2,7 +2,7 @@ import { Button, CloseButton, Fieldset, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { getPressedKeysAsString } from "../../utils";
+import { getPressedKeysAsString } from "../../misc/utils";
 
 function ShortcutsForm() {
   const { isSuccess, error, data } = useQuery({

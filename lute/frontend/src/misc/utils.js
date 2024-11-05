@@ -65,10 +65,34 @@ async function copyToClipboard(text) {
   }
 }
 
+/** Get the text from the text items, adding "\n" between paragraphs. */
+function getTextItemsText(textItems) {
+  if (textItems.length === 0) return "";
+
+  function partitionByParagraphId(textItems) {
+    const partitioned = {};
+    textItems.forEach((item) => {
+      const id = item.dataset.paragraphId;
+      if (!partitioned[id]) partitioned[id] = [];
+      partitioned[id].push(item);
+    });
+    return partitioned;
+  }
+
+  const paras = partitionByParagraphId(textItems);
+  const paratexts = Object.entries(paras).map(([, textItems]) => {
+    const text = textItems.map((item) => item.textContent).join("");
+    return text.replace(/\u200B/g, "");
+  });
+
+  return paratexts.join("\n").trim();
+}
+
 export {
   getFromLocalStorage,
   convertPixelsToRem,
   clamp,
   getPressedKeysAsString,
   copyToClipboard,
+  getTextItemsText,
 };
