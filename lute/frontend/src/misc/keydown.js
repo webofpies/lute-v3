@@ -1,6 +1,6 @@
 import { copyToClipboard, getTextItemsText } from "./utils";
 
-let currentTermDataOrder;
+// let currentTermDataOrder;
 
 const showHighlights = true;
 
@@ -69,7 +69,8 @@ function updateCursor(target) {
     });
   removeStatusHighlights();
   target.classList.add("kwordmarked");
-  currentTermDataOrder = parseInt(target.dataset.order);
+  // ! NEED? to save current term data order
+  // const currentTermDataOrder = parseInt(target.dataset.order);
   applyStatusClass(target);
   // $(window).scrollTo(target, { axis: "y", offset: -150 });
   // show_term_edit_form(target);
