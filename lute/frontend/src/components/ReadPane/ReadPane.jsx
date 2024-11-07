@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Divider, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
-import { nprogress } from "@mantine/nprogress";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
 import TheText from "../TheText/TheText";
@@ -43,10 +42,6 @@ export default function ReadPane() {
   const { data: page } = useQuery(pageQuery(id, pageNum));
 
   useInitialize(book, settings);
-
-  useEffect(() => {
-    nprogress.complete();
-  }, [pageNum]);
 
   return (
     <>

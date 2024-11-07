@@ -2,6 +2,7 @@
 import { memo, useEffect } from "react";
 import { Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { nprogress } from "@mantine/nprogress";
 import { IconClipboardCheck } from "@tabler/icons-react";
 import TextItem from "./TextItem";
 import Popup from "../Popup/Popup";
@@ -20,6 +21,10 @@ import {
 } from "../../misc/textOptions";
 
 function TheText({ pageData, onSetActiveTerm }) {
+  useEffect(() => {
+    nprogress.complete();
+  });
+
   useEffect(() => {
     startHoverMode();
     adjustFontSize(0);
