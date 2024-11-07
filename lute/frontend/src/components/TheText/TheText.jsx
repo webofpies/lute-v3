@@ -3,7 +3,8 @@ import { memo, useEffect } from "react";
 import { Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconClipboardCheck } from "@tabler/icons-react";
-import TextItemPopup from "../Popup/TextItemPopup";
+import TextItem from "./TextItem";
+import Popup from "../Popup/Popup";
 import { copyToClipboard } from "../../misc/utils";
 import {
   startHoverMode,
@@ -34,34 +35,38 @@ function TheText({ pageData, onSetActiveTerm }) {
 
   return (
     <div id={"thetext"}>
-      {pageData.map((paragraph, index) => {
-        return (
-          <p key={index} className="textparagraph">
-            {paragraph.map((sentence, index) => (
-              <span
-                key={`sent_${index + 1}`}
-                className="textsentence"
-                id={`sent_${index + 1}`}>
-                {sentence.map((textitem) => (
-                  <TextItemPopup
-                    onMouseDown={handleMouseDown}
-                    onMouseUp={(e) => {
-                      const termData = handleMouseUp(e);
-                      handleSetTerm(termData);
-                      handleCopyText(termData);
-                    }}
-                    onMouseOver={handleMouseOver}
-                    onMouseOut={hoverOut}
-                    key={textitem.id}
-                    data={textitem}
-                  />
-                ))}
-              </span>
-            ))}
-            <span className="textitem">{"\u200B"}</span>
-          </p>
-        );
-      })}
+      {pageData.map((paragraph, index) => (
+        <p key={index} className="textparagraph">
+          {paragraph.map((sentence, index) => (
+            <span
+              key={`sent_${index + 1}`}
+              className="textsentence"
+              id={`sent_${index + 1}`}>
+              {sentence.map((textitem) =>
+                textitem.isWord ? (
+                  <Popup id={textitem.wid} key={textitem.id}>
+                    <TextItem
+                      data={textitem}
+                      onMouseDown={handleMouseDown}
+                      onMouseUp={(e) => {
+                        const termData = handleMouseUp(e);
+                        handleSetTerm(termData);
+                        handleCopyText(termData);
+                      }}
+                      onMouseOver={handleMouseOver}
+                      onMouseOut={hoverOut}
+                    />
+                  </Popup>
+                ) : (
+                  // non-word spans
+                  <TextItem data={textitem} key={textitem.id} />
+                )
+              )}
+            </span>
+          ))}
+          <span className="textitem">{"\u200B"}</span>
+        </p>
+      ))}
     </div>
   );
 }
