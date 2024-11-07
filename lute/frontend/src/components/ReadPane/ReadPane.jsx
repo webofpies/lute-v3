@@ -31,89 +31,26 @@ export default function ReadPane() {
   const { id, page: pageNum } = useParams();
   const { settings } = useContext(UserSettingsContext);
 
-  const [opened, { open, close }] = useDisclosure(false);
-  // const [highlightsOn, setHighlightsOn] = useState(true);
-  const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
-  const [width, setWidth] = useState(50);
+  const { ref, x } = useMouse();
   const paneLeftRef = useRef();
   const paneRightRef = useRef();
 
-  const { ref, x } = useMouse();
-
-  function handleResize(e) {
-    e.preventDefault();
-    paneLeftRef.current.style.pointerEvents = "none";
-    paneRightRef.current.style.pointerEvents = "none";
-
-    const containerHeight = parseFloat(
-      window.getComputedStyle(ref.current).getPropertyValue("width")
-    );
-
-    function resize(e) {
-      const delta = x - e.clientX;
-      const ratioInPct = (delta / containerHeight) * 100;
-      const newWidth = width - ratioInPct;
-      setWidth(clamp(newWidth, 5, 95));
-    }
-
-    ref.current.addEventListener("mousemove", resize);
-
-    ref.current.addEventListener("mouseup", () => {
-      ref.current.removeEventListener("mousemove", resize);
-      paneLeftRef.current.style.pointerEvents = "unset";
-      paneRightRef.current.style.pointerEvents = "unset";
-    });
-  }
+  const [opened, { open, close }] = useDisclosure(false);
+  const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
+  const [width, setWidth] = useState(50);
 
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
+
+  useInitialize(book, settings);
 
   useEffect(() => {
     nprogress.complete();
   }, [pageNum]);
 
-  useEffect(() => {
-    const title = document.title;
-    document.title = `Reading "${book.title}"`;
-
-    return () => {
-      document.title = title;
-    };
-  }, [book.title]);
-
-  useEffect(() => {
-    function handleKeydown(e) {
-      setupKeydownEvents(e, {
-        ...settings,
-        rtl: book.isRightToLeft,
-        bookId: book.id,
-        pageNum: book.currentPage,
-        sentenceDicts: book.dictionaries.sentence,
-      });
-    }
-
-    document.addEventListener("keydown", handleKeydown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeydown);
-    };
-  }, [
-    book.currentPage,
-    book.dictionaries.sentence,
-    book.id,
-    book.isRightToLeft,
-    settings,
-  ]);
-
   return (
     <>
-      <DrawerMenu
-        opened={opened}
-        close={close}
-        // onToggleHighlights={() => {
-        //   setHighlightsOn((h) => !h);
-        // }}
-      />
+      <DrawerMenu opened={opened} close={close} />
 
       <div ref={ref}>
         <div
@@ -150,7 +87,17 @@ export default function ReadPane() {
           styles={{ root: { width: "6px", border: "none" } }}
           className={styles.vdivider}
           orientation="vertical"
-          onMouseDown={handleResize}
+          onMouseDown={(e) =>
+            handleResize(
+              e,
+              width,
+              setWidth,
+              ref.current,
+              paneLeftRef.current,
+              paneRightRef.current,
+              x
+            )
+          }
         />
 
         <div
@@ -211,6 +158,74 @@ function pageQuery(bookId, pageNum) {
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   };
+}
+
+function useInitialize(book, settings) {
+  useEffect(() => {
+    const title = document.title;
+    document.title = `Reading "${book.title}"`;
+
+    return () => {
+      document.title = title;
+    };
+  }, [book.title]);
+
+  useEffect(() => {
+    function handleKeydown(e) {
+      setupKeydownEvents(e, {
+        ...settings,
+        rtl: book.isRightToLeft,
+        bookId: book.id,
+        pageNum: book.currentPage,
+        sentenceDicts: book.dictionaries.sentence,
+      });
+    }
+
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [
+    book.currentPage,
+    book.dictionaries.sentence,
+    book.id,
+    book.isRightToLeft,
+    settings,
+  ]);
+}
+
+function handleResize(
+  e,
+  currentWidth,
+  setWidth,
+  paneMain,
+  paneLeft,
+  paneRight,
+  x
+) {
+  e.preventDefault();
+  paneLeft.style.pointerEvents = "none";
+  paneRight.style.pointerEvents = "none";
+
+  const containerHeight = parseFloat(
+    window.getComputedStyle(paneMain).getPropertyValue("width")
+  );
+
+  function resize(e) {
+    const delta = x - e.clientX;
+    const ratioInPct = (delta / containerHeight) * 100;
+    const newWidth = currentWidth - ratioInPct;
+    setWidth(clamp(newWidth, 5, 95));
+  }
+
+  paneMain.addEventListener("mousemove", resize);
+
+  paneMain.addEventListener("mouseup", () => {
+    paneMain.removeEventListener("mousemove", resize);
+    paneLeft.style.pointerEvents = "unset";
+    paneRight.style.pointerEvents = "unset";
+  });
 }
 
 function setupKeydownEvents(e, settings) {
