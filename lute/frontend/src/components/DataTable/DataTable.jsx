@@ -105,7 +105,9 @@ export default function DataTable({ data }) {
   const rows = sortedData.map((book) => (
     <Table.Tr key={book.title}>
       <Table.Td>
-        <Link to={`/read/${book.id}`} style={{ color: "inherit" }}>
+        <Link
+          to={`/read/${book.id}/${book.currentPage}`}
+          style={{ color: "inherit" }}>
           <Text lineClamp={1}>{book.title}</Text>{" "}
         </Link>
       </Table.Td>

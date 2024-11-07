@@ -1,8 +1,10 @@
 // lute\templates\read\textitem.html
-import { forwardRef, memo } from "react";
+import { forwardRef, memo, useContext } from "react";
+import { UserSettingsContext } from "../../context/UserSettingsContext";
 
 const TextItem = forwardRef(function TextItem(props, ref) {
-  const { highlightsOn, data, ...restProps } = props;
+  const { data, ...restProps } = props;
+  const { settings } = useContext(UserSettingsContext);
 
   return (
     <span
@@ -15,7 +17,7 @@ const TextItem = forwardRef(function TextItem(props, ref) {
       }}
       id={data.id}
       className={`${data.classes} ${
-        highlightsOn & data.isWord ? data.statusClass : ""
+        settings.showHighlights & data.isWord ? data.statusClass : ""
       }`}
       data-lang-id={data.langId}
       data-paragraph-id={data.paragraphId}

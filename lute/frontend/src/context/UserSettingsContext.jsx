@@ -51,7 +51,7 @@ export function UserSettingsProvider({ children }) {
     hotkey_PrevSentence: "",
     hotkey_NextSentence: "",
 
-    showHighlight: true,
+    showHighlights: true,
   };
 
   return (

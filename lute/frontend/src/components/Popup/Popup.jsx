@@ -1,28 +1,49 @@
+import { memo, useState } from "react";
+import { QueryClient } from "@tanstack/react-query";
 import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { memo } from "react";
-import PopupDropdown from "./PopupDropdown";
+import PopupInfo from "./PopupInfo";
+
+const queryClient = new QueryClient();
 
 function Popup({ children, id }) {
   const [opened, { close, open }] = useDisclosure(false);
+  const [popupData, setPopupData] = useState(null);
 
   return (
-    // TODO try with onOpen prop (on Popover) to get the data when dropdown opens
-    // https://github.com/TanStack/query/discussions/5820#discussioncomment-6604337
-    // last comment here
     <Popover
       position="bottom"
       withArrow
       shadow="md"
       opened={opened}
+      onOpen={async () => setPopupData(await handleFetch(id))}
       onMouseEnter={open}
       onMouseLeave={close}>
       <Popover.Target>{children}</Popover.Target>
-      <Popover.Dropdown>
-        <PopupDropdown id={id} />
-      </Popover.Dropdown>
+      {popupData && (
+        <Popover.Dropdown>
+          <PopupInfo data={popupData} />
+        </Popover.Dropdown>
+      )}
     </Popover>
   );
+}
+
+async function handleFetch(id) {
+  try {
+    const data = await queryClient.fetchQuery({
+      queryKey: ["popupData", id],
+      queryFn: async () => {
+        const response = await fetch(`http://localhost:5001/read/popup/${id}`);
+        return await response.json();
+      },
+      enabled: id !== null,
+      staleTime: Infinity,
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default memo(Popup);

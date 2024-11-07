@@ -337,6 +337,8 @@ def page_info(bookid, pagenum):
     if book is None:
         return redirect("/", 302)
 
+    # paragraphs = start_reading(book, pagenum, db.session)
+
     paragraphs = get_page_paragraphs(bookid, pagenum)
     paras = [
         [
@@ -353,7 +355,8 @@ def page_info(bookid, pagenum):
                     "order": textitem.index,
                     "wid": textitem.wo_id,
                     "isWord": textitem.is_word,
-                    "hasPopup": has_popup(textitem.wo_id) if textitem.wo_id else False,
+                    # "hasPopup": has_popup(textitem.wo_id) if textitem.wo_id else False,
+                    # "hasPopup": True if textitem.wo_id else False,
                 }
                 for textitem in sentence
             ]
@@ -365,28 +368,28 @@ def page_info(bookid, pagenum):
     return jsonify(paras)
 
 
-def has_popup(termid):
-    """
-    checks if term has popup
+# def has_popup(termid):
+#     """
+#     checks if term has popup
 
-    to know whether to create the Popover or not beforehand
-    """
-    term = Term.find(termid)
+#     to know whether to create the Popover or not beforehand
+#     """
+#     term = Term.find(termid)
 
-    if term.status == Status.UNKNOWN:
-        return None
+#     if term.status == Status.UNKNOWN:
+#         return None
 
-    def has_popup_data(cterm):
-        return (
-            (cterm.translation or "").strip() != ""
-            or (cterm.romanization or "").strip() != ""
-            or cterm.get_current_image() is not None
-        )
+#     def has_popup_data(cterm):
+#         return (
+#             (cterm.translation or "").strip() != ""
+#             or (cterm.romanization or "").strip() != ""
+#             or cterm.get_current_image() is not None
+#         )
 
-    if not has_popup_data(term) and len(term.parents) == 0:
-        return None
+#     if not has_popup_data(term) and len(term.parents) == 0:
+#         return None
 
-    return True
+#     return True
 
 
 def get_page_paragraphs(bookid, pagenum):
@@ -454,6 +457,8 @@ def popup_content(termid):
     Show a term popup for the given DBTerm.
     """
     d = get_popup_data(termid)
+    if d is None:
+        return jsonify(None)
 
     return jsonify(
         {

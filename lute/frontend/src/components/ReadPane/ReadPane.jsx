@@ -1,12 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { Center, Divider, Loader, Title } from "@mantine/core";
+import { Divider, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
+import { nprogress } from "@mantine/nprogress";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
-import LearnPane from "./LearnPane";
-import Player from "../Player/Player";
 import TheText from "../TheText/TheText";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
@@ -25,11 +24,13 @@ import {
   toggleFocus,
 } from "../../misc/keydown";
 
+const LearnPane = lazy(() => import("./LearnPane"));
+const Player = lazy(() => import("../Player/Player"));
+
 export default function ReadPane() {
-  const { id } = useParams();
+  const { id, page: pageNum } = useParams();
   const { settings } = useContext(UserSettingsContext);
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [opened, { open, close }] = useDisclosure(false);
   // const [highlightsOn, setHighlightsOn] = useState(true);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
@@ -64,31 +65,29 @@ export default function ReadPane() {
     });
   }
 
-  const {
-    isSuccess,
-    isPending,
-    error,
-    data: book,
-  } = useQuery({
-    queryKey: ["bookData", id],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/read/${id}/info`);
-      return await response.json();
-    },
-  });
+  const { data: book } = useQuery(bookQuery(id));
+  const { data: page } = useQuery(pageQuery(id, pageNum));
 
   useEffect(() => {
-    if (!isSuccess) return;
+    nprogress.complete();
+  }, [pageNum]);
 
+  useEffect(() => {
     const title = document.title;
     document.title = `Reading "${book.title}"`;
 
+    return () => {
+      document.title = title;
+    };
+  }, [book.title]);
+
+  useEffect(() => {
     function handleKeydown(e) {
       setupKeydownEvents(e, {
         ...settings,
         rtl: book.isRightToLeft,
         bookId: book.id,
-        pageNum: currentPage,
+        pageNum: book.currentPage,
         sentenceDicts: book.dictionaries.sentence,
       });
     }
@@ -96,12 +95,15 @@ export default function ReadPane() {
     document.addEventListener("keydown", handleKeydown);
 
     return () => {
-      document.title = title;
       document.removeEventListener("keydown", handleKeydown);
     };
-  }, [book, isSuccess, settings, currentPage]);
-
-  if (error) return "An error has occurred: " + error.message;
+  }, [
+    book.currentPage,
+    book.dictionaries.sentence,
+    book.id,
+    book.isRightToLeft,
+    settings,
+  ]);
 
   return (
     <>
@@ -118,41 +120,29 @@ export default function ReadPane() {
           ref={paneLeftRef}
           className={styles.paneLeft}
           style={{ width: `${width}%` }}>
-          {isPending ? (
-            <Center>
-              <Loader color="blue" />
-            </Center>
-          ) : (
-            <>
-              <ReadPaneHeader
-                open={open}
-                currentPage={currentPage}
-                book={book}
-                setCurrentPage={setCurrentPage}
-                width={width}
-              />
-              <div style={{ marginTop: "8rem" }}>
-                {book.audio.name && (
-                  <Player source={{ ...book.audio, id: book.id }} />
-                )}
-                {currentPage === 1 && (
-                  <Title
-                    style={{ overflowWrap: "break-word" }}
-                    size="xl"
-                    mb="lg"
-                    dir={book.isRightToLeft ? "rtl" : ""}>
-                    {book.title}
-                  </Title>
-                )}
-                <TheText
-                  book={book}
-                  page={currentPage}
-                  highlightsOn={true} //temporarily set to true
-                  onSetActiveTerm={setActiveTerm}
-                />
-              </div>
-            </>
-          )}
+          <ReadPaneHeader
+            book={book}
+            open={open}
+            pageNum={pageNum}
+            width={width}
+          />
+          <div style={{ marginTop: "8rem" }}>
+            {book.audio.name && (
+              <Suspense>
+                <Player source={{ ...book.audio, id: book.id }} />
+              </Suspense>
+            )}
+            {pageNum === 1 && (
+              <Title
+                style={{ overflowWrap: "break-word" }}
+                size="xl"
+                mb="lg"
+                dir={book.isRightToLeft ? "rtl" : ""}>
+                {book.title}
+              </Title>
+            )}
+            <TheText pageData={page} onSetActiveTerm={setActiveTerm} />
+          </div>
         </div>
 
         <Divider
@@ -167,11 +157,60 @@ export default function ReadPane() {
           ref={paneRightRef}
           className={styles.paneRight}
           style={{ width: `${100 - width}%` }}>
-          {activeTerm.data && <LearnPane book={book} termData={activeTerm} />}
+          {activeTerm.data && (
+            <Suspense>
+              <LearnPane book={book} termData={activeTerm} />
+            </Suspense>
+          )}
         </div>
       </div>
     </>
   );
+}
+
+export function loader(queryClient) {
+  return async ({ params }) => {
+    const bq = bookQuery(params.id);
+
+    const bookData =
+      queryClient.getQueryData(bq.queryKey) ??
+      (await queryClient.fetchQuery(bq));
+
+    const pq = pageQuery(params.id, params.page);
+
+    const pageData =
+      queryClient.getQueryData(pq.queryKey) ??
+      (await queryClient.fetchQuery(pq));
+
+    return { bookData, pageData };
+  };
+}
+
+function bookQuery(id) {
+  return {
+    queryKey: ["bookData", id],
+    queryFn: async () => {
+      const bookResponse = await fetch(`http://localhost:5001/read/${id}/info`);
+      const book = await bookResponse.json();
+      return book;
+    },
+    refetchOnWindowFocus: false,
+  };
+}
+
+function pageQuery(bookId, pageNum) {
+  return {
+    queryKey: ["pageData", bookId, pageNum],
+    queryFn: async () => {
+      const pageResponse = await fetch(
+        `http://localhost:5001/read/${bookId}/${pageNum}/pageinfo`
+      );
+      const pageData = await pageResponse.json();
+      return pageData;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  };
 }
 
 function setupKeydownEvents(e, settings) {

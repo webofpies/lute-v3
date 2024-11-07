@@ -1,11 +1,11 @@
-import { ActionIcon, Grid, Group, Image, Stack, Text } from "@mantine/core";
-import { IconMenu2 } from "@tabler/icons-react";
 import { memo } from "react";
 import { Link } from "react-router-dom";
+import { ActionIcon, Grid, Group, Image, Stack, Text } from "@mantine/core";
+import { IconMenu2 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
 import styles from "./ReadPane.module.css";
 
-function ReadPaneHeader({ open, currentPage, book, setCurrentPage, width }) {
+function ReadPaneHeader({ open, pageNum, book, width }) {
   return (
     <Group
       gap={10}
@@ -26,7 +26,7 @@ function ReadPaneHeader({ open, currentPage, book, setCurrentPage, width }) {
           style={{ paddingInline: "2.1rem", fontSize: "0.9rem" }}
           styles={{ inner: { flexWrap: "nowrap" } }}>
           <Grid.Col span="auto">
-            {currentPage > 1 && (
+            {pageNum > 1 && (
               <Text component="h1" fw="normal" fz="inherit" lineClamp={1}>
                 {book.title}
               </Text>
@@ -34,11 +34,11 @@ function ReadPaneHeader({ open, currentPage, book, setCurrentPage, width }) {
           </Grid.Col>
           <Grid.Col span="fit-content">
             <Text component="span" fw={500} fz="inherit">
-              {`${currentPage}/${book.pageCount}`}
+              {`${pageNum}/${book.pageCount}`}
             </Text>
           </Grid.Col>
         </Grid>
-        <ReadSlider book={book} page={currentPage} onSetPage={setCurrentPage} />
+        <ReadSlider book={book} />
       </Stack>
     </Group>
   );

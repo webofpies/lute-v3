@@ -21,7 +21,7 @@ import lute.utils.formutils
 from lute.db import db
 
 from lute.models.language import Language
-from lute.models.book import Book as DBBook
+from lute.models.book import Book as DBBook, Text
 from lute.models.setting import UserSetting
 from lute.book.model import Book, Repository
 
@@ -213,6 +213,15 @@ def all_books():
     results = []
     books = db.session.query(DBBook).all()
 
+    def get_current_page(book):
+        page_num = 1
+        text = book.texts[0]
+        if book.current_tx_id:
+            text = Text.find(book.current_tx_id)
+            page_num = text.order
+
+        return page_num
+
     for b in books:
         row = {
             "id": b.id,
@@ -223,9 +232,11 @@ def all_books():
                 {"id": tag.id, "text": tag.text, "comment": tag.comment}
                 for tag in b.book_tags
             ],
+            "currentPage": get_current_page(b),
             # "statusDistribution": get_status_distribution(b)
         }
         results.append(row)
+
     return jsonify(results)
 
 
