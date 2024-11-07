@@ -1,6 +1,7 @@
 // lute\templates\read\textitem.html
 import { forwardRef, memo, useContext } from "react";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
+import classes from "./TheText.module.css";
 
 const TextItem = forwardRef(function TextItem(props, ref) {
   const { data, ...restProps } = props;
@@ -10,13 +11,8 @@ const TextItem = forwardRef(function TextItem(props, ref) {
     <span
       ref={ref}
       {...restProps}
-      style={{
-        cursor: "pointer",
-        userSelect: "none",
-        WebkitUserSelect: "none",
-      }}
       id={data.id}
-      className={`${data.classes} ${
+      className={`${data.classes} ${classes.textitem} ${
         settings.showHighlights & data.isWord ? data.statusClass : ""
       }`}
       data-lang-id={data.langId}
