@@ -18,7 +18,7 @@ import {
   adjustFontSize,
   adjustLineHeight,
   setColumnCount,
-} from "../../misc/textOptions";
+} from "../../misc/textActions";
 
 function TheText({ pageData, onSetActiveTerm }) {
   useEffect(() => {
@@ -52,8 +52,13 @@ function TheText({ pageData, onSetActiveTerm }) {
                   <Popup id={textitem.wid} key={textitem.id}>
                     <TextItem
                       data={textitem}
-                      onMouseDown={handleMouseDown}
+                      onMouseDown={(e) => {
+                        // trigger only with lmb
+                        if (e.button !== 0) return;
+                        handleMouseDown(e);
+                      }}
                       onMouseUp={(e) => {
+                        if (e.button !== 0) return;
                         const termData = handleMouseUp(e);
                         handleSetTerm(termData);
                         handleCopyText(termData);

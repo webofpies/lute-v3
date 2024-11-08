@@ -1,10 +1,12 @@
-import { Drawer } from "@mantine/core";
 import { memo } from "react";
+import { Drawer } from "@mantine/core";
 import DrawerMenuContent from "./DrawerMenuContent";
+import classes from "./DrawerMenu.module.css";
 
 function DrawerMenu({ opened, close }) {
   return (
     <Drawer.Root
+      classNames={{ content: classes.drawer }}
       lockScroll={false}
       opened={opened}
       onClose={close}
@@ -14,7 +16,7 @@ function DrawerMenu({ opened, close }) {
         timingFunction: "cubic-bezier(0.77,0.2,0.05,1.0)",
         transition: "slide-right",
       }}>
-      <Drawer.Overlay backgroundOpacity={0.5} blur={4} />
+      <Drawer.Overlay />
       <Drawer.Content>
         <DrawerMenuContent />
       </Drawer.Content>

@@ -1,0 +1,21 @@
+.toolbar {
+  position: fixed;
+  top: 140px;
+  left: 0;
+  border-right: 5px solid #228be6;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 0.4rem;
+  border-left: 0;
+  translate: calc(5px - 100%);
+  transition: translate 0.1s;
+}
+
+.toolbar:hover {
+  translate: 0;
+}
+
+.icon {
+  width: 70%;
+  height: 70%;
+}

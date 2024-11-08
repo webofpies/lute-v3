@@ -5,6 +5,7 @@ import { Divider, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
+import Toolbar from "../Toolbar/Toolbar";
 import TheText from "../TheText/TheText";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
@@ -14,25 +15,30 @@ import {
   moveCursor,
   incrementStatusForMarked,
   updateStatusForMarked,
+  goToNextTheme,
+} from "../../misc/keydown";
+import {
   handleAddBookmark,
-  handleCopy,
   handleEditPage,
   handleTranslate,
-  goToNextTheme,
-  toggleHighlight,
   toggleFocus,
-} from "../../misc/keydown";
+  toggleHighlight,
+  handleCopy,
+} from "../../misc/textActions";
+
+import ContextMenu from "../ContextMenu/ContextMenu";
 
 const LearnPane = lazy(() => import("./LearnPane"));
 const Player = lazy(() => import("../Player/Player"));
 
-export default function ReadPane() {
+function ReadPane() {
   const { id, page: pageNum } = useParams();
   const { settings } = useContext(UserSettingsContext);
 
   const { ref, x } = useMouse();
   const paneLeftRef = useRef();
   const paneRightRef = useRef();
+  const textContainerRef = useRef();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
@@ -46,6 +52,8 @@ export default function ReadPane() {
   return (
     <>
       <DrawerMenu opened={opened} close={close} />
+      <Toolbar />
+      <ContextMenu ref={textContainerRef} />
 
       <div ref={ref}>
         <div
@@ -58,7 +66,7 @@ export default function ReadPane() {
             pageNum={pageNum}
             width={width}
           />
-          <div style={{ marginTop: "8rem" }}>
+          <div ref={textContainerRef} className={styles.textContainer}>
             {book.audio.name && (
               <Suspense>
                 <Player source={{ ...book.audio, id: book.id }} />
@@ -271,3 +279,5 @@ function setupKeydownEvents(e, settings) {
     map[key]();
   }
 }
+
+export default ReadPane;

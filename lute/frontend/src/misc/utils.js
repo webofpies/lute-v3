@@ -88,6 +88,27 @@ function getTextItemsText(textItems) {
   return paratexts.join("\n").trim();
 }
 
+/** Get the textitems whose span_attribute value matches that of the
+ * current active/hovered word.  If span_attribute is null, return
+ * all. */
+function getMatchedTextItems(attr) {
+  if (!attr) return Array.from(document.querySelectorAll(".textitem"));
+
+  const elements = Array.from(
+    document.querySelectorAll(".kwordmarked, .newmultiterm, .wordhover")
+  ).sort((a, b) => parseInt(a.dataset.order) - parseInt(b.dataset.order));
+
+  if (elements.length === 0) return elements;
+
+  const attrValue = elements[0].getAttribute(`data-${attr}`);
+
+  const selected = document.querySelectorAll(
+    `.textitem[data-${attr}="${attrValue}"]`
+  );
+
+  return Array.from(selected);
+}
+
 export {
   getFromLocalStorage,
   convertPixelsToRem,
@@ -95,4 +116,5 @@ export {
   getPressedKeysAsString,
   copyToClipboard,
   getTextItemsText,
+  getMatchedTextItems,
 };

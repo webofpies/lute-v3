@@ -18,7 +18,8 @@ function Popup({ children, id }) {
       opened={opened}
       onOpen={async () => setPopupData(await handleFetch(id))}
       onMouseEnter={open}
-      onMouseLeave={close}>
+      onMouseLeave={close}
+      onContextMenu={close}>
       <Popover.Target>{children}</Popover.Target>
       {popupData && (
         <Popover.Dropdown>

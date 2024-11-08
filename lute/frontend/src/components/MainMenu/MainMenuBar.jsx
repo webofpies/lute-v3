@@ -1,10 +1,11 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, Group, Burger, Container, Image, MenuItem } from "@mantine/core";
+import { Menu, Group, Burger, Container, Image } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./MainMenuBar.module.css";
 import MenuSection from "./MenuSection";
+import { navLinks } from "../../misc/menus";
 
-export default function HeaderMenuBar({ openVersionModal }) {
+function MainMenuBar({ openVersionModal }) {
   const [opened, { toggle }] = useDisclosure(false);
   const { pathname } = useLocation();
 
@@ -38,51 +39,28 @@ export default function HeaderMenuBar({ openVersionModal }) {
             <h1>{pathNames[pathname]}</h1>
           </Group>
           <Group gap={5} visibleFrom="sm">
-            <NavLink to="/" className={classes.link}>
-              Home
-            </NavLink>
-            <MenuSection label="Book">
-              <Menu.Item>
-                <NavLink to="/book/new">Create New Book</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/book/import_webpage">Import Webpage</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/book/archived">Book Archive</NavLink>
-              </Menu.Item>
-            </MenuSection>
-            <MenuSection label="Terms">
-              <Menu.Item>
-                <NavLink to="/term/index">Terms</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/termimport/index">Import Terms</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/termtag/index">Term Tags</NavLink>
-              </Menu.Item>
-            </MenuSection>
-            <MenuSection label="Settings">
-              <Menu.Item>
-                <NavLink to="/language/index">Languages</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/settings/index">Settings</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/settings/shortcuts">Keyboard Shortcuts</NavLink>
-              </Menu.Item>
-            </MenuSection>
-            <MenuSection label="Backup">
-              <Menu.Item>
-                <NavLink to="/backup/index">Backups</NavLink>
-              </Menu.Item>
-              <Menu.Item>
-                <NavLink to="/backup/backup?type=manual">Create Backup</NavLink>
-              </Menu.Item>
-            </MenuSection>
-            <MenuSection label="About">
+            {navLinks.map((item) =>
+              Array.isArray(item.links) ? (
+                <MenuSection label={item.label} key={item.label}>
+                  {item.links.map((sublink) => (
+                    <Menu.Item
+                      key={sublink.label}
+                      component={NavLink}
+                      to={sublink.link}>
+                      {sublink.label}
+                    </Menu.Item>
+                  ))}
+                </MenuSection>
+              ) : (
+                <NavLink
+                  to={item.links}
+                  className={classes.link}
+                  key={item.label}>
+                  {item.label}
+                </NavLink>
+              )
+            )}
+            {/* <MenuSection label="About">
               <Menu.Item onClick={openVersionModal}>
                 Version and software info
               </Menu.Item>
@@ -101,7 +79,7 @@ export default function HeaderMenuBar({ openVersionModal }) {
                 target="_blank">
                 Discord
               </MenuItem>
-            </MenuSection>
+            </MenuSection> */}
           </Group>
           <Burger opened={opened} onClick={toggle} size="sm" hiddenFrom="sm" />
         </div>
@@ -109,3 +87,5 @@ export default function HeaderMenuBar({ openVersionModal }) {
     </header>
   );
 }
+
+export default MainMenuBar;

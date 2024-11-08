@@ -1,5 +1,4 @@
 .paneLeft {
-  padding: 0 3rem 3rem 3rem;
   overflow: hidden; /*to hide header shadow*/
 }
 
@@ -10,10 +9,14 @@
   top: 0;
 }
 
+.textContainer {
+  padding: 8rem 4rem 3rem 4rem;
+}
+
 .header {
   background-color: white;
   padding-block: 1.2rem 1.6rem;
-  padding-inline: 3rem;
+  padding-inline: 2rem;
   box-shadow: 0 0px 8px -3px #2929299c;
   overflow: hidden;
   position: fixed;
