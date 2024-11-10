@@ -9,8 +9,9 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { IconBookmarkPlus, IconLink, IconMenu2 } from "@tabler/icons-react";
+import { IconLink, IconMenu2 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
+import BookmarksMenu from "./BookmarksMenu";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({ open, pageNum, book, width }) {
@@ -61,13 +62,7 @@ function ReadPaneHeader({ open, pageNum, book, width }) {
               <Text component="span" fw={500} fz="inherit">
                 {`${pageNum}/${book.pageCount}`}
               </Text>
-              <ActionIcon
-                size={rem(24)}
-                p={0}
-                variant="transparent"
-                styles={{ root: { border: "none" } }}>
-                <IconBookmarkPlus stroke={2.5} />
-              </ActionIcon>
+              <BookmarksMenu />
             </Group>
           </Grid.Col>
         </Grid>
