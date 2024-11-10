@@ -173,12 +173,31 @@ function setColumnCount(num) {
   localStorage.setItem("columnCount", columnCount);
 }
 
-/** Copy the text of the textitemspans to the clipboard, and add a
- * color flash. */
-function handleCopy(attr) {
-  const textitems = getMatchedTextItems(attr);
-  const text = getTextItemsText(textitems);
-  copyToClipboard(text);
+async function handleCopy(textitem, unit) {
+  let attr;
+  let matched;
+
+  if (unit === "page")
+    matched = Array.from(document.querySelectorAll(".textitem"));
+  else {
+    switch (unit) {
+      case "sentence":
+        attr = "sentence-id";
+        break;
+      case "paragraph":
+        attr = "paragraph-id";
+        break;
+      case "":
+        attr = null;
+        break;
+    }
+    matched = getMatchedTextItems(textitem, attr);
+  }
+
+  const text = getTextItemsText(matched);
+  await copyToClipboard(text);
+
+  return matched;
 }
 
 export {

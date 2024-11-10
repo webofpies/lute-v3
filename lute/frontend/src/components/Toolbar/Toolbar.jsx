@@ -1,10 +1,21 @@
 import { Fragment, memo } from "react";
 import { ActionIcon, Divider, Paper, Stack, Tooltip } from "@mantine/core";
 import classes from "./Toolbar.module.css";
-import { toolbarButtons } from "../../misc/menus";
 import { actions } from "../../misc/actionsMap";
+import {
+  IconBaselineDensityMedium,
+  IconBaselineDensitySmall,
+  IconColumns1,
+  IconColumns2,
+  IconLayoutSidebarLeftExpand,
+  IconLayoutSidebarRightExpand,
+  IconTextDecrease,
+  IconTextIncrease,
+} from "@tabler/icons-react";
 
 function Toolbar() {
+  const toolbarButtons = getButtons();
+
   return (
     <Paper shadow="lg" withBorder className={classes.toolbar}>
       <Stack wrap="no-wrap" gap={5} align="center">
@@ -18,7 +29,9 @@ function Toolbar() {
                     key={button.label}
                     position="right"
                     label={button.label}>
-                    <ActionIcon size="1.7rem" onClick={actions[button.action]}>
+                    <ActionIcon
+                      size="1.7rem"
+                      onClick={() => actions[button.action](button.arg)}>
                       <Icon className={classes.icon} />
                     </ActionIcon>
                   </Tooltip>
@@ -34,6 +47,67 @@ function Toolbar() {
       </Stack>
     </Paper>
   );
+}
+
+function getButtons() {
+  return [
+    [
+      {
+        label: "Descrease font size",
+        icon: IconTextDecrease,
+        action: "fontSizeDecrease",
+        arg: -1,
+      },
+      {
+        label: "Increase font size",
+        icon: IconTextIncrease,
+        action: "fontSizeIncrease",
+        arg: 1,
+      },
+    ],
+    [
+      {
+        label: "Descrease line height",
+        icon: IconBaselineDensityMedium,
+        action: "lineHeightDecrease",
+        arg: -0.1,
+      },
+      {
+        label: "Increase line height",
+        icon: IconBaselineDensitySmall,
+        action: "lineHeightIncrease",
+        arg: 0.1,
+      },
+    ],
+    [
+      {
+        label: "Set columns to 1",
+        icon: IconColumns1,
+        action: "setColumnCountOne",
+        arg: 1,
+      },
+      {
+        label: "Set columns to 2",
+        icon: IconColumns2,
+        action: "setColumnCountTwo",
+        arg: 2,
+      },
+    ],
+    [
+      {
+        label: "Decrease pane width",
+        icon: IconLayoutSidebarRightExpand,
+        action: "paneWidthDecrease",
+        arg: 0.95,
+      },
+      {
+        label: "Increase pane width",
+        icon: IconLayoutSidebarLeftExpand,
+        action: "paneWidthIncrease",
+        arg: 1.05,
+      },
+    ],
+  ];
 }
 
 export default memo(Toolbar);

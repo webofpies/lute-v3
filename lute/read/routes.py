@@ -309,6 +309,7 @@ def book_info(bookid):
     book_dict = {
         "id": book.id,
         "title": book.title,
+        "source": book.source_uri,
         "pageCount": book.page_count,
         "currentPage": page_num,
         "languageId": lang.id,

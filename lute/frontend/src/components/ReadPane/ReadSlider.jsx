@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Group, Slider } from "@mantine/core";
+import { ActionIcon, Group, rem, Slider } from "@mantine/core";
 import {
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
@@ -12,7 +12,7 @@ function ReadSlider({ book }) {
   const { id, page } = useParams();
 
   return (
-    <Group gap="0.8rem">
+    <Group gap="0.8rem" wrap="no-wrap">
       <ActionIcon
         p={0}
         onClick={() => {
@@ -21,13 +21,11 @@ function ReadSlider({ book }) {
           nprogress.start();
         }}
         variant="transparent"
-        size="md"
+        size={rem(24)}
         style={{ backgroundColor: "transparent" }}
+        styles={{ root: { border: "none" } }}
         disabled={book.pageCount === 1 || Number(page) === 1}>
-        <IconSquareRoundedChevronLeftFilled
-          style={{ width: "100%", height: "100%" }}
-          stroke={1.5}
-        />
+        <IconSquareRoundedChevronLeftFilled stroke={1.5} />
       </ActionIcon>
       <Slider
         style={{ flex: 1 }}
@@ -55,13 +53,11 @@ function ReadSlider({ book }) {
           nprogress.start();
         }}
         variant="transparent"
-        size="md"
+        size={rem(24)}
         style={{ backgroundColor: "transparent" }}
+        styles={{ root: { border: "none" } }}
         disabled={book.pageCount === 1 || Number(page) === book.pageCount}>
-        <IconSquareRoundedChevronRightFilled
-          style={{ width: "100%", height: "100%" }}
-          stroke={1.5}
-        />
+        <IconSquareRoundedChevronRightFilled stroke={1.5} />
       </ActionIcon>
     </Group>
   );

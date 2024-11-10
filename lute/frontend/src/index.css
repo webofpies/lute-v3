@@ -40,27 +40,40 @@ body {
   font-size: 1rem;
 }
 
-span.status0 {
+.flash {
+  animation: flash-animation 0.3s 2 ease;
+}
+
+@keyframes flash-animation {
+  0% {
+    background-color: #fff;
+  }
+  100% {
+    background-color: #ff6868;
+  }
+}
+
+.status0 {
   background-color: var(--status-0-color);
 }
 
-span.status1 {
+.status1 {
   background-color: var(--status-1-color);
 }
 
-span.status2 {
+.status2 {
   background-color: var(--status-2-color);
 }
 
-span.status3 {
+.status3 {
   background-color: var(--status-3-color);
 }
 
-span.status4 {
+.status4 {
   background-color: var(--status-4-color);
 }
 
-span.status5 {
+.status5 {
   background-color: var(--status-5-color);
 }
 
@@ -73,5 +86,5 @@ span.status5 {
 }
 
 .newmultiterm {
-  background: yellow !important;
+  background: yellow;
 }

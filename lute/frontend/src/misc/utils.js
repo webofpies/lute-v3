@@ -57,7 +57,7 @@ function getPressedKeysAsString(event) {
 
 async function copyToClipboard(text) {
   try {
-    navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(text);
     return text;
   } catch (error) {
     console.error("Failed to copy: ", error);
@@ -91,22 +91,45 @@ function getTextItemsText(textItems) {
 /** Get the textitems whose span_attribute value matches that of the
  * current active/hovered word.  If span_attribute is null, return
  * all. */
-function getMatchedTextItems(attr) {
-  if (!attr) return Array.from(document.querySelectorAll(".textitem"));
+function getMatchedTextItems(textitem, attr) {
+  const single = document.querySelectorAll(".kwordmarked");
+  const multi = document.querySelectorAll(".newmultiterm");
+  const hasSelection = single.length > 0 || multi.length > 0;
 
-  const elements = Array.from(
-    document.querySelectorAll(".kwordmarked, .newmultiterm, .wordhover")
-  ).sort((a, b) => parseInt(a.dataset.order) - parseInt(b.dataset.order));
+  if (!(textitem || hasSelection)) return [];
 
-  if (elements.length === 0) return elements;
+  let textitems = [];
+
+  single.length > 0
+    ? (textitems = single)
+    : multi.length > 0
+      ? (textitems = multi)
+      : (textitems = [textitem]);
+
+  const elements = Array.from(textitems).toSorted(
+    (a, b) => parseInt(a.dataset.order) - parseInt(b.dataset.order)
+  );
+
+  if (!attr) return textitems;
 
   const attrValue = elements[0].getAttribute(`data-${attr}`);
-
   const selected = document.querySelectorAll(
     `.textitem[data-${attr}="${attrValue}"]`
   );
 
   return Array.from(selected);
+}
+
+function addFlash(elements) {
+  elements.forEach((element) => {
+    element.classList.add("flash");
+  });
+}
+
+function removeFlash() {
+  Array.from(document.querySelectorAll(".flash")).forEach((item) =>
+    item.classList.remove("flash")
+  );
 }
 
 export {
@@ -117,4 +140,6 @@ export {
   copyToClipboard,
   getTextItemsText,
   getMatchedTextItems,
+  addFlash,
+  removeFlash,
 };

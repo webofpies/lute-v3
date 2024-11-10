@@ -10,21 +10,7 @@ import TheText from "../TheText/TheText";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
 import { clamp, getPressedKeysAsString } from "../../misc/utils";
-import { startHoverMode } from "../../lute";
-import {
-  moveCursor,
-  incrementStatusForMarked,
-  updateStatusForMarked,
-  goToNextTheme,
-} from "../../misc/keydown";
-import {
-  handleAddBookmark,
-  handleEditPage,
-  handleTranslate,
-  toggleFocus,
-  toggleHighlight,
-  handleCopy,
-} from "../../misc/textActions";
+import { actions } from "../../misc/actionsMap";
 
 import ContextMenu from "../ContextMenu/ContextMenu";
 
@@ -241,34 +227,43 @@ function setupKeydownEvents(e, settings) {
 
   // Map of shortcuts to lambdas:
   const map = {
-    [settings.hotkey_StartHover]: () => startHoverMode(),
-    [settings.hotkey_PrevWord]: () => moveCursor(".word", prev),
-    [settings.hotkey_NextWord]: () => moveCursor(".word", next),
-    [settings.hotkey_PrevUnknownWord]: () => moveCursor(".word.status0", prev),
-    [settings.hotkey_NextUnknownWord]: () => moveCursor(".word.status0", next),
-    [settings.hotkey_PrevSentence]: () => moveCursor(".sentencestart", prev),
-    [settings.hotkey_NextSentence]: () => moveCursor(".sentencestart", next),
-    [settings.hotkey_StatusUp]: () => incrementStatusForMarked(+1),
-    [settings.hotkey_StatusDown]: () => incrementStatusForMarked(-1),
-    [settings.hotkey_Bookmark]: () => handleAddBookmark(),
-    [settings.hotkey_CopySentence]: () => handleCopy("sentence-id"),
-    [settings.hotkey_CopyPara]: () => handleCopy("paragraph-id"),
-    [settings.hotkey_CopyPage]: () => handleCopy(null),
-    [settings.hotkey_EditPage]: () => handleEditPage(),
-    [settings.hotkey_TranslateSentence]: () => handleTranslate("sentence-id"),
-    [settings.hotkey_TranslatePara]: () => handleTranslate("paragraph-id"),
-    [settings.hotkey_TranslatePage]: () => handleTranslate(null),
-    [settings.hotkey_NextTheme]: () => goToNextTheme(),
-    [settings.hotkey_ToggleHighlight]: () => toggleHighlight(),
-    [settings.hotkey_ToggleFocus]: () => toggleFocus(),
-    [settings.hotkey_Status1]: () => updateStatusForMarked(1),
-    [settings.hotkey_Status2]: () => updateStatusForMarked(2),
-    [settings.hotkey_Status3]: () => updateStatusForMarked(3),
-    [settings.hotkey_Status4]: () => updateStatusForMarked(4),
-    [settings.hotkey_Status5]: () => updateStatusForMarked(5),
-    [settings.hotkey_StatusIgnore]: () => updateStatusForMarked(98),
-    [settings.hotkey_StatusWellKnown]: () => updateStatusForMarked(99),
-    [settings.hotkey_DeleteTerm]: () => updateStatusForMarked(0),
+    [settings.hotkey_StartHover]: actions.hotkey_StartHover,
+    [settings.hotkey_PrevWord]: () => actions.hotkey_PrevWord(".word", prev),
+    [settings.hotkey_NextWord]: () => actions.hotkey_NextWord(".word", next),
+    [settings.hotkey_PrevUnknownWord]: () =>
+      actions.hotkey_PrevUnknownWord(".word.status0", prev),
+    [settings.hotkey_NextUnknownWord]: () =>
+      actions.hotkey_NextUnknownWord(".word.status0", next),
+    [settings.hotkey_PrevSentence]: () =>
+      actions.hotkey_PrevSentence(".sentencestart", prev),
+    [settings.hotkey_NextSentence]: () =>
+      actions.hotkey_NextSentence(".sentencestart", next),
+    [settings.hotkey_StatusUp]: () => actions.hotkey_StatusUp(+1),
+    [settings.hotkey_StatusDown]: () => actions.hotkey_StatusDown(-1),
+    [settings.hotkey_Bookmark]: () =>
+      actions.hotkey_Bookmark(settings.bookId, settings.pageNum),
+    [settings.hotkey_CopySentence]: () =>
+      actions.hotkey_CopySentence("sentence-id"),
+    [settings.hotkey_CopyPara]: () => actions.hotkey_CopyPara("paragraph-id"),
+    [settings.hotkey_CopyPage]: () => actions.hotkey_CopyPage(null),
+    [settings.hotkey_EditPage]: () =>
+      actions.hotkey_EditPage(settings.bookId, settings.pageNum),
+    [settings.hotkey_TranslateSentence]: () =>
+      actions.hotkey_TranslateSentence("sentence-id"),
+    [settings.hotkey_TranslatePara]: () =>
+      actions.hotkey_TranslatePara("paragraph-id"),
+    [settings.hotkey_TranslatePage]: () => actions.hotkey_TranslatePage(null),
+    [settings.hotkey_NextTheme]: actions.hotkey_NextTheme,
+    [settings.hotkey_ToggleHighlight]: actions.hotkey_ToggleHighlight,
+    [settings.hotkey_ToggleFocus]: actions.hotkey_ToggleFocus,
+    [settings.hotkey_Status1]: () => actions.hotkey_Status1(1),
+    [settings.hotkey_Status2]: () => actions.hotkey_Status2(2),
+    [settings.hotkey_Status3]: () => actions.hotkey_Status3(3),
+    [settings.hotkey_Status4]: () => actions.hotkey_Status4(4),
+    [settings.hotkey_Status5]: () => actions.hotkey_Status5(5),
+    [settings.hotkey_StatusIgnore]: () => actions.hotkey_StatusIgnore(98),
+    [settings.hotkey_StatusWellKnown]: () => actions.hotkey_StatusWellKnown(99),
+    [settings.hotkey_DeleteTerm]: () => actions.hotkey_DeleteTerm(0),
   };
 
   const key = getPressedKeysAsString(e);
