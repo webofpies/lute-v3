@@ -46,6 +46,26 @@
   );
 }
 
+.hdivider {
+  cursor: ns-resize;
+  z-index: 1;
+  background: linear-gradient(
+    #00000000 35%,
+    #e3e3e3 35%,
+    #e3e3e3 65%,
+    #00000000 65%
+  );
+}
+
+.hdivider:hover {
+  background: linear-gradient(
+    #00000000 25%,
+    var(--mantine-color-blue-filled) 25%,
+    var(--mantine-color-blue-filled) 75%,
+    #00000000 75%
+  );
+}
+
 .dictPane {
   flex: 1;
   display: flex;

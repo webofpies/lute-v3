@@ -12,33 +12,9 @@ function LearnPane({ book, termData }) {
   const [height, setHeight] = useState(50);
   const termFormRef = useRef();
   const dictPaneRef = useRef();
+  const dividerRef = useRef();
 
   const { ref, y } = useMouse();
-
-  function handleResize(e) {
-    e.preventDefault();
-    termFormRef.current.style.pointerEvents = "none";
-    dictPaneRef.current.style.pointerEvents = "none";
-
-    const containerHeight = parseFloat(
-      window.getComputedStyle(ref.current).getPropertyValue("height")
-    );
-
-    function resize(e) {
-      const delta = y - e.clientY;
-      const ratioInPct = (delta / containerHeight) * 100;
-      const newHeight = height - ratioInPct;
-      setHeight(clamp(newHeight, 5, 95));
-    }
-
-    ref.current.addEventListener("mousemove", resize);
-
-    ref.current.addEventListener("mouseup", () => {
-      ref.current.removeEventListener("mousemove", resize);
-      termFormRef.current.style.pointerEvents = "unset";
-      dictPaneRef.current.style.pointerEvents = "unset";
-    });
-  }
 
   if (error) return "An error has occurred: " + error.message;
 
@@ -60,13 +36,22 @@ function LearnPane({ book, termData }) {
             <TermForm key={data.text} termData={data} />
           </div>
           <Divider
-            style={{
-              cursor: "ns-resize",
-              backgroundColor: "var(--mantine-color-blue-filled)",
-            }}
-            styles={{ root: { height: "6px", border: "none", zIndex: 1 } }}
+            ref={dividerRef}
+            className={styles.hdivider}
+            styles={{ root: { height: "8px", border: "none" } }}
             orientation="horizontal"
-            onMouseDown={handleResize}
+            onMouseDown={(e) =>
+              handleResize(
+                e,
+                height,
+                setHeight,
+                ref.current,
+                termFormRef.current,
+                dictPaneRef.current,
+                dividerRef.current,
+                y
+              )
+            }
           />
           <div ref={dictPaneRef} className={styles.dictPane}>
             <DictPane term={data.text} dicts={book.dictionaries.term} />
@@ -92,6 +77,47 @@ function useFetchTerm(termData) {
     refetchOnWindowFocus: false,
     // enabled: !termData.multi && !!termData.data,
     // staleTime: Infinity, // relicking the same work opens an empty form
+  });
+}
+
+function handleResize(
+  e,
+  height,
+  setHeight,
+  ref,
+  termFormRef,
+  dictPaneRef,
+  dividerRef,
+  y
+) {
+  e.preventDefault();
+  termFormRef.style.pointerEvents = "none";
+  dictPaneRef.style.pointerEvents = "none";
+  dividerRef.style.background = `linear-gradient(
+                                  rgba(0, 0, 0, 0) 25%,
+                                  var(--mantine-color-blue-filled) 25%,
+                                  var(--mantine-color-blue-filled) 75%,
+                                  rgba(0, 0, 0, 0) 75%
+                                )`;
+
+  const containerHeight = parseFloat(
+    window.getComputedStyle(ref).getPropertyValue("height")
+  );
+
+  function resize(e) {
+    const delta = y - e.clientY;
+    const ratioInPct = (delta / containerHeight) * 100;
+    const newHeight = height - ratioInPct;
+    setHeight(clamp(newHeight, 5, 95));
+  }
+
+  ref.addEventListener("mousemove", resize);
+
+  ref.addEventListener("mouseup", () => {
+    ref.removeEventListener("mousemove", resize);
+    termFormRef.style.pointerEvents = "unset";
+    dictPaneRef.style.pointerEvents = "unset";
+    dividerRef.style.removeProperty("background");
   });
 }
 
