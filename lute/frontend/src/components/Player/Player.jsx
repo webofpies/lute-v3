@@ -2,31 +2,21 @@ import { memo, useEffect, useReducer } from "react";
 import {
   ActionIcon,
   ActionIconGroup,
-  Flex,
   Group,
-  Select,
+  Paper,
+  rem,
   Slider,
-  Stack,
   Text,
-  UnstyledButton,
 } from "@mantine/core";
 import {
-  IconBookmark,
-  IconBookmarkFilled,
-  IconChevronLeft,
-  IconChevronRight,
-  IconMinus,
+  IconChevronDown,
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
   IconPlayerSkipBackFilled,
   IconPlayerTrackNextFilled,
   IconPlayerTrackPrevFilled,
-  IconPlus,
-  IconVolume,
-  IconVolume2,
-  IconVolume3,
 } from "@tabler/icons-react";
-import classes from "./Player.module.css";
+import PlayerMenu from "./PlayerMenu";
 
 const audio = new Audio();
 
@@ -86,11 +76,11 @@ const initialState = {
   skipAmount: "5",
 };
 
-function Player({ source }) {
+function Player({ book }) {
   const [state, dispatch] = useInitializePlayer(
-    source.id,
-    source.position,
-    source.bookmarks
+    book.id,
+    book.audio.position,
+    book.audio.bookmarks
   );
 
   useEffect(() => {
@@ -118,47 +108,6 @@ function Player({ source }) {
     dispatch({ type: "volumeChanged", payload: audio.volume });
   }
 
-  function handlePlaybackRateChange(delta) {
-    const playbackRate = Math.min(
-      Math.max((audio.playbackRate += delta), 0.1),
-      10
-    );
-    audio.playbackRate = playbackRate;
-    dispatch({ type: "rateChanged", payload: playbackRate });
-  }
-
-  function handlePlaybackRateReset() {
-    audio.playbackRate = 1.0;
-    dispatch({ type: "rateChanged", payload: 1.0 });
-  }
-
-  function handleSaveRemoveBookmark() {
-    const roundedTime = parseFloat(audio.currentTime.toFixed(1));
-    state.bookmarks.map((bookmark) => bookmark.value).includes(roundedTime)
-      ? dispatch({ type: "bookmarkRemoved", payload: roundedTime })
-      : dispatch({ type: "bookmarkSaved", payload: roundedTime });
-  }
-
-  function handleSkipToBookmark(direction) {
-    let val;
-    const currentTime = audio.currentTime;
-
-    if (direction === "next") {
-      val = state.bookmarks
-        .map((bookmark) => bookmark.value)
-        .find((val) => Number(val) > currentTime);
-    } else {
-      val = state.bookmarks
-        .map((bookmark) => bookmark.value)
-        .findLast((val) => Number(val) < currentTime);
-    }
-
-    if (!val) return;
-
-    audio.currentTime = val;
-    dispatch({ type: "timeChanged", payload: val });
-  }
-
   function handleForwardRewind(amount) {
     const t = audio.currentTime + amount;
     audio.currentTime = t;
@@ -166,18 +115,60 @@ function Player({ source }) {
   }
 
   return (
-    <Flex align="center" gap="1.5rem" className={classes["main-container"]}>
-      <ActionIcon onClick={handlePlayPause} radius="50%" size="5rem">
-        {state.playing ? (
-          <IconPlayerPauseFilled size="60%" />
-        ) : (
-          <IconPlayerPlayFilled size="60%" />
-        )}
-      </ActionIcon>
-      <Stack className={classes["mid-container"]}>
-        <Stack gap="0.2rem" className={classes["timeline-container"]}>
+    <Paper withBorder radius={0} shadow="sm">
+      <Group
+        justify="space-between"
+        align="center"
+        gap="sm"
+        wrap="nowrap"
+        pl="3rem"
+        pr="2rem"
+        pt="0.3rem"
+        pb="0.3rem">
+        <Group gap={rem(8)} wrap="nowrap">
+          {/* SKIP BACK BUTTON */}
+          <ActionIcon
+            onClick={() => (audio.currentTime = 0)}
+            radius="50%"
+            size={rem(22)}>
+            <IconPlayerSkipBackFilled size="60%" />
+          </ActionIcon>
+
+          <ActionIcon onClick={handlePlayPause} radius="50%" size={rem(26)}>
+            {state.playing ? (
+              <IconPlayerPauseFilled size="60%" />
+            ) : (
+              <IconPlayerPlayFilled size="60%" />
+            )}
+          </ActionIcon>
+
+          <ActionIconGroup>
+            <ActionIcon
+              onClick={() => handleForwardRewind(-Number(state.skipAmount))}
+              radius="50%"
+              size={rem(22)}>
+              <IconPlayerTrackPrevFilled size="60%" />
+            </ActionIcon>
+            <ActionIcon
+              onClick={() => handleForwardRewind(Number(state.skipAmount))}
+              radius="50%"
+              size={rem(22)}>
+              <IconPlayerTrackNextFilled size="60%" />
+            </ActionIcon>
+          </ActionIconGroup>
+        </Group>
+
+        <Group justify="space-between" flex={1} wrap="nowrap" gap={rem(5)}>
+          <Text
+            fz="xs"
+            component="span"
+            miw={rem(50)}
+            style={{ textAlign: "center" }}>
+            {timeToDisplayString(state.time)}
+          </Text>
           {/* TIME SLIDER */}
           <Slider
+            label={null}
             marks={state.bookmarks}
             value={state.time}
             min={0}
@@ -185,151 +176,44 @@ function Player({ source }) {
             step={0.1}
             onChange={(v) => (audio.currentTime = v)}
             styles={{
-              mark: { backgroundColor: "orangered" },
-              thumb: { display: "none" },
-              track: {
-                overflow: "hidden",
-                borderRadius: "var(--slider-radius)",
+              mark: {
+                backgroundColor: "#ff6b6b",
               },
-              root: { padding: 0, height: "var(--slider-size)" },
+              root: { flex: 1 },
+              thumb: { borderWidth: "2px" },
             }}
-            // radius="md"
-            size="xl"
+            size="md"
+            thumbSize={rem(12)}
           />
-          {/* TIMELINE VALUES */}
-          <Group justify="space-between">
-            <Text fz="sm" component="span">
-              {timeToDisplayString(state.time)}
-            </Text>
-            <Text fz="sm" component="span">
-              {timeToDisplayString(state.duration)}
-            </Text>
-          </Group>
-        </Stack>
-        <Group
-          justify="center"
-          wrap="nowrap"
-          gap="0.8rem"
-          className={classes["mind-controls-container"]}>
-          {/* SKIP BACK BUTTON */}
-          <ActionIcon
-            onClick={() => (audio.currentTime = 0)}
-            radius="50%"
-            size="2rem">
-            <IconPlayerSkipBackFilled size="60%" />
-          </ActionIcon>
-          {/* JUMP TO TIME */}
-          <Group wrap="nowrap" className={classes["skip-container"]}>
-            <ActionIconGroup>
-              <ActionIcon
-                onClick={() => handleForwardRewind(-Number(state.skipAmount))}
-                radius="50%"
-                size="1.7rem">
-                <IconPlayerTrackPrevFilled size="60%" />
-              </ActionIcon>
-              <ActionIcon
-                onClick={() => handleForwardRewind(Number(state.skipAmount))}
-                radius="50%"
-                size="1.7rem">
-                <IconPlayerTrackNextFilled size="60%" />
-              </ActionIcon>
-            </ActionIconGroup>
-            {/* JUMP TO TIME SELECT */}
-            <Select
-              onChange={(_value, option) =>
-                dispatch({ type: "skipAmount", payload: option.value })
-              }
-              allowDeselect={false}
-              styles={{ root: { width: "5rem" } }}
-              checkIconPosition="right"
-              size="xs"
-              value={state.skipAmount}
-              data={[
-                { value: "3", label: "3 sec" },
-                { value: "5", label: "5 sec" },
-                { value: "10", label: "10 sec" },
-                { value: "30", label: "30 sec" },
-                { value: "60", label: "60 sec" },
-              ]}
-            />
-          </Group>
-          {/* PLAYBACK RATE */}
-          <ActionIconGroup>
-            <ActionIcon
-              onClick={() => handlePlaybackRateChange(-0.1)}
-              style={{ borderRadius: "50%" }}
-              size="1.5rem">
-              <IconMinus size="60%" />
-            </ActionIcon>
-            <UnstyledButton
-              style={{ minWidth: "30px", textAlign: "center" }}
-              onClick={handlePlaybackRateReset}>
-              <Text fz="sm" component="span">
-                {state.rate.toFixed(1)}
-              </Text>
-            </UnstyledButton>
-            <ActionIcon
-              onClick={() => handlePlaybackRateChange(0.1)}
-              style={{ borderRadius: "50%" }}
-              size="1.5rem">
-              <IconPlus size="60%" />
-            </ActionIcon>
-          </ActionIconGroup>
+          <Text
+            fz="xs"
+            component="span"
+            miw={rem(50)}
+            style={{ textAlign: "center" }}>
+            {timeToDisplayString(state.duration)}
+          </Text>
         </Group>
-      </Stack>
-      <Stack className={classes["right-container"]}>
+
         <Slider
+          size="sm"
           value={state.volume}
           min={0}
           max={1}
           step={0.05}
           onChange={handleVolumeChange}
-          thumbSize="1.4rem"
-          thumbChildren={
-            state.volume === 0 ? (
-              <IconVolume3 size="70%" />
-            ) : state.volume > 0.5 ? (
-              <IconVolume size="70%" />
-            ) : (
-              <IconVolume2 size="70%" />
-            )
-          }
-          styles={{ thumb: { borderWidth: "2px" } }}
+          styles={{ thumb: { borderWidth: "2px" }, root: { flex: 0.12 } }}
         />
-        <ActionIconGroup className={classes["bookmark-container"]}>
+        <PlayerMenu audio={audio} dispatch={dispatch} state={state}>
           <ActionIcon
-            bg="transparent"
-            onClick={handleSaveRemoveBookmark}
-            radius={0}>
-            {state.bookmarkActive ? (
-              <IconBookmarkFilled
-                size="100%"
-                color="var(--mantine-color-blue-filled)"
-              />
-            ) : (
-              <IconBookmark
-                size="100%"
-                color="var(--mantine-color-blue-filled)"
-              />
-            )}
+            size={rem(24)}
+            p={0}
+            variant="transparent"
+            styles={{ root: { border: "none" } }}>
+            <IconChevronDown />
           </ActionIcon>
-          <ActionIconGroup>
-            <ActionIcon
-              onClick={() => handleSkipToBookmark("prev")}
-              radius="50%"
-              size="1.5rem">
-              <IconChevronLeft />
-            </ActionIcon>
-            <ActionIcon
-              onClick={() => handleSkipToBookmark("next")}
-              radius="50%"
-              size="1.5rem">
-              <IconChevronRight />
-            </ActionIcon>
-          </ActionIconGroup>
-        </ActionIconGroup>
-      </Stack>
-    </Flex>
+        </PlayerMenu>
+      </Group>
+    </Paper>
   );
 }
 

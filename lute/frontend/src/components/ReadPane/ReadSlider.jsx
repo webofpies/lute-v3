@@ -1,5 +1,4 @@
-import { memo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ActionIcon, Group, rem, Slider } from "@mantine/core";
 import {
   IconSquareRoundedChevronLeftFilled,
@@ -7,60 +6,54 @@ import {
 } from "@tabler/icons-react";
 import { nprogress } from "@mantine/nprogress";
 
-function ReadSlider({ book }) {
+function ReadSlider({ book, pageNum }) {
   const navigate = useNavigate();
-  const { id, page } = useParams();
 
   return (
     <Group gap="0.8rem" wrap="no-wrap">
       <ActionIcon
         p={0}
         onClick={() => {
-          const prevPage = Number(page) - 1 || 1;
-          navigate(`/read/${id}/${prevPage}`);
+          const prevPage = pageNum - 1 || 1;
+          navigate(`/read/${book.id}/${prevPage}`);
           nprogress.start();
         }}
-        variant="transparent"
         size={rem(24)}
-        style={{ backgroundColor: "transparent" }}
-        styles={{ root: { border: "none" } }}
-        disabled={book.pageCount === 1 || Number(page) === 1}>
-        <IconSquareRoundedChevronLeftFilled stroke={1.5} />
+        variant="transparent"
+        styles={{ root: { border: "none", backgroundColor: "transparent" } }}
+        disabled={book.pageCount === 1 || pageNum === 1}>
+        <IconSquareRoundedChevronLeftFilled />
       </ActionIcon>
       <Slider
         style={{ flex: 1 }}
         styles={{ root: { padding: 0 } }}
-        size="lg"
-        thumbSize={18}
-        value={Number(page)}
+        size="md"
+        thumbSize={rem(16)}
+        value={pageNum}
         onChange={(v) => {
-          navigate(`/read/${id}/${v}`);
+          navigate(`/read/${book.id}/${v}`);
           nprogress.start();
         }}
         min={1}
         max={book.pageCount}
-        inverted={book.isRightToLeft}
         disabled={book.pageCount === 1}
         showLabelOnHover={false}
       />
       <ActionIcon
         onClick={() => {
           const nextPage =
-            Number(page) + 1 > book.pageCount
-              ? book.pageCount
-              : Number(page) + 1;
-          navigate(`/read/${id}/${nextPage}`);
+            pageNum + 1 > book.pageCount ? book.pageCount : pageNum + 1;
+          navigate(`/read/${book.id}/${nextPage}`);
           nprogress.start();
         }}
-        variant="transparent"
         size={rem(24)}
-        style={{ backgroundColor: "transparent" }}
-        styles={{ root: { border: "none" } }}
-        disabled={book.pageCount === 1 || Number(page) === book.pageCount}>
-        <IconSquareRoundedChevronRightFilled stroke={1.5} />
+        variant="transparent"
+        styles={{ root: { border: "none", backgroundColor: "transparent" } }}
+        disabled={book.pageCount === 1 || pageNum === book.pageCount}>
+        <IconSquareRoundedChevronRightFilled />
       </ActionIcon>
     </Group>
   );
 }
 
-export default memo(ReadSlider);
+export default ReadSlider;

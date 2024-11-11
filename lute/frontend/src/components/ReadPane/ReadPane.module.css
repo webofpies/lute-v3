@@ -10,30 +10,40 @@
 }
 
 .textContainer {
-  padding: 8rem 4rem 3rem 4rem;
+  padding: 3rem;
 }
 
 .header {
-  background-color: white;
-  padding-block: 1.2rem 1.6rem;
-  padding-inline: 2rem;
-  box-shadow: 0 0px 8px -3px #2929299c;
+  padding-block: 1rem;
+  padding-right: 2rem;
+  padding-left: 3rem;
   overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 54.9081%;
-  z-index: 4; /* needs to be enough to be over the player*/
 }
 
 .vdivider {
   cursor: ew-resize;
-  background-color: var(--mantine-color-blue-filled);
   position: fixed;
   top: 0;
   height: 100vh;
-  translate: -6px;
+  translate: -5px;
   z-index: 12;
+  background: linear-gradient(
+    90deg,
+    #00000000 35%,
+    #e3e3e3 35%,
+    #e3e3e3 65%,
+    #00000000 65%
+  );
+}
+
+.vdivider:hover {
+  background: linear-gradient(
+    90deg,
+    #00000000 25%,
+    var(--mantine-color-blue-filled) 25%,
+    var(--mantine-color-blue-filled) 75%,
+    #00000000 75%
+  );
 }
 
 .dictPane {

@@ -13,6 +13,7 @@ import { clamp, getPressedKeysAsString } from "../../misc/utils";
 import { actions } from "../../misc/actionsMap";
 
 import ContextMenu from "../ContextMenu/ContextMenu";
+import { nprogress } from "@mantine/nprogress";
 
 const LearnPane = lazy(() => import("./LearnPane"));
 const Player = lazy(() => import("../Player/Player"));
@@ -24,6 +25,7 @@ function ReadPane() {
   const { ref, x } = useMouse();
   const paneLeftRef = useRef();
   const paneRightRef = useRef();
+  const dividerRef = useRef();
   const textContainerRef = useRef();
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -46,19 +48,19 @@ function ReadPane() {
           ref={paneLeftRef}
           className={styles.paneLeft}
           style={{ width: `${width}%` }}>
-          <ReadPaneHeader
-            book={book}
-            open={open}
-            pageNum={pageNum}
-            width={width}
-          />
-          <div ref={textContainerRef} className={styles.textContainer}>
+          <div style={{ width: `${width}%`, position: "fixed", zIndex: 4 }}>
+            <ReadPaneHeader book={book} open={open} pageNum={Number(pageNum)} />
             {book.audio.name && (
               <Suspense>
-                <Player source={{ ...book.audio, id: book.id }} />
+                <Player book={book} />
               </Suspense>
             )}
-            {pageNum === 1 && (
+          </div>
+          <div
+            ref={textContainerRef}
+            className={styles.textContainer}
+            style={{ paddingTop: `${book.audio.name ? "9.5rem" : "7.5rem"}` }}>
+            {Number(pageNum) === 1 && (
               <Title
                 style={{ overflowWrap: "break-word" }}
                 size="xl"
@@ -72,8 +74,9 @@ function ReadPane() {
         </div>
 
         <Divider
+          ref={dividerRef}
           style={{ left: `${width}%` }}
-          styles={{ root: { width: "6px", border: "none" } }}
+          styles={{ root: { width: "8px", border: "none" } }}
           className={styles.vdivider}
           orientation="vertical"
           onMouseDown={(e) =>
@@ -84,6 +87,7 @@ function ReadPane() {
               ref.current,
               paneLeftRef.current,
               paneRightRef.current,
+              dividerRef.current,
               x
             )
           }
@@ -151,6 +155,10 @@ function pageQuery(bookId, pageNum) {
 
 function useInitialize(book, settings) {
   useEffect(() => {
+    nprogress.complete();
+  });
+
+  useEffect(() => {
     const title = document.title;
     document.title = `Reading "${book.title}"`;
 
@@ -191,11 +199,19 @@ function handleResize(
   paneMain,
   paneLeft,
   paneRight,
+  dividerRef,
   x
 ) {
   e.preventDefault();
   paneLeft.style.pointerEvents = "none";
   paneRight.style.pointerEvents = "none";
+  dividerRef.style.background = `linear-gradient(
+                                          90deg,
+                                          rgba(0, 0, 0, 0) 25%,
+                                          var(--mantine-color-blue-filled) 25%,
+                                          var(--mantine-color-blue-filled) 75%,
+                                          rgba(0, 0, 0, 0) 75%
+                                        )`;
 
   const containerHeight = parseFloat(
     window.getComputedStyle(paneMain).getPropertyValue("width")
@@ -214,6 +230,7 @@ function handleResize(
     paneMain.removeEventListener("mousemove", resize);
     paneLeft.style.pointerEvents = "unset";
     paneRight.style.pointerEvents = "unset";
+    dividerRef.style.removeProperty("background");
   });
 }
 

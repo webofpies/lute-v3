@@ -27,14 +27,19 @@ function BookmarksMenu() {
   });
 
   return (
-    <Menu trigger="click" openDelay={100} closeDelay={100} withArrow trapFocus>
+    <Menu
+      trigger="click"
+      openDelay={50}
+      closeDelay={50}
+      position="bottom-end"
+      withArrow>
       <Menu.Target>
         <ActionIcon
           size={rem(24)}
           p={0}
           variant="transparent"
           styles={{ root: { border: "none" } }}>
-          <IconBookmarkPlus stroke={2.5} />
+          <IconBookmarkPlus stroke={2.3} />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown p="sm">
