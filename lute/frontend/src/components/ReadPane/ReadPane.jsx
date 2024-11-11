@@ -1,11 +1,15 @@
-import { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation, useParams } from "react-router-dom";
 import { Divider, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
+import { nprogress } from "@mantine/nprogress";
+import LearnPane from "./LearnPane";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
 import Toolbar from "../Toolbar/Toolbar";
+import ContextMenu from "../ContextMenu/ContextMenu";
+import Player from "../Player/Player";
 import TheText from "../TheText/TheText";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
@@ -14,12 +18,6 @@ import {
   setupKeydownEvents,
   handleResizeHorizontal,
 } from "../../misc/textActions";
-
-import ContextMenu from "../ContextMenu/ContextMenu";
-import { nprogress } from "@mantine/nprogress";
-
-const LearnPane = lazy(() => import("./LearnPane"));
-const Player = lazy(() => import("../Player/Player"));
 
 function ReadPane() {
   const { id, page: pageNum } = useParams();
@@ -53,11 +51,7 @@ function ReadPane() {
           style={{ width: `${width}%` }}>
           <div style={{ width: `${width}%`, position: "fixed", zIndex: 4 }}>
             <ReadPaneHeader book={book} open={open} pageNum={Number(pageNum)} />
-            {book.audio.name && (
-              <Suspense>
-                <Player book={book} />
-              </Suspense>
-            )}
+            {book.audio.name && <Player book={book} />}
           </div>
           <div
             ref={textContainerRef}
@@ -100,11 +94,7 @@ function ReadPane() {
           ref={paneRightRef}
           className={styles.paneRight}
           style={{ width: `${100 - width}%` }}>
-          {activeTerm.data && (
-            <Suspense>
-              <LearnPane book={book} termData={activeTerm} />
-            </Suspense>
-          )}
+          {activeTerm.data && <LearnPane book={book} termData={activeTerm} />}
         </div>
       </div>
     </>

@@ -12,10 +12,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Layout from "./pages/Layout";
 import Homepage from "./pages/Homepage";
 import { UserSettingsProvider } from "./context/UserSettingsContext";
-import { loader as bookLoader } from "./components/ReadPane/ReadPane";
+import ReadPane, { loader as bookLoader } from "./components/ReadPane/ReadPane";
 const queryClient = new QueryClient();
 
-const ReadPane = lazy(() => import("./components/ReadPane/ReadPane"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 
 const theme = createTheme({
@@ -41,11 +40,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/read/:id/:page",
-    element: (
-      <Suspense>
-        <ReadPane />
-      </Suspense>
-    ),
+    element: <ReadPane />,
     loader: bookLoader(queryClient),
   },
 ]);
