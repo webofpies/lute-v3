@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import DrawerFooter from "./DrawerFooter";
 import { navLinks } from "../../misc/menus";
 import {
+  ActionIcon,
   Box,
   Collapse,
   Divider,
@@ -12,7 +13,6 @@ import {
   rem,
   ScrollArea,
   Text,
-  ThemeIcon,
   UnstyledButton,
 } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
@@ -61,9 +61,9 @@ function LinksGroup({ icon: Icon, label, initiallyOpened, links }) {
   const itemContent = (
     <Group justify="space-between" gap={0}>
       <Box style={{ display: "flex", alignItems: "center" }}>
-        <ThemeIcon variant="light" size={30}>
+        <ActionIcon size={30}>
           <Icon style={{ width: rem(18), height: rem(18) }} />
-        </ThemeIcon>
+        </ActionIcon>
         <Box ml="md">{label}</Box>
       </Box>
       {hasLinks && (
