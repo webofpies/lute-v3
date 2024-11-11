@@ -72,6 +72,7 @@ function BookmarksMenu() {
           ) : (
             <>
               <TextInput
+                key="search" // to differentiate from the next fields
                 mt="0.5rem"
                 placeholder="Search bookmarks"
                 size="xs"
@@ -83,7 +84,7 @@ function BookmarksMenu() {
                     {bookmarks.map((b) => (
                       <List.Item key={b}>
                         <TextInput
-                          value={b}
+                          defaultValue={b}
                           placeholder="Enter bookmark label"
                           size="xs"
                           rightSection={
