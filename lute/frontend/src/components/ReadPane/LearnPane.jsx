@@ -2,10 +2,10 @@ import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Divider, LoadingOverlay, Stack } from "@mantine/core";
 import { useMouse } from "@mantine/hooks";
-import { clamp } from "../../misc/utils";
 import DictPane from "../DictPane/DictPane";
 import TermForm from "../TermForm/TermForm";
 import styles from "./ReadPane.module.css";
+import { handleResizeVertical } from "../../misc/textActions";
 
 function LearnPane({ book, termData }) {
   const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
@@ -41,7 +41,7 @@ function LearnPane({ book, termData }) {
             styles={{ root: { height: "8px", border: "none" } }}
             orientation="horizontal"
             onMouseDown={(e) =>
-              handleResize(
+              handleResizeVertical(
                 e,
                 height,
                 setHeight,
@@ -77,47 +77,6 @@ function useFetchTerm(termData) {
     refetchOnWindowFocus: false,
     // enabled: !termData.multi && !!termData.data,
     // staleTime: Infinity, // relicking the same work opens an empty form
-  });
-}
-
-function handleResize(
-  e,
-  height,
-  setHeight,
-  ref,
-  termFormRef,
-  dictPaneRef,
-  dividerRef,
-  y
-) {
-  e.preventDefault();
-  termFormRef.style.pointerEvents = "none";
-  dictPaneRef.style.pointerEvents = "none";
-  dividerRef.style.background = `linear-gradient(
-                                  rgba(0, 0, 0, 0) 25%,
-                                  var(--mantine-color-blue-filled) 25%,
-                                  var(--mantine-color-blue-filled) 75%,
-                                  rgba(0, 0, 0, 0) 75%
-                                )`;
-
-  const containerHeight = parseFloat(
-    window.getComputedStyle(ref).getPropertyValue("height")
-  );
-
-  function resize(e) {
-    const delta = y - e.clientY;
-    const ratioInPct = (delta / containerHeight) * 100;
-    const newHeight = height - ratioInPct;
-    setHeight(clamp(newHeight, 5, 95));
-  }
-
-  ref.addEventListener("mousemove", resize);
-
-  ref.addEventListener("mouseup", () => {
-    ref.removeEventListener("mousemove", resize);
-    termFormRef.style.pointerEvents = "unset";
-    dictPaneRef.style.pointerEvents = "unset";
-    dividerRef.style.removeProperty("background");
   });
 }
 
