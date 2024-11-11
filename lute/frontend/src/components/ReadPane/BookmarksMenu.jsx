@@ -15,7 +15,7 @@ import {
 import { useField } from "@mantine/form";
 import { IconBookmarkPlus, IconSearch } from "@tabler/icons-react";
 
-const bookmarks = ["temp", "temp", "temp", "temp", "temp"];
+const bookmarks = ["temp1", "temp2", "temp3", "temp4", "temp5"];
 
 function BookmarksMenu() {
   const [bookmarkMenuSegment, setBookmarkMenuSegment] = useState("add");
