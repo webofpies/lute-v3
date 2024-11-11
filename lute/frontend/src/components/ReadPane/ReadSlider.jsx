@@ -4,7 +4,6 @@ import {
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
 } from "@tabler/icons-react";
-import { nprogress } from "@mantine/nprogress";
 
 function ReadSlider({ book, pageNum }) {
   const navigate = useNavigate();
@@ -16,7 +15,6 @@ function ReadSlider({ book, pageNum }) {
         onClick={() => {
           const prevPage = pageNum - 1 || 1;
           navigate(`/read/${book.id}/${prevPage}`);
-          nprogress.start();
         }}
         size={rem(24)}
         variant="transparent"
@@ -32,7 +30,6 @@ function ReadSlider({ book, pageNum }) {
         value={pageNum}
         onChange={(v) => {
           navigate(`/read/${book.id}/${v}`);
-          nprogress.start();
         }}
         min={1}
         max={book.pageCount}
@@ -44,7 +41,6 @@ function ReadSlider({ book, pageNum }) {
           const nextPage =
             pageNum + 1 > book.pageCount ? book.pageCount : pageNum + 1;
           navigate(`/read/${book.id}/${nextPage}`);
-          nprogress.start();
         }}
         size={rem(24)}
         variant="transparent"

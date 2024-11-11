@@ -1,6 +1,6 @@
 import { lazy, Suspense, useContext, useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigation, useParams } from "react-router-dom";
 import { Divider, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
 import ReadPaneHeader from "./ReadPaneHeader";
@@ -154,8 +154,10 @@ function pageQuery(bookId, pageNum) {
 }
 
 function useInitialize(book, settings) {
+  const navigation = useNavigation();
+
   useEffect(() => {
-    nprogress.complete();
+    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
   });
 
   useEffect(() => {

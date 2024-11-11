@@ -1,9 +1,11 @@
 import { memo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigation } from "react-router-dom";
 import {
   ActionIcon,
+  Center,
   Group,
   Image,
+  Loader,
   Paper,
   rem,
   Stack,
@@ -15,15 +17,24 @@ import BookmarksMenu from "./BookmarksMenu";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({ open, pageNum, book }) {
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
   return (
     <Paper radius={0} shadow="sm">
       <Group gap={10} wrap="nowrap" align="flex-end" className={styles.header}>
         <ActionIcon onClick={open} size="md">
           <IconMenu2 />
         </ActionIcon>
-        <Link to="/">
-          <Image w="auto" h="2.3rem" src="/images/logo.png" />
-        </Link>
+        <Center w="2.3rem" h="2.3rem">
+          {isLoading ? (
+            <Loader size="sm" />
+          ) : (
+            <Link to="/">
+              <Image w="auto" h="2.3rem" src="/images/logo.png" />
+            </Link>
+          )}
+        </Center>
         <Stack style={{ flex: 1, gap: "0.2rem" }} gap={0}>
           <Group
             justify="space-between"
