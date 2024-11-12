@@ -30,7 +30,7 @@ function Toolbar() {
                     position="right"
                     label={button.label}>
                     <ActionIcon
-                      size="1.7rem"
+                      size="1.6rem"
                       onClick={() => actions[button.action](button.arg)}>
                       <Icon className={classes.icon} />
                     </ActionIcon>

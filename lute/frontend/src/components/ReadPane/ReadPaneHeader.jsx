@@ -3,17 +3,25 @@ import { Link, useNavigation } from "react-router-dom";
 import {
   ActionIcon,
   Center,
+  Divider,
   Group,
   Image,
   Loader,
   Paper,
   rem,
   Stack,
+  Switch,
   Text,
+  Tooltip,
 } from "@mantine/core";
-import { IconLink, IconMenu2 } from "@tabler/icons-react";
+import {
+  IconFocus2,
+  IconHighlight,
+  IconLink,
+  IconMenu2,
+} from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
-import BookmarksMenu from "./BookmarksMenu";
+import PageActionsMenu from "./PageActionsMenu";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({ open, pageNum, book }) {
@@ -22,24 +30,67 @@ function ReadPaneHeader({ open, pageNum, book }) {
 
   return (
     <Paper radius={0} shadow="sm">
-      <Group gap={10} wrap="nowrap" align="flex-end" className={styles.header}>
+      <Group gap={10} wrap="nowrap" align="center" className={styles.header}>
         <ActionIcon onClick={open} size="md">
           <IconMenu2 />
         </ActionIcon>
-        <Center w="2.3rem" h="2.3rem">
+        <Center w="2.8rem" h="2.8rem" styles={{ root: { flexShrink: 0 } }}>
           {isLoading ? (
             <Loader size="sm" />
           ) : (
             <Link to="/">
-              <Image w="auto" h="2.3rem" src="/images/logo.png" />
+              <Image
+                w="2.8rem"
+                h="2.8rem"
+                src="/images/logo.png"
+                style={{ objectFit: "contain" }}
+              />
             </Link>
           )}
         </Center>
-        <Stack style={{ flex: 1, gap: "0.2rem" }} gap={0}>
-          <Group
-            justify="space-between"
-            wrap="nowrap"
-            style={{ fontSize: "0.9rem" }}>
+        <Divider orientation="vertical" />
+        <Stack gap="0.2rem">
+          <Tooltip
+            label="Focus mode"
+            position="left"
+            openDelay={800}
+            refProp="rootRef">
+            <Switch
+              size="sm"
+              onLabel="ON"
+              offLabel="OFF"
+              thumbIcon={
+                <IconFocus2
+                  style={{ width: rem(12), height: rem(12) }}
+                  color="teal"
+                  stroke={2}
+                />
+              }
+            />
+          </Tooltip>
+          <Tooltip
+            label="Term highlights"
+            position="left"
+            openDelay={800}
+            refProp="rootRef">
+            <Switch
+              size="sm"
+              defaultChecked
+              onLabel="ON"
+              offLabel="OFF"
+              thumbIcon={
+                <IconHighlight
+                  style={{ width: rem(12), height: rem(12) }}
+                  color="teal"
+                  stroke={2}
+                />
+              }
+            />
+          </Tooltip>
+        </Stack>
+        <Divider orientation="vertical" />
+        <Stack w="100%" gap={0}>
+          <Group justify="space-between" wrap="nowrap" fz="sm">
             <Group gap="0.3rem" wrap="nowrap">
               <ActionIcon
                 component="a"
@@ -67,11 +118,11 @@ function ReadPaneHeader({ open, pageNum, book }) {
                 </Text>
               )}
             </Group>
-            <Group gap="0.3rem" wrap="nowrap">
-              <Text component="span" fw={500} fz="inherit">
+            <Group gap={0} wrap="nowrap">
+              <Text component="span" fw={500} fz="inherit" lh={1}>
                 {`${pageNum}/${book.pageCount}`}
               </Text>
-              <BookmarksMenu />
+              <PageActionsMenu book={book} pageNum={pageNum} />
             </Group>
           </Group>
           <ReadSlider book={book} pageNum={pageNum} />
