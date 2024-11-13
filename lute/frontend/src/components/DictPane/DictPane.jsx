@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Image, rem, Tabs, Text } from "@mantine/core";
+import { Button, Image, rem, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconExternalLink, IconPhoto } from "@tabler/icons-react";
 import DictIFrame from "./DictIFrame";
 import Sentences from "./Sentences";
@@ -10,7 +10,7 @@ function DictPane({ dicts, term }) {
     <Tabs
       defaultValue="0"
       classNames={{ root: classes.tabs }}
-      styles={{ tab: { paddingBlock: "0.4rem" }, tabLabel: { minWidth: 0 } }}>
+      styles={{ tab: { paddingBlock: "xs" }, tabLabel: { minWidth: 0 } }}>
       <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
         <div
           style={{
@@ -18,34 +18,47 @@ function DictPane({ dicts, term }) {
             gridTemplateColumns: `repeat(${dicts.length}, minmax(2rem, 8rem))`,
           }}>
           {dicts.map((dict, index) => {
-            return (
-              <Tabs.Tab
-                className={classes.flex}
-                onClick={() => {
-                  dict.isExternal &&
-                    handleExternal(getLookupURL(dict.url, term));
-                }}
-                key={dict.label}
-                id={String(index)}
-                value={String(index)}
-                rightSection={
-                  dict.isExternal ? (
+            return dict.isExternal ? (
+              <Tooltip label={dict.label} openDelay={200}>
+                <Button
+                  component="a"
+                  ml={rem(2)}
+                  variant="default"
+                  fw="normal"
+                  key={dict.label}
+                  leftSection={
+                    <Image
+                      h={16}
+                      w={16}
+                      src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
+                    />
+                  }
+                  rightSection={
                     <IconExternalLink size={rem(16)} stroke={1.6} />
-                  ) : (
-                    ""
-                  )
-                }
-                leftSection={
-                  <Image
-                    h={16}
-                    w={16}
-                    src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
-                  />
-                }>
-                <Text size="sm" style={{ overflow: "hidden" }}>
+                  }
+                  onClick={() => handleExternal(getLookupURL(dict.url, term))}>
                   {dict.label}
-                </Text>
-              </Tabs.Tab>
+                </Button>
+              </Tooltip>
+            ) : (
+              <Tooltip label={dict.label} openDelay={200}>
+                <Tabs.Tab
+                  className={classes.flex}
+                  key={dict.label}
+                  id={String(index)}
+                  value={String(index)}
+                  leftSection={
+                    <Image
+                      h={16}
+                      w={16}
+                      src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
+                    />
+                  }>
+                  <Text size="sm" style={{ overflow: "hidden" }}>
+                    {dict.label}
+                  </Text>
+                </Tabs.Tab>
+              </Tooltip>
             );
           })}
         </div>
@@ -63,7 +76,7 @@ function DictPane({ dicts, term }) {
             styles={{ tabLabel: { minWidth: 0 } }}
             id="imagesTab"
             value="imagesTab">
-            <IconPhoto />
+            <IconPhoto size={rem(18)} />
           </Tabs.Tab>
         </div>
       </Tabs.List>
