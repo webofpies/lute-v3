@@ -19,13 +19,12 @@ function DictPane({ dicts, term }) {
           }}>
           {dicts.map((dict, index) => {
             return dict.isExternal ? (
-              <Tooltip label={dict.label} openDelay={200}>
+              <Tooltip key={dict.label} label={dict.label} openDelay={200}>
                 <Button
                   component="a"
                   ml={rem(2)}
                   variant="default"
                   fw="normal"
-                  key={dict.label}
                   leftSection={
                     <Image
                       h={16}
@@ -41,10 +40,9 @@ function DictPane({ dicts, term }) {
                 </Button>
               </Tooltip>
             ) : (
-              <Tooltip label={dict.label} openDelay={200}>
+              <Tooltip key={dict.label} label={dict.label} openDelay={200}>
                 <Tabs.Tab
                   className={classes.flex}
-                  key={dict.label}
                   id={String(index)}
                   value={String(index)}
                   leftSection={
