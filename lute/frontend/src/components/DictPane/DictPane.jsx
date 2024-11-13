@@ -18,44 +18,41 @@ function DictPane({ dicts, term }) {
             gridTemplateColumns: `repeat(${dicts.length}, minmax(2rem, 8rem))`,
           }}>
           {dicts.map((dict, index) => {
-            return dict.isExternal ? (
+            const favicon = (
+              <Image
+                h={16}
+                w={16}
+                src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
+              />
+            );
+            return (
               <Tooltip key={dict.label} label={dict.label} openDelay={200}>
-                <Button
-                  component="a"
-                  ml={rem(2)}
-                  variant="default"
-                  fw="normal"
-                  leftSection={
-                    <Image
-                      h={16}
-                      w={16}
-                      src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
-                    />
-                  }
-                  rightSection={
-                    <IconExternalLink size={rem(16)} stroke={1.6} />
-                  }
-                  onClick={() => handleExternal(getLookupURL(dict.url, term))}>
-                  {dict.label}
-                </Button>
-              </Tooltip>
-            ) : (
-              <Tooltip key={dict.label} label={dict.label} openDelay={200}>
-                <Tabs.Tab
-                  className={classes.flex}
-                  id={String(index)}
-                  value={String(index)}
-                  leftSection={
-                    <Image
-                      h={16}
-                      w={16}
-                      src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
-                    />
-                  }>
-                  <Text size="sm" style={{ overflow: "hidden" }}>
+                {dict.isExternal ? (
+                  <Button
+                    component="a"
+                    ml={rem(2)}
+                    variant="default"
+                    fw="normal"
+                    leftSection={favicon}
+                    rightSection={
+                      <IconExternalLink size={rem(16)} stroke={1.6} />
+                    }
+                    onClick={() =>
+                      handleExternal(getLookupURL(dict.url, term))
+                    }>
                     {dict.label}
-                  </Text>
-                </Tabs.Tab>
+                  </Button>
+                ) : (
+                  <Tabs.Tab
+                    className={classes.flex}
+                    id={String(index)}
+                    value={String(index)}
+                    leftSection={favicon}>
+                    <Text size="sm" style={{ overflow: "hidden" }}>
+                      {dict.label}
+                    </Text>
+                  </Tabs.Tab>
+                )}
               </Tooltip>
             );
           })}
