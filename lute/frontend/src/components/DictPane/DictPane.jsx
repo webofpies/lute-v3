@@ -7,7 +7,10 @@ import classes from "./DictPane.module.css";
 
 function DictPane({ dicts, term }) {
   return (
-    <Tabs defaultValue="0" classNames={{ root: classes.tabs }}>
+    <Tabs
+      defaultValue="0"
+      classNames={{ root: classes.tabs }}
+      styles={{ tab: { paddingBlock: "0.4rem" }, tabLabel: { minWidth: 0 } }}>
       <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
         <div
           style={{
@@ -18,7 +21,6 @@ function DictPane({ dicts, term }) {
             return (
               <Tabs.Tab
                 className={classes.flex}
-                styles={{ tabLabel: { minWidth: 0 } }}
                 onClick={() => {
                   dict.isExternal &&
                     handleExternal(getLookupURL(dict.url, term));
@@ -50,7 +52,6 @@ function DictPane({ dicts, term }) {
         <div style={{ display: "flex" }}>
           <Tabs.Tab
             className={classes.flex}
-            styles={{ tabLabel: { minWidth: 0 } }}
             id="sentencesTab"
             value="sentencesTab">
             <Text size="sm" style={{ overflow: "hidden" }}>
