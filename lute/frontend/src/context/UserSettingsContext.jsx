@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { createContext, useState } from "react";
 // import { useQuery, useMutation, queryClient } from "@tanstack/react-query";
 
 export const UserSettingsContext = createContext();
@@ -21,7 +21,8 @@ export function UserSettingsProvider({ children }) {
   //   },
   // });
 
-  const settings = {
+  // settings coming from backend
+  const dBSettings = {
     hotkey_StartHover: "escape",
     hotkey_PrevWord: "arrowleft",
     hotkey_NextWord: "arrowright",
@@ -50,18 +51,31 @@ export function UserSettingsProvider({ children }) {
     hotkey_NextUnknownWord: "",
     hotkey_PrevSentence: "",
     hotkey_NextSentence: "",
-
-    showHighlights: true,
   };
+
+  // local settings
+  const localSettings = { showHighlights: true, focusMode: false };
+
+  const [providedSettings, setProvidedSettings] = useState({
+    ...dBSettings,
+    ...localSettings,
+  });
+
+  function saveSetting(setting) {
+    setProvidedSettings((prevSettings) => {
+      return { ...prevSettings, ...setting };
+    });
+  }
 
   return (
     <UserSettingsContext.Provider
       value={{
-        settings,
+        settings: { ...providedSettings },
         // isLoading,
         // isError,
         // error,
         // saveUserSettings: mutation.mutate,
+        saveSetting: saveSetting,
       }}>
       {children}
     </UserSettingsContext.Provider>

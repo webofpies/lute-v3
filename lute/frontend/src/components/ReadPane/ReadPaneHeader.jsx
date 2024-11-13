@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useContext } from "react";
 import { Link, useNavigation } from "react-router-dom";
 import {
   ActionIcon,
@@ -22,9 +22,11 @@ import {
 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
 import PageActionsMenu from "./PageActionsMenu";
+import { UserSettingsContext } from "../../context/UserSettingsContext";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({ open, pageNum, book }) {
+  const { settings, saveSetting } = useContext(UserSettingsContext);
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
@@ -56,6 +58,12 @@ function ReadPaneHeader({ open, pageNum, book }) {
             openDelay={800}
             refProp="rootRef">
             <Switch
+              checked={settings.focusMode}
+              onChange={(e) => {
+                saveSetting({
+                  focusMode: Boolean(e.currentTarget.checked),
+                });
+              }}
               size="sm"
               onLabel="ON"
               offLabel="OFF"

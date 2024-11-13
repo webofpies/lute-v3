@@ -27,7 +27,7 @@ function ReadPane() {
   const paneLeftRef = useRef();
   const paneRightRef = useRef();
   const dividerRef = useRef();
-  const textContainerRef = useRef();
+  const ctxMenuContainerRef = useRef();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
@@ -42,60 +42,74 @@ function ReadPane() {
     <>
       <DrawerMenu opened={opened} close={close} />
       <Toolbar />
-      <ContextMenu ref={textContainerRef} />
+      <ContextMenu ref={ctxMenuContainerRef} />
 
       <div ref={ref}>
-        <div
-          ref={paneLeftRef}
-          className={styles.paneLeft}
-          style={{ width: `${width}%` }}>
-          <div style={{ width: `${width}%`, position: "fixed", zIndex: 4 }}>
+        <div ref={paneLeftRef} className={styles.paneLeft}>
+          <div
+            style={{ width: `${settings.focusMode ? 100 : width}%` }}
+            className={styles.headerContainer}>
             <ReadPaneHeader book={book} open={open} pageNum={Number(pageNum)} />
             {book.audio.name && <Player book={book} />}
           </div>
           <div
-            ref={textContainerRef}
-            className={styles.textContainer}
-            style={{ paddingTop: `${book.audio.name ? "9.5rem" : "7.5rem"}` }}>
-            {Number(pageNum) === 1 && (
-              <Title
-                style={{ overflowWrap: "break-word" }}
-                size="xl"
-                mb="lg"
-                dir={book.isRightToLeft ? "rtl" : ""}>
-                {book.title}
-              </Title>
-            )}
-            <TheText pageData={page} onSetActiveTerm={setActiveTerm} />
+            ref={ctxMenuContainerRef}
+            style={{
+              width: `${settings.focusMode ? 100 : width}%`,
+              marginTop: `${book.audio.name ? "7.3rem" : "5.5rem"}`,
+            }}>
+            <div
+              className={styles.textContainer}
+              style={{
+                width: `${settings.focusMode ? width : 100}%`,
+                marginInline: settings.focusMode && "auto",
+              }}>
+              {Number(pageNum) === 1 && (
+                <Title
+                  style={{ overflowWrap: "break-word" }}
+                  size="xl"
+                  mb="lg"
+                  dir={book.isRightToLeft ? "rtl" : ""}>
+                  {book.title}
+                </Title>
+              )}
+              <TheText pageData={page} onSetActiveTerm={setActiveTerm} />
+            </div>
           </div>
         </div>
 
-        <Divider
-          ref={dividerRef}
-          style={{ left: `${width}%` }}
-          styles={{ root: { width: "8px", border: "none" } }}
-          className={styles.vdivider}
-          orientation="vertical"
-          onMouseDown={(e) =>
-            handleResizeHorizontal(
-              e,
-              width,
-              setWidth,
-              ref.current,
-              paneLeftRef.current,
-              paneRightRef.current,
-              dividerRef.current,
-              x
-            )
-          }
-        />
+        {!settings.focusMode && (
+          <>
+            <Divider
+              ref={dividerRef}
+              style={{ left: `${width}%` }}
+              styles={{ root: { width: "8px", border: "none" } }}
+              className={styles.vdivider}
+              orientation="vertical"
+              onMouseDown={(e) =>
+                handleResizeHorizontal(
+                  e,
+                  width,
+                  setWidth,
+                  ref.current,
+                  paneLeftRef.current,
+                  paneRightRef.current,
+                  dividerRef.current,
+                  x
+                )
+              }
+            />
 
-        <div
-          ref={paneRightRef}
-          className={styles.paneRight}
-          style={{ width: `${100 - width}%` }}>
-          {activeTerm.data && <LearnPane book={book} termData={activeTerm} />}
-        </div>
+            <div
+              ref={paneRightRef}
+              className={styles.paneRight}
+              style={{ width: `${100 - width}%` }}>
+              {activeTerm.data && (
+                <LearnPane book={book} termData={activeTerm} />
+              )}
+            </div>
+          </>
+        )}
       </div>
     </>
   );

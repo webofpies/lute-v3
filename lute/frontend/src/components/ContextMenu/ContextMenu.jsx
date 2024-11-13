@@ -72,7 +72,7 @@ const ContextMenu = forwardRef(function ContextMenu(props, forwardedRef) {
           <Menu.Target>
             <div />
           </Menu.Target>
-          <Menu.Dropdown style={{ translate: "50% 0" }}>
+          <Menu.Dropdown>
             {getItems().map((section) => {
               return (
                 <Fragment key={section.label}>
