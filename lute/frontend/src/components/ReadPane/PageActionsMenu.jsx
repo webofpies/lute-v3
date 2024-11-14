@@ -11,6 +11,7 @@ import {
 import { useField } from "@mantine/form";
 import {
   IconBook,
+  IconCheck,
   IconFileArrowLeft,
   IconFileArrowRight,
   IconFilePencil,
@@ -48,23 +49,22 @@ function PageActionsMenu() {
           <Text size="xs" fw={500} mb={rem(2)}>
             Page actions
           </Text>
-          <Menu.Item p={0} w="auto" component="div">
-            {getButtons().map((button) => {
-              const Icon = button.icon;
-              return (
+          {getButtons().map((button) => {
+            const Icon = button.icon;
+            return (
+              <Menu.Item key={button.label} p={0} w="auto" component="div">
                 <Button
-                  mb={rem(3)}
+                  fw="normal"
+                  variant="transparent"
                   justify="flex-start"
-                  key={button.label}
-                  fullWidth
                   size="xs"
                   leftSection={<Icon size={20} />}
                   onClick={() => actions[button.action]()}>
                   {button.label}
                 </Button>
-              );
-            })}
-          </Menu.Item>
+              </Menu.Item>
+            );
+          })}
 
           <Divider mt="xs" />
 
@@ -79,9 +79,9 @@ function PageActionsMenu() {
             size="xs"
             rightSectionWidth="xs"
             rightSection={
-              <Button size="xs" onClick={field.validate}>
-                Save
-              </Button>
+              <ActionIcon variant="transparent">
+                <IconCheck />
+              </ActionIcon>
             }
           />
         </Paper>
