@@ -5,7 +5,6 @@ import {
   convertPixelsToRem,
   clamp,
   copyToClipboard,
-  getPressedKeysAsString,
 } from "./utils";
 
 function handleAddBookmark(bookId, pageNum) {
@@ -101,33 +100,14 @@ let _get_translation_dict_index = function (sentence, dicts) {
   return new_index;
 };
 
-function toggleFocus() {
-  const focusChk = document.getElementById("focus");
-  const event = new Event("change");
-  focusChk.checked = !focusChk.checked;
-  focusChk.dispatchEvent(event);
-}
-
-/* Toggle highlighting, and reload the page. */
-function toggleHighlight() {
-  $.ajax({
-    url: "/theme/toggle_highlight",
-    type: "post",
-    dataType: "JSON",
-    contentType: "application/json",
-    success: function () {
-      location.reload();
-    },
-    error: function (response, status, err) {
-      const msg = {
-        response: response,
-        status: status,
-        error: err,
-      };
-      console.log(`failed: ${JSON.stringify(msg, null, 2)}`);
-    },
-  });
-}
+// function toggleHighlights(on) {
+//   const textitems = document.querySelectorAll(".word");
+//   if (on) {
+//     textitems.forEach((ti) => ti.style.removeProperty("background-color"));
+//   } else {
+//     textitems.forEach((ti) => (ti.style.backgroundColor = "transparent"));
+//   }
+// }
 
 function adjustFontSize(delta) {
   const textItems = document.querySelectorAll(".textitem");
@@ -201,64 +181,6 @@ async function handleCopy(textitem, unit) {
   return matched;
 }
 
-function setupKeydownEvents(e, actions, settings) {
-  if (document.querySelectorAll(".word").length === 0) {
-    return; // Nothing to do.
-  }
-
-  const next = settings.rtl ? -1 : 1;
-  const prev = -1 * next;
-
-  // Map of shortcuts to lambdas:
-  const map = {
-    [settings.hotkey_StartHover]: actions.hotkey_StartHover,
-    [settings.hotkey_PrevWord]: () => actions.hotkey_PrevWord(".word", prev),
-    [settings.hotkey_NextWord]: () => actions.hotkey_NextWord(".word", next),
-    [settings.hotkey_PrevUnknownWord]: () =>
-      actions.hotkey_PrevUnknownWord(".word.status0", prev),
-    [settings.hotkey_NextUnknownWord]: () =>
-      actions.hotkey_NextUnknownWord(".word.status0", next),
-    [settings.hotkey_PrevSentence]: () =>
-      actions.hotkey_PrevSentence(".sentencestart", prev),
-    [settings.hotkey_NextSentence]: () =>
-      actions.hotkey_NextSentence(".sentencestart", next),
-    [settings.hotkey_StatusUp]: () => actions.hotkey_StatusUp(+1),
-    [settings.hotkey_StatusDown]: () => actions.hotkey_StatusDown(-1),
-    [settings.hotkey_Bookmark]: () =>
-      actions.hotkey_Bookmark(settings.bookId, settings.pageNum),
-    [settings.hotkey_CopySentence]: () =>
-      actions.hotkey_CopySentence("sentence-id"),
-    [settings.hotkey_CopyPara]: () => actions.hotkey_CopyPara("paragraph-id"),
-    [settings.hotkey_CopyPage]: () => actions.hotkey_CopyPage(null),
-    [settings.hotkey_EditPage]: () =>
-      actions.hotkey_EditPage(settings.bookId, settings.pageNum),
-    [settings.hotkey_TranslateSentence]: () =>
-      actions.hotkey_TranslateSentence("sentence-id"),
-    [settings.hotkey_TranslatePara]: () =>
-      actions.hotkey_TranslatePara("paragraph-id"),
-    [settings.hotkey_TranslatePage]: () => actions.hotkey_TranslatePage(null),
-    [settings.hotkey_NextTheme]: actions.hotkey_NextTheme,
-    [settings.hotkey_ToggleHighlight]: actions.hotkey_ToggleHighlight,
-    [settings.hotkey_ToggleFocus]: actions.hotkey_ToggleFocus,
-    [settings.hotkey_Status1]: () => actions.hotkey_Status1(1),
-    [settings.hotkey_Status2]: () => actions.hotkey_Status2(2),
-    [settings.hotkey_Status3]: () => actions.hotkey_Status3(3),
-    [settings.hotkey_Status4]: () => actions.hotkey_Status4(4),
-    [settings.hotkey_Status5]: () => actions.hotkey_Status5(5),
-    [settings.hotkey_StatusIgnore]: () => actions.hotkey_StatusIgnore(98),
-    [settings.hotkey_StatusWellKnown]: () => actions.hotkey_StatusWellKnown(99),
-    [settings.hotkey_DeleteTerm]: () => actions.hotkey_DeleteTerm(0),
-  };
-
-  const key = getPressedKeysAsString(e);
-  if (key in map) {
-    // Override any existing event - e.g., if "up" arrow is in the map,
-    // don't scroll screen.
-    e.preventDefault();
-    map[key]();
-  }
-}
-
 function handleResizeHorizontal(
   e,
   currentWidth,
@@ -284,16 +206,22 @@ function handleResizeHorizontal(
     window.getComputedStyle(paneMain).getPropertyValue("width")
   );
 
+  let newWidth;
+
   function resize(e) {
     const delta = x - e.clientX;
     const ratioInPct = (delta / containerHeight) * 100;
-    const newWidth = currentWidth - ratioInPct;
-    setWidth(clamp(newWidth, 5, 95));
+    newWidth = clamp(currentWidth - ratioInPct, 5, 95);
+
+    paneLeft.style.width = `${newWidth}%`;
+    dividerRef.style.left = `${newWidth}%`;
+    paneRight.style.width = `${100 - newWidth}%`;
   }
 
   paneMain.addEventListener("mousemove", resize);
 
   paneMain.addEventListener("mouseup", () => {
+    setWidth(clamp(newWidth, 5, 95));
     paneMain.removeEventListener("mousemove", resize);
     paneLeft.style.pointerEvents = "unset";
     paneRight.style.pointerEvents = "unset";
@@ -321,6 +249,8 @@ function handleResizeVertical(
                                   rgba(0, 0, 0, 0) 75%
                                 )`;
 
+  let newHeight;
+
   const containerHeight = parseFloat(
     window.getComputedStyle(ref).getPropertyValue("height")
   );
@@ -328,13 +258,15 @@ function handleResizeVertical(
   function resize(e) {
     const delta = y - e.clientY;
     const ratioInPct = (delta / containerHeight) * 100;
-    const newHeight = height - ratioInPct;
-    setHeight(clamp(newHeight, 5, 95));
+    newHeight = height - ratioInPct;
+
+    termFormRef.style.height = `${newHeight}%`;
   }
 
   ref.addEventListener("mousemove", resize);
 
   ref.addEventListener("mouseup", () => {
+    setHeight(clamp(newHeight, 5, 95));
     ref.removeEventListener("mousemove", resize);
     termFormRef.style.pointerEvents = "unset";
     dictPaneRef.style.pointerEvents = "unset";
@@ -349,10 +281,8 @@ export {
   handleAddBookmark,
   handleEditPage,
   handleTranslate,
-  toggleFocus,
-  toggleHighlight,
+  // toggleHighlights,
   handleCopy,
-  setupKeydownEvents,
   handleResizeHorizontal,
   handleResizeVertical,
 };

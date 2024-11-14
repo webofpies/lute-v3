@@ -1,6 +1,9 @@
 .paneLeft {
   width: 100%;
   overflow: hidden; /*to hide header shadow*/
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .paneRight {
@@ -11,15 +14,8 @@
 }
 
 .textContainer {
-  padding: 3rem;
-  padding-top: 2rem;
-}
-
-.headerContainer {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 4;
+  padding: 1.5rem 3rem;
+  width: 100%;
 }
 
 .header {

@@ -1,4 +1,4 @@
-import { memo, useContext } from "react";
+import { memo } from "react";
 import { Link, useNavigation } from "react-router-dom";
 import {
   ActionIcon,
@@ -22,11 +22,17 @@ import {
 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
 import PageActionsMenu from "./PageActionsMenu";
-import { UserSettingsContext } from "../../context/UserSettingsContext";
 import styles from "./ReadPane.module.css";
 
-function ReadPaneHeader({ open, pageNum, book }) {
-  const { settings, saveSetting } = useContext(UserSettingsContext);
+function ReadPaneHeader({
+  open,
+  pageNum,
+  book,
+  focusMode,
+  onSetFocusMode,
+  highlightsOn,
+  onSetHighlights,
+}) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
@@ -58,12 +64,8 @@ function ReadPaneHeader({ open, pageNum, book }) {
             openDelay={800}
             refProp="rootRef">
             <Switch
-              checked={settings.focusMode}
-              onChange={(e) => {
-                saveSetting({
-                  focusMode: Boolean(e.currentTarget.checked),
-                });
-              }}
+              checked={focusMode}
+              onChange={(e) => onSetFocusMode(Boolean(e.currentTarget.checked))}
               size="sm"
               onLabel="ON"
               offLabel="OFF"
@@ -83,7 +85,10 @@ function ReadPaneHeader({ open, pageNum, book }) {
             refProp="rootRef">
             <Switch
               size="sm"
-              defaultChecked
+              checked={highlightsOn}
+              onChange={(e) =>
+                onSetHighlights(Boolean(e.currentTarget.checked))
+              }
               onLabel="ON"
               offLabel="OFF"
               thumbIcon={

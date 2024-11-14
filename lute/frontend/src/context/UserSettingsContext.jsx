@@ -54,11 +54,19 @@ export function UserSettingsProvider({ children }) {
   };
 
   // local settings
-  const localSettings = { showHighlights: true, focusMode: false };
+  // const localSettings = {
+  //   showHighlights: true,
+  //   focusMode: false,
+  //   leftPaneWidth: 50,
+  //   rightPaneHeight: 25,
+  //   fontSize: 16,
+  //   lineHeight: 1,
+  //   columnCount: 1,
+  // };
 
   const [providedSettings, setProvidedSettings] = useState({
     ...dBSettings,
-    ...localSettings,
+    // ...localSettings,
   });
 
   function saveSetting(setting) {

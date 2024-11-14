@@ -1,7 +1,6 @@
 import { Fragment, memo } from "react";
 import { ActionIcon, Divider, Paper, Stack, Tooltip } from "@mantine/core";
 import classes from "./Toolbar.module.css";
-import { actions } from "../../misc/actionsMap";
 import {
   IconBaselineDensityMedium,
   IconBaselineDensitySmall,
@@ -12,16 +11,70 @@ import {
   IconTextDecrease,
   IconTextIncrease,
 } from "@tabler/icons-react";
+import {
+  adjustFontSize,
+  adjustLineHeight,
+  setColumnCount,
+} from "../../misc/textActions";
 
-function Toolbar() {
-  const toolbarButtons = getButtons();
+function Toolbar({ onSetWidth }) {
+  const toolbarButtons = [
+    [
+      {
+        label: "Descrease font size",
+        icon: IconTextDecrease,
+        action: () => adjustFontSize(-1),
+      },
+      {
+        label: "Increase font size",
+        icon: IconTextIncrease,
+        action: () => adjustFontSize(1),
+      },
+    ],
+    [
+      {
+        label: "Descrease line height",
+        icon: IconBaselineDensityMedium,
+        action: () => adjustLineHeight(-0.1),
+      },
+      {
+        label: "Increase line height",
+        icon: IconBaselineDensitySmall,
+        action: () => adjustLineHeight(0.1),
+      },
+    ],
+    [
+      {
+        label: "Set columns to 1",
+        icon: IconColumns1,
+        action: () => setColumnCount(1),
+      },
+      {
+        label: "Set columns to 2",
+        icon: IconColumns2,
+        action: () => setColumnCount(2),
+      },
+    ],
+    [
+      {
+        label: "Decrease pane width",
+        icon: IconLayoutSidebarRightExpand,
+        action: () => onSetWidth((w) => w * 0.95),
+      },
+      {
+        label: "Increase pane width",
+        icon: IconLayoutSidebarLeftExpand,
+        action: () => onSetWidth((w) => w * 1.05),
+      },
+    ],
+  ];
 
   return (
     <Paper shadow="lg" withBorder className={classes.toolbar}>
       <Stack wrap="no-wrap" gap={5} align="center">
         {toolbarButtons.map((buttonGrp, index) => (
           <Fragment key={index}>
-            <ActionIcon.Group orientation="vertical">
+            <ActionIcon.Group orientation="horizontal">
               {buttonGrp.map((button) => {
                 const Icon = button.icon;
                 return (
@@ -29,9 +82,7 @@ function Toolbar() {
                     key={button.label}
                     position="right"
                     label={button.label}>
-                    <ActionIcon
-                      size="1.6rem"
-                      onClick={() => actions[button.action](button.arg)}>
+                    <ActionIcon size="1.6rem" onClick={button.action}>
                       <Icon className={classes.icon} />
                     </ActionIcon>
                   </Tooltip>
@@ -47,67 +98,6 @@ function Toolbar() {
       </Stack>
     </Paper>
   );
-}
-
-function getButtons() {
-  return [
-    [
-      {
-        label: "Descrease font size",
-        icon: IconTextDecrease,
-        action: "fontSizeDecrease",
-        arg: -1,
-      },
-      {
-        label: "Increase font size",
-        icon: IconTextIncrease,
-        action: "fontSizeIncrease",
-        arg: 1,
-      },
-    ],
-    [
-      {
-        label: "Descrease line height",
-        icon: IconBaselineDensityMedium,
-        action: "lineHeightDecrease",
-        arg: -0.1,
-      },
-      {
-        label: "Increase line height",
-        icon: IconBaselineDensitySmall,
-        action: "lineHeightIncrease",
-        arg: 0.1,
-      },
-    ],
-    [
-      {
-        label: "Set columns to 1",
-        icon: IconColumns1,
-        action: "setColumnCountOne",
-        arg: 1,
-      },
-      {
-        label: "Set columns to 2",
-        icon: IconColumns2,
-        action: "setColumnCountTwo",
-        arg: 2,
-      },
-    ],
-    [
-      {
-        label: "Decrease pane width",
-        icon: IconLayoutSidebarRightExpand,
-        action: "paneWidthDecrease",
-        arg: 0.95,
-      },
-      {
-        label: "Increase pane width",
-        icon: IconLayoutSidebarLeftExpand,
-        action: "paneWidthIncrease",
-        arg: 1.05,
-      },
-    ],
-  ];
 }
 
 export default memo(Toolbar);

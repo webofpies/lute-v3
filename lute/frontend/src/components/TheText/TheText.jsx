@@ -19,7 +19,7 @@ import {
   setColumnCount,
 } from "../../misc/textActions";
 
-function TheText({ pageData, onSetActiveTerm }) {
+function TheText({ pageData, onSetActiveTerm, highlightsOn }) {
   useEffect(() => {
     startHoverMode();
     adjustFontSize(0);
@@ -60,6 +60,9 @@ function TheText({ pageData, onSetActiveTerm }) {
                       }}
                       onMouseOver={handleMouseOver}
                       onMouseOut={hoverOut}
+                      style={{
+                        backgroundColor: !highlightsOn && "transparent",
+                      }}
                     />
                   </Popup>
                 ) : (

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Divider, LoadingOverlay, Stack } from "@mantine/core";
 import { useMouse } from "@mantine/hooks";
@@ -31,7 +31,10 @@ function LearnPane({ book, termData }) {
       />
       {isSuccess && (
         <>
-          <div ref={termFormRef} style={{ height: `${height}%` }}>
+          <div
+            ref={termFormRef}
+            style={{ height: `${height}%` }}
+            className="paneTerm">
             {/* need key to recreate the form */}
             <TermForm key={data.text} termData={data} />
           </div>
@@ -80,4 +83,4 @@ function useFetchTerm(termData) {
   });
 }
 
-export default LearnPane;
+export default memo(LearnPane);

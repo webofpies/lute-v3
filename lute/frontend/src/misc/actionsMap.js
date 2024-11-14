@@ -6,8 +6,6 @@ import {
   adjustLineHeight,
   setColumnCount,
   handleEditPage,
-  toggleFocus,
-  toggleHighlight,
 } from "./textActions";
 import {
   moveCursor,
@@ -36,9 +34,6 @@ export const actions = {
 
   setColumnCountOne: setColumnCount,
   setColumnCountTwo: setColumnCount,
-
-  paneWidthIncrease: () => {},
-  paneWidthDecrease: () => {},
 
   addBookmark: () => handleAddBookmark(),
 
@@ -70,6 +65,5 @@ export const actions = {
   hotkey_DeleteTerm: updateStatusForMarked,
   hotkey_EditPage: handleEditPage,
   hotkey_NextTheme: goToNextTheme,
-  hotkey_ToggleHighlight: toggleHighlight,
-  hotkey_ToggleFocus: toggleFocus,
+  hotkey_ToggleHighlight: "",
 };
