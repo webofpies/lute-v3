@@ -31,7 +31,7 @@ function ReadPaneHeader({
   focusMode,
   onSetFocusMode,
   highlightsOn,
-  onSetHighlights,
+  onToggleHighlights,
 }) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
@@ -86,9 +86,9 @@ function ReadPaneHeader({
             <Switch
               size="sm"
               checked={highlightsOn}
-              onChange={(e) =>
-                onSetHighlights(Boolean(e.currentTarget.checked))
-              }
+              onChange={(e) => {
+                onToggleHighlights(Boolean(e.currentTarget.checked));
+              }}
               onLabel="ON"
               offLabel="OFF"
               thumbIcon={

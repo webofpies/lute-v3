@@ -19,7 +19,7 @@ import {
   setColumnCount,
 } from "../../misc/textActions";
 
-function TheText({ pageData, onSetActiveTerm, highlightsOn }) {
+function TheText({ pageData, onSetActiveTerm, textItemRefs }) {
   useEffect(() => {
     startHoverMode();
     adjustFontSize(0);
@@ -46,6 +46,7 @@ function TheText({ pageData, onSetActiveTerm, highlightsOn }) {
                 textitem.isWord ? (
                   <Popup id={textitem.wid} key={textitem.id}>
                     <TextItem
+                      ref={textItemRefs[textitem.id]}
                       data={textitem}
                       onMouseDown={(e) => {
                         // trigger only with lmb
@@ -60,9 +61,6 @@ function TheText({ pageData, onSetActiveTerm, highlightsOn }) {
                       }}
                       onMouseOver={handleMouseOver}
                       onMouseOut={hoverOut}
-                      style={{
-                        backgroundColor: !highlightsOn && "transparent",
-                      }}
                     />
                   </Popup>
                 ) : (

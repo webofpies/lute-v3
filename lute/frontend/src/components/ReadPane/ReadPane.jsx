@@ -1,4 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  createRef,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigation, useParams } from "react-router-dom";
 import { Divider, ScrollArea, Title } from "@mantine/core";
@@ -15,33 +22,44 @@ import ReadFooter from "./ReadFooter";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
 import { actions } from "../../misc/actionsMap";
-import { handleResizeHorizontal } from "../../misc/textActions";
+import {
+  handleResizeHorizontal,
+  toggleHighlights,
+} from "../../misc/textActions";
 import { getPressedKeysAsString } from "../../misc/utils";
 
 function ReadPane() {
   const { id, page: pageNum } = useParams();
   const { settings } = useContext(UserSettingsContext);
 
-  const { ref, x } = useMouse();
-  const paneLeftRef = useRef();
-  const paneRightRef = useRef();
-  const dividerRef = useRef();
-  const ctxMenuContainerRef = useRef();
+  const { data: book } = useQuery(bookQuery(id));
+  const { data: page } = useQuery(pageQuery(id, pageNum));
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const {
+    textItemRefs,
+    paneLeftRef,
+    paneRightRef,
+    dividerRef,
+    ctxMenuContainerRef,
+  } = useInitialize(book, page, settings);
+
+  const { ref, x } = useMouse();
+
+  const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
+    useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
   const [width, setWidth] = useState(50);
   const [focusMode, setFocusMode] = useState(false);
   const [highlightsOn, setHighlightsOn] = useState(true);
 
-  const { data: book } = useQuery(bookQuery(id));
-  const { data: page } = useQuery(pageQuery(id, pageNum));
-
-  useInitialize(book, settings);
+  function handleToggleHighlights(checked) {
+    setHighlightsOn(checked);
+    toggleHighlights(textItemRefs, checked);
+  }
 
   return (
     <>
-      <DrawerMenu opened={opened} close={close} />
+      <DrawerMenu opened={drawerOpened} close={drawerClose} />
       <Toolbar onSetWidth={setWidth} />
       <ContextMenu ref={ctxMenuContainerRef} />
 
@@ -54,12 +72,12 @@ function ReadPane() {
           }}>
           <ReadPaneHeader
             book={book}
-            open={open}
+            open={drawerOpen}
             pageNum={Number(pageNum)}
             focusMode={focusMode}
             onSetFocusMode={setFocusMode}
             highlightsOn={highlightsOn}
-            onSetHighlights={setHighlightsOn}
+            onToggleHighlights={handleToggleHighlights}
           />
           {book.audio.name && <Player book={book} />}
 
@@ -82,7 +100,7 @@ function ReadPane() {
               <TheText
                 pageData={page}
                 onSetActiveTerm={setActiveTerm}
-                highlightsOn={highlightsOn}
+                textItemRefs={textItemRefs}
               />
             </div>
           </ScrollArea>
@@ -171,8 +189,25 @@ function pageQuery(bookId, pageNum) {
   };
 }
 
-function useInitialize(book, settings) {
+function useInitialize(book, page, settings) {
   const navigation = useNavigation();
+
+  const paneLeftRef = useRef();
+  const paneRightRef = useRef();
+  const dividerRef = useRef();
+  const ctxMenuContainerRef = useRef();
+
+  const textItemRefs = useMemo(() => {
+    const refs = {};
+    page.forEach((para) =>
+      para.forEach((sentence) =>
+        sentence.forEach((item) => {
+          if (item.isWord) refs[item.id] = createRef(null);
+        })
+      )
+    );
+    return refs;
+  }, [page]);
 
   useEffect(() => {
     navigation.state === "loading" ? nprogress.start() : nprogress.complete();
@@ -210,6 +245,14 @@ function useInitialize(book, settings) {
     book.isRightToLeft,
     settings,
   ]);
+
+  return {
+    textItemRefs,
+    paneLeftRef,
+    paneRightRef,
+    dividerRef,
+    ctxMenuContainerRef,
+  };
 }
 
 function setupKeydownEvents(e, actions, settings) {

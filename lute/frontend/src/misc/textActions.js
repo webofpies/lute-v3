@@ -100,14 +100,15 @@ let _get_translation_dict_index = function (sentence, dicts) {
   return new_index;
 };
 
-// function toggleHighlights(on) {
-//   const textitems = document.querySelectorAll(".word");
-//   if (on) {
-//     textitems.forEach((ti) => ti.style.removeProperty("background-color"));
-//   } else {
-//     textitems.forEach((ti) => (ti.style.backgroundColor = "transparent"));
-//   }
-// }
+function toggleHighlights(refs, on) {
+  Object.values(refs).forEach((ref) => {
+    if (on) {
+      ref.current.style.removeProperty("background-color");
+    } else {
+      ref.current.style.backgroundColor = "transparent";
+    }
+  });
+}
 
 function adjustFontSize(delta) {
   const textItems = document.querySelectorAll(".textitem");
@@ -281,7 +282,7 @@ export {
   handleAddBookmark,
   handleEditPage,
   handleTranslate,
-  // toggleHighlights,
+  toggleHighlights,
   handleCopy,
   handleResizeHorizontal,
   handleResizeVertical,
