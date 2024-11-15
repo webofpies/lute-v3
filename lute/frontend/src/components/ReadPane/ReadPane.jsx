@@ -92,7 +92,7 @@ function ReadPane() {
           }}>
           <ReadPaneHeader
             book={book}
-            open={drawerOpen}
+            drawerOpen={drawerOpen}
             pageNum={Number(pageNum)}
             onToggleHighlights={handleToggleHighlights}
             state={state}
