@@ -25,13 +25,12 @@ import PageActionsMenu from "./PageActionsMenu";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({
-  open,
+  drawerOpen,
   pageNum,
   book,
-  focusMode,
-  onSetFocusMode,
-  highlightsOn,
   onToggleHighlights,
+  state,
+  dispatch,
 }) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
@@ -39,7 +38,7 @@ function ReadPaneHeader({
   return (
     <Paper radius={0} shadow="sm">
       <Group gap={10} wrap="nowrap" align="center" className={styles.header}>
-        <ActionIcon onClick={open} size="md">
+        <ActionIcon onClick={drawerOpen} size="md">
           <IconMenu2 />
         </ActionIcon>
         <Center w="2.8rem" h="2.8rem" styles={{ root: { flexShrink: 0 } }}>
@@ -64,8 +63,8 @@ function ReadPaneHeader({
             openDelay={800}
             refProp="rootRef">
             <Switch
-              checked={focusMode}
-              onChange={(e) => onSetFocusMode(Boolean(e.currentTarget.checked))}
+              checked={state.focusMode}
+              onChange={() => dispatch({ type: "toggleFocus" })}
               size="sm"
               onLabel="ON"
               offLabel="OFF"
@@ -85,7 +84,7 @@ function ReadPaneHeader({
             refProp="rootRef">
             <Switch
               size="sm"
-              checked={highlightsOn}
+              checked={state.highlights}
               onChange={(e) => {
                 onToggleHighlights(Boolean(e.currentTarget.checked));
               }}

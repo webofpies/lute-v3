@@ -185,7 +185,7 @@ async function handleCopy(textitem, unit) {
 function handleResizeHorizontal(
   e,
   currentWidth,
-  setWidth,
+  dispatch,
   paneMain,
   paneLeft,
   paneRight,
@@ -222,7 +222,7 @@ function handleResizeHorizontal(
   paneMain.addEventListener("mousemove", resize);
 
   paneMain.addEventListener("mouseup", () => {
-    setWidth(clamp(newWidth, 5, 95));
+    dispatch({ type: "setWidth", payload: clamp(newWidth, 5, 95) });
     paneMain.removeEventListener("mousemove", resize);
     paneLeft.style.pointerEvents = "unset";
     paneRight.style.pointerEvents = "unset";

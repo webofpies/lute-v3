@@ -17,7 +17,7 @@ import {
   setColumnCount,
 } from "../../misc/textActions";
 
-function Toolbar({ onSetWidth }) {
+function Toolbar({ dispatch }) {
   const toolbarButtons = [
     [
       {
@@ -59,12 +59,12 @@ function Toolbar({ onSetWidth }) {
       {
         label: "Decrease pane width",
         icon: IconLayoutSidebarRightExpand,
-        action: () => onSetWidth((w) => w * 0.95),
+        action: () => dispatch({ type: "adjustWidth", payload: 0.95 }),
       },
       {
         label: "Increase pane width",
         icon: IconLayoutSidebarLeftExpand,
-        action: () => onSetWidth((w) => w * 1.05),
+        action: () => dispatch({ type: "adjustWidth", payload: 1.05 }),
       },
     ],
   ];

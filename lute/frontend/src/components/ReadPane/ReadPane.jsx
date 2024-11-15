@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from "react";
@@ -28,6 +29,27 @@ import {
 } from "../../misc/textActions";
 import { getPressedKeysAsString } from "../../misc/utils";
 
+function reducer(state, action) {
+  switch (action.type) {
+    case "setWidth":
+      return { ...state, width: action.payload };
+    case "adjustWidth":
+      return { ...state, width: state.width * action.payload };
+    case "toggleFocus":
+      return { ...state, focusMode: !state.focusMode };
+    case "toggleHighlights":
+      return { ...state, highlights: !state.highlights };
+    default:
+      throw new Error();
+  }
+}
+
+const initialState = {
+  width: 50,
+  focusMode: false,
+  highlights: true,
+};
+
 function ReadPane() {
   const { id, page: pageNum } = useParams();
   const { settings } = useContext(UserSettingsContext);
@@ -48,19 +70,17 @@ function ReadPane() {
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
-  const [width, setWidth] = useState(50);
-  const [focusMode, setFocusMode] = useState(false);
-  const [highlightsOn, setHighlightsOn] = useState(true);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   function handleToggleHighlights(checked) {
-    setHighlightsOn(checked);
+    dispatch({ type: "toggleHighlights" });
     toggleHighlights(textItemRefs, checked);
   }
 
   return (
     <>
       <DrawerMenu opened={drawerOpened} close={drawerClose} />
-      <Toolbar onSetWidth={setWidth} />
+      <Toolbar dispatch={dispatch} />
       <ContextMenu ref={ctxMenuContainerRef} />
 
       <div ref={ref} style={{ height: "100%" }}>
@@ -68,16 +88,15 @@ function ReadPane() {
           ref={paneLeftRef}
           className={`${styles.paneLeft}`}
           style={{
-            width: `${focusMode ? 100 : width}%`,
+            width: `${state.focusMode ? 100 : state.width}%`,
           }}>
           <ReadPaneHeader
             book={book}
             open={drawerOpen}
             pageNum={Number(pageNum)}
-            focusMode={focusMode}
-            onSetFocusMode={setFocusMode}
-            highlightsOn={highlightsOn}
             onToggleHighlights={handleToggleHighlights}
+            state={state}
+            dispatch={dispatch}
           />
           {book.audio.name && <Player book={book} />}
 
@@ -85,8 +104,8 @@ function ReadPane() {
             <div
               className={`${styles.textContainer}`}
               style={{
-                width: `${focusMode ? width : 100}%`,
-                marginInline: focusMode && "auto",
+                width: `${state.focusMode ? state.width : 100}%`,
+                marginInline: state.focusMode && "auto",
               }}>
               {Number(pageNum) === 1 && (
                 <Title
@@ -107,19 +126,19 @@ function ReadPane() {
           <ReadFooter />
         </div>
 
-        {!focusMode && (
+        {!state.focusMode && (
           <>
             <Divider
               ref={dividerRef}
-              style={{ left: `${width}%` }}
+              style={{ left: `${state.width}%` }}
               styles={{ root: { width: "8px", border: "none" } }}
               className={`${styles.vdivider}`}
               orientation="vertical"
               onMouseDown={(e) =>
                 handleResizeHorizontal(
                   e,
-                  width,
-                  setWidth,
+                  state.width,
+                  dispatch,
                   ref.current,
                   paneLeftRef.current,
                   paneRightRef.current,
@@ -132,7 +151,7 @@ function ReadPane() {
             <div
               ref={paneRightRef}
               className={`${styles.paneRight}`}
-              style={{ width: `${100 - width}%` }}>
+              style={{ width: `${100 - state.width}%` }}>
               {activeTerm.data && (
                 <LearnPane book={book} termData={activeTerm} />
               )}
