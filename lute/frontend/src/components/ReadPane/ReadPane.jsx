@@ -48,7 +48,7 @@ const initialState = {
   focusMode: false,
   highlights: true,
   columnCount: 1,
-  lineHeight: 1.25,
+  lineHeight: 1,
   fontSize: 1,
 };
 
@@ -93,9 +93,9 @@ function ReadPane() {
   }
 
   function handleSetLineHeight(amount) {
-    const clamped = clamp(amount, 1.25, 5);
+    const clamped = clamp(amount, 0, 15);
     dispatch({ type: "setLineHeight", payload: clamped });
-    setLineHeight(theTextRef, clamped);
+    setLineHeight(textItemRefs, clamped);
   }
 
   function handleSetFontSize(size) {

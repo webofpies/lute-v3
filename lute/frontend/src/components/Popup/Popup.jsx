@@ -12,6 +12,7 @@ function Popup({ children, id }) {
 
   return (
     <Popover
+      transitionProps={{ duration: 50 }}
       position="bottom"
       withArrow
       shadow="md"

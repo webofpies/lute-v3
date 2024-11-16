@@ -24,20 +24,26 @@ body {
   --status-99-color: #72da88;
 }
 
-.textparagraph {
-  line-height: 1.25; /* needs to match the minimum set with adjustLineHeight*/
-  margin-block: 1em;
-}
-
-.textparagraph,
-.textsentence {
-  /* The weird "font-size: 0%" prevents excess space between the spans! */
-  /* span.textitem then re-sets the font size for the words. */
-  font-size: 0;
+.thetext {
+  line-height: 1;
+  white-space: break-spaces;
 }
 
 .textitem {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+
+  display: inline-block;
+  padding-block: 0.1rem;
   font-size: 1rem;
+  line-height: 1;
+  margin-bottom: 1px;
+}
+
+.word {
+  padding-inline: 0.1rem;
+  border-radius: 2px;
 }
 
 .flash {
@@ -78,11 +84,11 @@ body {
 }
 
 .wordhover {
-  border-bottom: 1px solid blue !important;
+  text-decoration: underline 1px solid #228be6 !important;
 }
 
 .kwordmarked {
-  border-bottom: 1px solid red !important;
+  text-decoration: underline 1px solid #f56767 !important;
 }
 
 .newmultiterm {

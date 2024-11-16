@@ -26,12 +26,9 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
   }
 
   return (
-    <div ref={theTextRef} id={"thetext"}>
+    <div ref={theTextRef} className="thetext">
       {pageData.map((paragraph, index) => (
-        <p
-          key={index}
-          className="textparagraph"
-          style={{ lineHeight: paragraph.length !== 0 && "inherit" }}>
+        <p key={index} className="textparagraph">
           {paragraph.map((sentence, index) => (
             <span
               key={`sent_${index + 1}`}

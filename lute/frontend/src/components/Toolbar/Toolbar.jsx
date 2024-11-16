@@ -88,12 +88,12 @@ function getToolbarButtons(
       {
         label: "Descrease line height",
         icon: IconBaselineDensityMedium,
-        action: () => onSetLineHeight(lineHeight - 0.1),
+        action: () => onSetLineHeight(lineHeight - 1),
       },
       {
         label: "Increase line height",
         icon: IconBaselineDensitySmall,
-        action: () => onSetLineHeight(lineHeight + 0.1),
+        action: () => onSetLineHeight(lineHeight + 1),
       },
     ],
     [

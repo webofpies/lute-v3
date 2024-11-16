@@ -1,6 +1,5 @@
 // lute\templates\read\textitem.html
 import { forwardRef, memo } from "react";
-import classes from "./TheText.module.css";
 
 const TextItem = forwardRef(function TextItem(props, ref) {
   const { data, ...restProps } = props;
@@ -10,7 +9,7 @@ const TextItem = forwardRef(function TextItem(props, ref) {
       ref={ref}
       {...restProps}
       id={data.id}
-      className={`${data.classes} ${classes.textitem} ${data.isWord ? data.statusClass : ""}`}
+      className={`${data.classes} ${data.isWord ? data.statusClass : ""}`}
       data-lang-id={data.langId}
       data-paragraph-id={data.paragraphId}
       data-sentence-id={data.sentenceId}
@@ -18,7 +17,7 @@ const TextItem = forwardRef(function TextItem(props, ref) {
       data-status-class={data.statusClass}
       data-order={data.order}
       data-wid={data.wid || null}>
-      {data.displayText.replace(/&nbsp;/g, " ")}
+      {data.displayText}
     </span>
   );
 });

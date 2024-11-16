@@ -118,8 +118,11 @@ function setFontSize(refs, size) {
   });
 }
 
-function setLineHeight(ref, amount) {
-  ref.current.style.lineHeight = Number(amount.toPrecision(2));
+function setLineHeight(refs, amount) {
+  // ref.current.style.lineHeight = Number(amount.toPrecision(2));
+  Object.values(refs).forEach((ref) => {
+    ref.current.style.marginBottom = `${Number(amount.toPrecision(2))}px`;
+  });
 }
 
 function setColumnCount(ref, count) {
