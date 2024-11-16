@@ -28,9 +28,10 @@ function ReadPaneHeader({
   drawerOpen,
   pageNum,
   book,
+  focusMode,
+  highlights,
   onToggleHighlights,
-  state,
-  dispatch,
+  onToggleFocusMode,
 }) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
@@ -63,8 +64,8 @@ function ReadPaneHeader({
             openDelay={800}
             refProp="rootRef">
             <Switch
-              checked={state.focusMode}
-              onChange={() => dispatch({ type: "toggleFocus" })}
+              checked={focusMode}
+              onChange={onToggleFocusMode}
               size="sm"
               onLabel="ON"
               offLabel="OFF"
@@ -84,7 +85,7 @@ function ReadPaneHeader({
             refProp="rootRef">
             <Switch
               size="sm"
-              checked={state.highlights}
+              checked={highlights}
               onChange={(e) => {
                 onToggleHighlights(Boolean(e.currentTarget.checked));
               }}

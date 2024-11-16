@@ -13,18 +13,10 @@ import {
   handleMouseOver,
   handleMouseUp,
 } from "../../lute";
-import {
-  adjustFontSize,
-  adjustLineHeight,
-  setColumnCount,
-} from "../../misc/textActions";
 
-function TheText({ pageData, onSetActiveTerm, textItemRefs }) {
+function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
   useEffect(() => {
     startHoverMode();
-    adjustFontSize(0);
-    adjustLineHeight(0);
-    setColumnCount(null);
   });
 
   function handleSetTerm(termData) {
@@ -34,9 +26,12 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs }) {
   }
 
   return (
-    <div id={"thetext"}>
+    <div ref={theTextRef} id={"thetext"}>
       {pageData.map((paragraph, index) => (
-        <p key={index} className="textparagraph">
+        <p
+          key={index}
+          className="textparagraph"
+          style={{ lineHeight: paragraph.length !== 0 && "inherit" }}>
           {paragraph.map((sentence, index) => (
             <span
               key={`sent_${index + 1}`}
@@ -46,7 +41,7 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs }) {
                 textitem.isWord ? (
                   <Popup id={textitem.wid} key={textitem.id}>
                     <TextItem
-                      ref={textItemRefs[textitem.id]}
+                      ref={textItemRefs[textitem.order]}
                       data={textitem}
                       onMouseDown={(e) => {
                         // trigger only with lmb
@@ -65,7 +60,11 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs }) {
                   </Popup>
                 ) : (
                   // non-word spans
-                  <TextItem data={textitem} key={textitem.id} />
+                  <TextItem
+                    ref={textItemRefs[textitem.order]}
+                    data={textitem}
+                    key={textitem.id}
+                  />
                 )
               )}
             </span>

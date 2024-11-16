@@ -11,63 +11,25 @@ import {
   IconTextDecrease,
   IconTextIncrease,
 } from "@tabler/icons-react";
-import {
-  adjustFontSize,
-  adjustLineHeight,
-  setColumnCount,
-} from "../../misc/textActions";
 
-function Toolbar({ dispatch }) {
-  const toolbarButtons = [
-    [
-      {
-        label: "Descrease font size",
-        icon: IconTextDecrease,
-        action: () => adjustFontSize(-1),
-      },
-      {
-        label: "Increase font size",
-        icon: IconTextIncrease,
-        action: () => adjustFontSize(1),
-      },
-    ],
-    [
-      {
-        label: "Descrease line height",
-        icon: IconBaselineDensityMedium,
-        action: () => adjustLineHeight(-0.1),
-      },
-      {
-        label: "Increase line height",
-        icon: IconBaselineDensitySmall,
-        action: () => adjustLineHeight(0.1),
-      },
-    ],
-    [
-      {
-        label: "Set columns to 1",
-        icon: IconColumns1,
-        action: () => setColumnCount(1),
-      },
-      {
-        label: "Set columns to 2",
-        icon: IconColumns2,
-        action: () => setColumnCount(2),
-      },
-    ],
-    [
-      {
-        label: "Decrease pane width",
-        icon: IconLayoutSidebarRightExpand,
-        action: () => dispatch({ type: "adjustWidth", payload: 0.95 }),
-      },
-      {
-        label: "Increase pane width",
-        icon: IconLayoutSidebarLeftExpand,
-        action: () => dispatch({ type: "adjustWidth", payload: 1.05 }),
-      },
-    ],
-  ];
+function Toolbar({
+  fontSize,
+  lineHeight,
+  width,
+  onSetColumnCount,
+  onSetLineHeight,
+  onSetFontSize,
+  onSetWidth,
+}) {
+  const toolbarButtons = getToolbarButtons(
+    fontSize,
+    lineHeight,
+    width,
+    onSetColumnCount,
+    onSetLineHeight,
+    onSetFontSize,
+    onSetWidth
+  );
 
   return (
     <Paper shadow="lg" withBorder className={classes.toolbar}>
@@ -98,6 +60,67 @@ function Toolbar({ dispatch }) {
       </Stack>
     </Paper>
   );
+}
+
+function getToolbarButtons(
+  fontSize,
+  lineHeight,
+  width,
+  onSetColumnCount,
+  onSetLineHeight,
+  onSetFontSize,
+  onSetWidth
+) {
+  return [
+    [
+      {
+        label: "Descrease font size",
+        icon: IconTextDecrease,
+        action: () => onSetFontSize(fontSize - 0.1),
+      },
+      {
+        label: "Increase font size",
+        icon: IconTextIncrease,
+        action: () => onSetFontSize(fontSize + 0.1),
+      },
+    ],
+    [
+      {
+        label: "Descrease line height",
+        icon: IconBaselineDensityMedium,
+        action: () => onSetLineHeight(lineHeight - 0.1),
+      },
+      {
+        label: "Increase line height",
+        icon: IconBaselineDensitySmall,
+        action: () => onSetLineHeight(lineHeight + 0.1),
+      },
+    ],
+    [
+      {
+        label: "Set columns to 1",
+        icon: IconColumns1,
+        action: () => onSetColumnCount(1),
+      },
+      {
+        label: "Set columns to 2",
+        icon: IconColumns2,
+        action: () => onSetColumnCount(2),
+      },
+    ],
+    [
+      {
+        label: "Decrease pane width",
+        icon: IconLayoutSidebarRightExpand,
+        action: () => onSetWidth(width * 0.95),
+      },
+      {
+        label: "Increase pane width",
+        icon: IconLayoutSidebarLeftExpand,
+        action: () => onSetWidth(width * 1.05),
+      },
+    ],
+  ];
 }
 
 export default memo(Toolbar);

@@ -1,17 +1,8 @@
-import {
-  createRef,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useReducer, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Divider, ScrollArea, Title } from "@mantine/core";
 import { useDisclosure, useMouse } from "@mantine/hooks";
-import { nprogress } from "@mantine/nprogress";
 import LearnPane from "./LearnPane";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
@@ -22,23 +13,31 @@ import TheText from "../TheText/TheText";
 import ReadFooter from "./ReadFooter";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
-import { actions } from "../../misc/actionsMap";
 import {
-  handleResizeHorizontal,
-  toggleHighlights,
+  setFontSize,
+  setLineHeight,
+  setColumnCount,
+  setHighlightsOn,
+  setHighlightsOff,
 } from "../../misc/textActions";
-import { getPressedKeysAsString } from "../../misc/utils";
+import { useInitialize } from "../../hooks/book";
+import { bookQuery, pageQuery } from "../../queries/book";
+import { clamp } from "../../misc/utils";
 
 function reducer(state, action) {
   switch (action.type) {
-    case "setWidth":
-      return { ...state, width: action.payload };
-    case "adjustWidth":
-      return { ...state, width: state.width * action.payload };
     case "toggleFocus":
       return { ...state, focusMode: !state.focusMode };
     case "toggleHighlights":
       return { ...state, highlights: !state.highlights };
+    case "setWidth":
+      return { ...state, width: action.payload };
+    case "setColumnCount":
+      return { ...state, columnCount: action.payload };
+    case "setLineHeight":
+      return { ...state, lineHeight: action.payload };
+    case "setFontSize":
+      return { ...state, fontSize: action.payload };
     default:
       throw new Error();
   }
@@ -48,6 +47,9 @@ const initialState = {
   width: 50,
   focusMode: false,
   highlights: true,
+  columnCount: 1,
+  lineHeight: 1.25,
+  fontSize: 1,
 };
 
 function ReadPane() {
@@ -63,9 +65,13 @@ function ReadPane() {
     paneRightRef,
     dividerRef,
     ctxMenuContainerRef,
+    theTextRef,
+    handleResizeBegan,
+    handleResizeDone,
+    handleResizing,
   } = useInitialize(book, page, settings);
 
-  const { ref, x } = useMouse();
+  const { ref: paneMainRef, x: mousePosition } = useMouse();
 
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
@@ -74,29 +80,96 @@ function ReadPane() {
 
   function handleToggleHighlights(checked) {
     dispatch({ type: "toggleHighlights" });
-    toggleHighlights(textItemRefs, checked);
+    checked ? setHighlightsOn(textItemRefs) : setHighlightsOff(textItemRefs);
+  }
+
+  function handleToggleFocusMode() {
+    dispatch({ type: "toggleFocus" });
+  }
+
+  function handleSetColumnCount(count) {
+    dispatch({ type: "setColumnCount", payload: count });
+    setColumnCount(theTextRef, count);
+  }
+
+  function handleSetLineHeight(amount) {
+    const clamped = clamp(amount, 1.25, 5);
+    dispatch({ type: "setLineHeight", payload: clamped });
+    setLineHeight(theTextRef, clamped);
+  }
+
+  function handleSetFontSize(size) {
+    const clamped = clamp(size, 0.5, 3);
+    dispatch({ type: "setFontSize", payload: clamped });
+    setFontSize(textItemRefs, clamped);
+  }
+
+  function handleSetWidth(width) {
+    const clamped = clamp(width, 5, 95);
+    dispatch({ type: "setWidth", payload: clamped });
+  }
+
+  function handleResize(e, currentSize, direction, onSetSize, onResizing) {
+    e.preventDefault();
+
+    let newSize;
+
+    const containerSize = parseFloat(
+      window
+        .getComputedStyle(paneMainRef.current)
+        .getPropertyValue(`${direction === "horizontal" ? "width" : "height"}`)
+    );
+
+    function handleMouseMove(e) {
+      const point = direction === "horizontal" ? e.clientX : e.clientY;
+
+      const delta = mousePosition - point;
+      const ratio = (delta / containerSize) * 100;
+      newSize = currentSize - ratio;
+
+      onResizing(newSize);
+    }
+
+    function handleMouseUp() {
+      paneMainRef.current.removeEventListener("mousemove", handleMouseMove);
+      if (!newSize) return; //do not set state if hasn't been resizing
+
+      onSetSize(newSize);
+    }
+
+    paneMainRef.current.addEventListener("mousemove", handleMouseMove);
+    paneMainRef.current.addEventListener("mouseup", handleMouseUp, {
+      once: true,
+    });
   }
 
   return (
     <>
       <DrawerMenu opened={drawerOpened} close={drawerClose} />
-      <Toolbar dispatch={dispatch} />
+      <Toolbar
+        width={state.width}
+        fontSize={state.fontSize}
+        lineHeight={state.lineHeight}
+        onSetColumnCount={handleSetColumnCount}
+        onSetLineHeight={handleSetLineHeight}
+        onSetFontSize={handleSetFontSize}
+        onSetWidth={handleSetWidth}
+      />
       <ContextMenu ref={ctxMenuContainerRef} />
 
-      <div ref={ref} style={{ height: "100%" }}>
+      <div ref={paneMainRef} style={{ height: "100%" }}>
         <div
           ref={paneLeftRef}
           className={`${styles.paneLeft}`}
-          style={{
-            width: `${state.focusMode ? 100 : state.width}%`,
-          }}>
+          style={{ width: `${state.focusMode ? 100 : state.width}%` }}>
           <ReadPaneHeader
             book={book}
             drawerOpen={drawerOpen}
             pageNum={Number(pageNum)}
+            focusMode={state.focusMode}
+            highlights={state.highlights}
+            onToggleFocusMode={handleToggleFocusMode}
             onToggleHighlights={handleToggleHighlights}
-            state={state}
-            dispatch={dispatch}
           />
           {book.audio.name && <Player book={book} />}
 
@@ -120,6 +193,7 @@ function ReadPane() {
                 pageData={page}
                 onSetActiveTerm={setActiveTerm}
                 textItemRefs={textItemRefs}
+                theTextRef={theTextRef}
               />
             </div>
           </ScrollArea>
@@ -134,17 +208,19 @@ function ReadPane() {
               styles={{ root: { width: "8px", border: "none" } }}
               className={`${styles.vdivider}`}
               orientation="vertical"
-              onMouseDown={(e) =>
-                handleResizeHorizontal(
+              onMouseDown={(e) => {
+                handleResize(
                   e,
                   state.width,
-                  dispatch,
-                  ref.current,
-                  paneLeftRef.current,
-                  paneRightRef.current,
-                  dividerRef.current,
-                  x
-                )
+                  "horizontal",
+                  handleSetWidth,
+                  handleResizing
+                );
+                handleResizeBegan();
+              }}
+              onMouseUp={handleResizeDone}
+              onDoubleClick={() =>
+                state.width > 85 ? handleSetWidth(50) : handleSetWidth(95)
               }
             />
 
@@ -161,176 +237,6 @@ function ReadPane() {
       </div>
     </>
   );
-}
-
-export function loader(queryClient) {
-  return async ({ params }) => {
-    const bq = bookQuery(params.id);
-
-    const bookData =
-      queryClient.getQueryData(bq.queryKey) ??
-      (await queryClient.fetchQuery(bq));
-
-    const pq = pageQuery(params.id, params.page);
-
-    const pageData =
-      queryClient.getQueryData(pq.queryKey) ??
-      (await queryClient.fetchQuery(pq));
-
-    return { bookData, pageData };
-  };
-}
-
-function bookQuery(id) {
-  return {
-    queryKey: ["bookData", id],
-    queryFn: async () => {
-      const bookResponse = await fetch(`http://localhost:5001/read/${id}/info`);
-      const book = await bookResponse.json();
-      return book;
-    },
-    refetchOnWindowFocus: false,
-  };
-}
-
-function pageQuery(bookId, pageNum) {
-  return {
-    queryKey: ["pageData", bookId, pageNum],
-    queryFn: async () => {
-      const pageResponse = await fetch(
-        `http://localhost:5001/read/${bookId}/${pageNum}/pageinfo`
-      );
-      const pageData = await pageResponse.json();
-      return pageData;
-    },
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  };
-}
-
-function useInitialize(book, page, settings) {
-  const navigation = useNavigation();
-
-  const paneLeftRef = useRef();
-  const paneRightRef = useRef();
-  const dividerRef = useRef();
-  const ctxMenuContainerRef = useRef();
-
-  const textItemRefs = useMemo(() => {
-    const refs = {};
-    page.forEach((para) =>
-      para.forEach((sentence) =>
-        sentence.forEach((item) => {
-          if (item.isWord) refs[item.id] = createRef(null);
-        })
-      )
-    );
-    return refs;
-  }, [page]);
-
-  useEffect(() => {
-    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
-  });
-
-  useEffect(() => {
-    const title = document.title;
-    document.title = `Reading "${book.title}"`;
-
-    return () => {
-      document.title = title;
-    };
-  }, [book.title]);
-
-  useEffect(() => {
-    function handleKeydown(e) {
-      setupKeydownEvents(e, actions, {
-        ...settings,
-        rtl: book.isRightToLeft,
-        bookId: book.id,
-        pageNum: book.currentPage,
-        sentenceDicts: book.dictionaries.sentence,
-      });
-    }
-
-    document.addEventListener("keydown", handleKeydown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeydown);
-    };
-  }, [
-    book.currentPage,
-    book.dictionaries.sentence,
-    book.id,
-    book.isRightToLeft,
-    settings,
-  ]);
-
-  return {
-    textItemRefs,
-    paneLeftRef,
-    paneRightRef,
-    dividerRef,
-    ctxMenuContainerRef,
-  };
-}
-
-function setupKeydownEvents(e, actions, settings) {
-  if (document.querySelectorAll(".word").length === 0) {
-    return; // Nothing to do.
-  }
-
-  const next = settings.rtl ? -1 : 1;
-  const prev = -1 * next;
-
-  // Map of shortcuts to lambdas:
-  const map = {
-    [settings.hotkey_StartHover]: actions.hotkey_StartHover,
-    [settings.hotkey_PrevWord]: () => actions.hotkey_PrevWord(".word", prev),
-    [settings.hotkey_NextWord]: () => actions.hotkey_NextWord(".word", next),
-    [settings.hotkey_PrevUnknownWord]: () =>
-      actions.hotkey_PrevUnknownWord(".word.status0", prev),
-    [settings.hotkey_NextUnknownWord]: () =>
-      actions.hotkey_NextUnknownWord(".word.status0", next),
-    [settings.hotkey_PrevSentence]: () =>
-      actions.hotkey_PrevSentence(".sentencestart", prev),
-    [settings.hotkey_NextSentence]: () =>
-      actions.hotkey_NextSentence(".sentencestart", next),
-    [settings.hotkey_StatusUp]: () => actions.hotkey_StatusUp(+1),
-    [settings.hotkey_StatusDown]: () => actions.hotkey_StatusDown(-1),
-    [settings.hotkey_Bookmark]: () =>
-      actions.hotkey_Bookmark(settings.bookId, settings.pageNum),
-    [settings.hotkey_CopySentence]: () =>
-      actions.hotkey_CopySentence("sentence-id"),
-    [settings.hotkey_CopyPara]: () => actions.hotkey_CopyPara("paragraph-id"),
-    [settings.hotkey_CopyPage]: () => actions.hotkey_CopyPage(null),
-    [settings.hotkey_EditPage]: () =>
-      actions.hotkey_EditPage(settings.bookId, settings.pageNum),
-    [settings.hotkey_TranslateSentence]: () =>
-      actions.hotkey_TranslateSentence("sentence-id"),
-    [settings.hotkey_TranslatePara]: () =>
-      actions.hotkey_TranslatePara("paragraph-id"),
-    [settings.hotkey_TranslatePage]: () => actions.hotkey_TranslatePage(null),
-    [settings.hotkey_NextTheme]: actions.hotkey_NextTheme,
-    [settings.hotkey_Status1]: () => actions.hotkey_Status1(1),
-    [settings.hotkey_Status2]: () => actions.hotkey_Status2(2),
-    [settings.hotkey_Status3]: () => actions.hotkey_Status3(3),
-    [settings.hotkey_Status4]: () => actions.hotkey_Status4(4),
-    [settings.hotkey_Status5]: () => actions.hotkey_Status5(5),
-    [settings.hotkey_StatusIgnore]: () => actions.hotkey_StatusIgnore(98),
-    [settings.hotkey_StatusWellKnown]: () => actions.hotkey_StatusWellKnown(99),
-    [settings.hotkey_DeleteTerm]: () => actions.hotkey_DeleteTerm(0),
-
-    [settings.hotkey_ToggleHighlight]: actions.hotkey_ToggleHighlight,
-    [settings.hotkey_ToggleFocus]: actions.hotkey_ToggleFocus,
-  };
-
-  const key = getPressedKeysAsString(e);
-  if (key in map) {
-    // Override any existing event - e.g., if "up" arrow is in the map,
-    // don't scroll screen.
-    e.preventDefault();
-    map[key]();
-  }
 }
 
 export default ReadPane;

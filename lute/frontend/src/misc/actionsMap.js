@@ -2,9 +2,6 @@ import {
   handleAddBookmark,
   handleTranslate,
   handleCopy,
-  adjustFontSize,
-  adjustLineHeight,
-  setColumnCount,
   handleEditPage,
 } from "./textActions";
 import {
@@ -25,15 +22,6 @@ export const actions = {
   copySentence: handleCopy,
   copyParagraph: handleCopy,
   copyPage: handleCopy,
-
-  fontSizeIncrease: adjustFontSize,
-  fontSizeDecrease: adjustFontSize,
-
-  lineHeightIncrease: adjustLineHeight,
-  lineHeightDecrease: adjustLineHeight,
-
-  setColumnCountOne: setColumnCount,
-  setColumnCountTwo: setColumnCount,
 
   addBookmark: () => handleAddBookmark(),
 
