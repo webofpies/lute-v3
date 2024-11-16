@@ -1,12 +1,10 @@
-/* eslint-disable react/prop-types */
-
 // lute\templates\read\termpopup.html
 
 export default function PopupInfo({ data }) {
   return (
     <div>
       <p>
-        <strong style={{ fontSize: "120%" }}>
+        <strong>
           {data.term} {data.parentterms && `(${data.parentterms})`}
         </strong>
       </p>
