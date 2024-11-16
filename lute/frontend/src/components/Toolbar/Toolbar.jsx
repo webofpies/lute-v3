@@ -1,5 +1,5 @@
-import { Fragment, memo } from "react";
-import { ActionIcon, Divider, Paper, Stack, Tooltip } from "@mantine/core";
+import { Fragment, memo, useState } from "react";
+import { ActionIcon, Divider, Group, Paper, Tooltip } from "@mantine/core";
 import classes from "./Toolbar.module.css";
 import {
   IconBaselineDensityMedium,
@@ -21,6 +21,7 @@ function Toolbar({
   onSetFontSize,
   onSetWidth,
 }) {
+  const [open, setOpen] = useState(false);
   const toolbarButtons = getToolbarButtons(
     fontSize,
     lineHeight,
@@ -32,19 +33,26 @@ function Toolbar({
   );
 
   return (
-    <Paper shadow="lg" withBorder className={classes.toolbar}>
-      <Stack wrap="no-wrap" gap={5} align="center">
+    <Paper
+      shadow="sm"
+      withBorder
+      style={{ translate: open ? "0 100%" : "0 5px" }}
+      className={classes.toolbar}
+      onClick={() => setOpen((v) => !v)}>
+      <Group wrap="no-wrap" gap={5} align="center" justify="center">
         {toolbarButtons.map((buttonGrp, index) => (
           <Fragment key={index}>
             <ActionIcon.Group orientation="horizontal">
               {buttonGrp.map((button) => {
                 const Icon = button.icon;
                 return (
-                  <Tooltip
-                    key={button.label}
-                    position="right"
-                    label={button.label}>
-                    <ActionIcon size="1.6rem" onClick={button.action}>
+                  <Tooltip key={button.label} label={button.label}>
+                    <ActionIcon
+                      size="1.4rem"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        button.action();
+                      }}>
                       <Icon className={classes.icon} />
                     </ActionIcon>
                   </Tooltip>
@@ -53,11 +61,11 @@ function Toolbar({
             </ActionIcon.Group>
 
             {index !== toolbarButtons.length - 1 && (
-              <Divider size="xs" orientation="horizontal" w="100%" />
+              <Divider size="xs" orientation="vertical" />
             )}
           </Fragment>
         ))}
-      </Stack>
+      </Group>
     </Paper>
   );
 }

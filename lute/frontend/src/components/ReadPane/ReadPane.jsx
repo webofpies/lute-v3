@@ -146,15 +146,6 @@ function ReadPane() {
   return (
     <>
       <DrawerMenu opened={drawerOpened} close={drawerClose} />
-      <Toolbar
-        width={state.width}
-        fontSize={state.fontSize}
-        lineHeight={state.lineHeight}
-        onSetColumnCount={handleSetColumnCount}
-        onSetLineHeight={handleSetLineHeight}
-        onSetFontSize={handleSetFontSize}
-        onSetWidth={handleSetWidth}
-      />
       <ContextMenu ref={ctxMenuContainerRef} />
 
       <div ref={paneMainRef} style={{ height: "100%" }}>
@@ -162,16 +153,27 @@ function ReadPane() {
           ref={paneLeftRef}
           className={`${styles.paneLeft}`}
           style={{ width: `${state.focusMode ? 100 : state.width}%` }}>
-          <ReadPaneHeader
-            book={book}
-            drawerOpen={drawerOpen}
-            pageNum={Number(pageNum)}
-            focusMode={state.focusMode}
-            highlights={state.highlights}
-            onToggleFocusMode={handleToggleFocusMode}
-            onToggleHighlights={handleToggleHighlights}
-          />
-          {book.audio.name && <Player book={book} />}
+          <div style={{ position: "relative" }}>
+            <ReadPaneHeader
+              book={book}
+              drawerOpen={drawerOpen}
+              pageNum={Number(pageNum)}
+              focusMode={state.focusMode}
+              highlights={state.highlights}
+              onToggleFocusMode={handleToggleFocusMode}
+              onToggleHighlights={handleToggleHighlights}
+            />
+            {book.audio.name && <Player book={book} />}
+            <Toolbar
+              width={state.width}
+              fontSize={state.fontSize}
+              lineHeight={state.lineHeight}
+              onSetColumnCount={handleSetColumnCount}
+              onSetLineHeight={handleSetLineHeight}
+              onSetFontSize={handleSetFontSize}
+              onSetWidth={handleSetWidth}
+            />
+          </div>
 
           <ScrollArea ref={ctxMenuContainerRef} flex={1}>
             <div

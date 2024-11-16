@@ -37,7 +37,10 @@ function ReadPaneHeader({
   const isLoading = navigation.state === "loading";
 
   return (
-    <Paper radius={0} shadow="sm">
+    <Paper
+      radius={0}
+      shadow="sm"
+      styles={{ root: { position: "relative", zIndex: 2 } }}>
       <Group gap={10} wrap="nowrap" align="center" className={styles.header}>
         <ActionIcon onClick={drawerOpen} size="md">
           <IconMenu2 />

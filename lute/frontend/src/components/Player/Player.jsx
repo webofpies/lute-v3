@@ -115,7 +115,11 @@ function Player({ book }) {
   }
 
   return (
-    <Paper withBorder radius={0} shadow="sm">
+    <Paper
+      withBorder
+      radius={0}
+      shadow="sm"
+      styles={{ root: { position: "relative", zIndex: 2 } }}>
       <Group
         justify="space-between"
         align="center"
