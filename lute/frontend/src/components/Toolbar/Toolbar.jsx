@@ -1,5 +1,6 @@
 import { Fragment, memo, useState } from "react";
 import { ActionIcon, Divider, Group, Paper, Tooltip } from "@mantine/core";
+import { useClickOutside } from "@mantine/hooks";
 import classes from "./Toolbar.module.css";
 import {
   IconBaselineDensityMedium,
@@ -22,6 +23,8 @@ function Toolbar({
   onSetWidth,
 }) {
   const [open, setOpen] = useState(false);
+  const ref = useClickOutside(() => setOpen(false));
+
   const toolbarButtons = getToolbarButtons(
     fontSize,
     lineHeight,
@@ -34,6 +37,7 @@ function Toolbar({
 
   return (
     <Paper
+      ref={ref}
       shadow="sm"
       withBorder
       style={{ translate: open ? "0 100%" : "0 5px" }}
