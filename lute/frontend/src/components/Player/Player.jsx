@@ -119,7 +119,9 @@ function Player({ book }) {
       withBorder
       radius={0}
       shadow="sm"
-      styles={{ root: { position: "relative", zIndex: 2 } }}>
+      styles={{
+        root: { position: "relative", zIndex: 2, borderInline: "none" },
+      }}>
       <Group
         justify="space-between"
         align="center"

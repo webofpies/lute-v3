@@ -68,7 +68,9 @@ function ReadPaneHeader({
             refProp="rootRef">
             <Switch
               checked={focusMode}
-              onChange={onToggleFocusMode}
+              onChange={(e) =>
+                onToggleFocusMode(Boolean(e.currentTarget.checked))
+              }
               size="sm"
               onLabel="ON"
               offLabel="OFF"
