@@ -132,6 +132,11 @@ function removeFlash() {
   );
 }
 
+function removeAllContainingClass(className) {
+  const elements = Array.from(document.querySelectorAll(`.${className}`));
+  elements.forEach((element) => element.classList.remove(`${className}`));
+}
+
 export {
   getFromLocalStorage,
   convertPixelsToRem,
@@ -142,4 +147,5 @@ export {
   getMatchedTextItems,
   addFlash,
   removeFlash,
+  removeAllContainingClass,
 };

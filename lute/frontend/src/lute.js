@@ -1,4 +1,4 @@
-import { getTextItemsText } from "./misc/utils";
+import { getTextItemsText, removeAllContainingClass } from "./misc/utils";
 
 let selectionStart = null;
 let selectionStartShiftHeld = false;
@@ -120,6 +120,17 @@ function hoverOut() {
   removeAllContainingClass("wordhover");
 }
 
+function handleClickOutside(e) {
+  if (e.button !== 0) return;
+  if (!e.target.classList.contains("textitem")) {
+    removeAllContainingClass("kwordmarked");
+    removeAllContainingClass("newmultiterm");
+    return { data: null };
+  }
+
+  return null;
+}
+
 function getSelectedInRange(startEl, endEl) {
   const [startord, endord] = [
     parseInt(startEl.dataset.order),
@@ -135,15 +146,11 @@ function getSelectedInRange(startEl, endEl) {
   return selected;
 }
 
-function removeAllContainingClass(className) {
-  const elements = Array.from(document.querySelectorAll(`.${className}`));
-  elements.forEach((element) => element.classList.remove(`${className}`));
-}
-
 export {
   startHoverMode,
   handleMouseDown,
   handleMouseOver,
   handleMouseUp,
   hoverOut,
+  handleClickOutside,
 };

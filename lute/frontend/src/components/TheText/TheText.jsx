@@ -48,6 +48,7 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
                       onMouseUp={(e) => {
                         if (e.button !== 0) return;
                         const termData = handleMouseUp(e);
+                        if (!termData) return;
                         handleSetTerm(termData);
                         handleCopyText(termData);
                       }}

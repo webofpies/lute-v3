@@ -46,6 +46,10 @@ body {
   border-radius: 2px;
 }
 
+.newmultiterm {
+  border-radius: 0;
+}
+
 .flash {
   animation: flash-animation 0.3s 2 ease;
 }
@@ -92,5 +96,5 @@ body {
 }
 
 .newmultiterm {
-  background: yellow;
+  background: #ffe066;
 }

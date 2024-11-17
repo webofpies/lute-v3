@@ -16,6 +16,7 @@ import { UserSettingsContext } from "../../context/UserSettingsContext";
 import { useInitialize } from "../../hooks/book";
 import { bookQuery, pageQuery } from "../../queries/book";
 import { getFromLocalStorage } from "../../misc/utils";
+import { handleClickOutside } from "../../lute";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -108,7 +109,14 @@ function ReadPane() {
             />
           </div>
 
-          <ScrollArea ref={ctxMenuContainerRef} flex={1}>
+          <ScrollArea
+            ref={ctxMenuContainerRef}
+            flex={1}
+            onMouseDown={(e) => {
+              const res = handleClickOutside(e);
+              if (!res) return;
+              setActiveTerm(res);
+            }}>
             <div
               className={`${styles.textContainer}`}
               style={{
