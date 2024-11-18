@@ -1,8 +1,8 @@
 import { memo, useState } from "react";
-import { QueryClient } from "@tanstack/react-query";
 import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import PopupInfo from "./PopupInfo";
+import { QueryClient } from "@tanstack/react-query";
+import PopupData from "./PopupData";
 
 const queryClient = new QueryClient();
 
@@ -12,9 +12,10 @@ function Popup({ children, id }) {
 
   return (
     <Popover
-      transitionProps={{ duration: 50 }}
       position="bottom"
+      middlewares={{ flip: { fallbackPlacements: ["top", "right", "left"] } }}
       withArrow
+      transitionProps={{ duration: 150 }}
       shadow="md"
       opened={opened}
       onOpen={async () => setPopupData(await handleFetch(id))}
@@ -24,7 +25,7 @@ function Popup({ children, id }) {
       <Popover.Target>{children}</Popover.Target>
       {popupData && (
         <Popover.Dropdown>
-          <PopupInfo data={popupData} />
+          <PopupData data={popupData} />
         </Popover.Dropdown>
       )}
     </Popover>

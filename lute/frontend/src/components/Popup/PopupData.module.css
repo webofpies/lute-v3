@@ -1,0 +1,23 @@
+.container {
+  max-width: 400px;
+  font-size: 0.95rem;
+}
+
+.term {
+  font-weight: 700;
+}
+
+.translation {
+  white-space: break-spaces;
+}
+
+.image {
+  max-width: 150px;
+  max-height: 150px;
+  width: auto;
+  height: auto;
+}
+
+.td {
+  vertical-align: top;
+}

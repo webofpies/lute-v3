@@ -466,11 +466,10 @@ def popup_content(termid):
             "term": d["term"].text,
             "translation": d["term"].translation,
             "romanization": d["term"].romanization,
-            "flashmsg": d["flashmsg"],
-            "term_tags": d["term_tags"],
-            "term_images": d["term_images"],
-            "parentdata": d["parentdata"],
-            "parentterms": d["parentterms"],
-            "componentdata": d["components"],
+            "tags": d["term_tags"],
+            "images": d["term_images"],
+            "parentData": d["parentdata"],
+            "parentTerms": d["parentterms"],
+            "componentData": d["components"],
         }
     )
