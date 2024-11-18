@@ -1,8 +1,8 @@
-import { useContext, useReducer, useState } from "react";
+import { useContext, useReducer, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { Divider, ScrollArea, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMove } from "@mantine/hooks";
 import LearnPane from "./LearnPane";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
@@ -26,6 +26,8 @@ function reducer(state, action) {
       return { ...state, highlights: action.payload };
     case "setWidth":
       return { ...state, paneWidth: action.payload };
+    case "setHeight":
+      return { ...state, paneHeight: action.payload };
     case "setColumnCount":
       return { ...state, columnCount: action.payload };
     case "setLineHeight":
@@ -49,33 +51,42 @@ function ReadPane() {
     lineHeight: getFromLocalStorage("Lute.lineHeight", 1),
     columnCount: getFromLocalStorage("Lute.columnCount", 1),
     paneWidth: getFromLocalStorage("Lute.paneWidth", 50),
+    paneHeight: getFromLocalStorage("Lute.paneHeight", 50),
     highlights: getFromLocalStorage("Lute.highlights", true),
     focusMode: getFromLocalStorage("Lute.focusMode", false),
   });
 
   const {
     textItemRefs,
-    paneMainRef,
     paneLeftRef,
     paneRightRef,
     dividerRef,
     ctxMenuContainerRef,
     theTextRef,
-    handleResize,
+    termFormRef,
     handleToggleHighlights,
     handleToggleFocusMode,
     handleSetColumnCount,
     handleSetLineHeight,
     handleSetFontSize,
     handleSetWidth,
-    handleResizeBegan,
-    handleResizeDone,
-    handleResizing,
+    handleSetHeight,
+    handleXResizing,
+    handleYResizing,
   } = useInitialize(book, page, state, dispatch, settings);
 
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
+
+  const dividerVClickedRef = useRef(false);
+  const dividerHClickedRef = useRef(false);
+  const mousePosRef = useRef({ x: 0, y: 0 });
+  const { ref: paneMainRef } = useMove(({ x, y }) => {
+    mousePosRef.current = { x: x * 100, y: y * 100 };
+    if (dividerVClickedRef.current) handleXResizing(mousePosRef.current.x);
+    if (dividerHClickedRef.current) handleYResizing(mousePosRef.current.y);
+  });
 
   return (
     <>
@@ -151,17 +162,11 @@ function ReadPane() {
               styles={{ root: { width: "8px", border: "none" } }}
               className={`${styles.vdivider}`}
               orientation="vertical"
-              onMouseDown={(e) => {
-                handleResize(
-                  e,
-                  state.paneWidth,
-                  "horizontal",
-                  handleSetWidth,
-                  handleResizing
-                );
-                handleResizeBegan();
+              onMouseDown={() => (dividerVClickedRef.current = true)}
+              onMouseUp={() => {
+                dividerVClickedRef.current = false;
+                handleSetWidth(mousePosRef.current.x);
               }}
-              onMouseUp={handleResizeDone}
               onDoubleClick={() =>
                 state.paneWidth > 85 ? handleSetWidth(50) : handleSetWidth(95)
               }
@@ -172,7 +177,15 @@ function ReadPane() {
               className={`${styles.paneRight}`}
               style={{ width: `${100 - state.paneWidth}%` }}>
               {activeTerm.data && (
-                <LearnPane book={book} termData={activeTerm} />
+                <LearnPane
+                  height={state.paneHeight}
+                  onSetHeight={handleSetHeight}
+                  dividerHClickedRef={dividerHClickedRef}
+                  termFormRef={termFormRef}
+                  mousePosRef={mousePosRef}
+                  book={book}
+                  termData={activeTerm}
+                />
               )}
             </div>
           </>

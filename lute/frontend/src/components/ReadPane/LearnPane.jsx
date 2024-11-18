@@ -1,26 +1,24 @@
-import { memo, useRef, useState } from "react";
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Divider, LoadingOverlay, Stack } from "@mantine/core";
-import { useMouse } from "@mantine/hooks";
 import DictPane from "../DictPane/DictPane";
 import TermForm from "../TermForm/TermForm";
 import styles from "./ReadPane.module.css";
-import { handleResizeVertical } from "../../misc/textActions";
 
-function LearnPane({ book, termData }) {
+function LearnPane({
+  height,
+  onSetHeight,
+  dividerHClickedRef,
+  mousePosRef,
+  termFormRef,
+  book,
+  termData,
+}) {
   const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
-  const [height, setHeight] = useState(50);
-  const termFormRef = useRef();
-  const dictPaneRef = useRef();
-  const dividerRef = useRef();
-
-  const { ref, y } = useMouse();
-
   if (error) return "An error has occurred: " + error.message;
 
   return (
     <Stack
-      ref={ref}
       gap={0}
       dir="column"
       style={{ position: "relative", height: "100%" }}>
@@ -39,24 +37,20 @@ function LearnPane({ book, termData }) {
             <TermForm key={data.text} termData={data} />
           </div>
           <Divider
-            ref={dividerRef}
+            ref={dividerHClickedRef}
             className={styles.hdivider}
             styles={{ root: { height: "8px", border: "none" } }}
             orientation="horizontal"
-            onMouseDown={(e) =>
-              handleResizeVertical(
-                e,
-                height,
-                setHeight,
-                ref.current,
-                termFormRef.current,
-                dictPaneRef.current,
-                dividerRef.current,
-                y
-              )
-            }
+            onMouseDown={() => (dividerHClickedRef.current = true)}
+            onMouseUp={() => {
+              dividerHClickedRef.current = false;
+              onSetHeight(mousePosRef.current.y);
+            }}
+            onDoubleClick={() => {
+              height < 50 ? onSetHeight(5) : onSetHeight(50);
+            }}
           />
-          <div ref={dictPaneRef} className={styles.dictPane}>
+          <div className={styles.dictPane}>
             <DictPane term={data.text} dicts={book.dictionaries.term} />
           </div>
         </>

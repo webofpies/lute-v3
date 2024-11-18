@@ -11,7 +11,6 @@ import {
 import { actions } from "../misc/actionsMap";
 import { nprogress } from "@mantine/nprogress";
 import { clamp } from "../misc/utils";
-import { useMouse } from "@mantine/hooks";
 
 function useInitialize(book, page, state, dispatch, settings) {
   const paneLeftRef = useRef();
@@ -19,41 +18,7 @@ function useInitialize(book, page, state, dispatch, settings) {
   const dividerRef = useRef();
   const ctxMenuContainerRef = useRef();
   const theTextRef = useRef();
-  const { ref: paneMainRef, x: mousePosition } = useMouse();
-
-  function handleResize(e, currentSize, direction, onSetSize, onResizing) {
-    e.preventDefault();
-
-    let newSize;
-
-    const containerSize = parseFloat(
-      window
-        .getComputedStyle(paneMainRef.current)
-        .getPropertyValue(`${direction === "horizontal" ? "width" : "height"}`)
-    );
-
-    function handleMouseMove(e) {
-      const point = direction === "horizontal" ? e.clientX : e.clientY;
-
-      const delta = mousePosition - point;
-      const ratio = (delta / containerSize) * 100;
-      newSize = currentSize - ratio;
-
-      onResizing(newSize);
-    }
-
-    function handleMouseUp() {
-      paneMainRef.current.removeEventListener("mousemove", handleMouseMove);
-      if (!newSize) return; //do not set state if hasn't been resizing
-
-      onSetSize(newSize);
-    }
-
-    paneMainRef.current.addEventListener("mousemove", handleMouseMove);
-    paneMainRef.current.addEventListener("mouseup", handleMouseUp, {
-      once: true,
-    });
-  }
+  const termFormRef = useRef();
 
   function handleToggleHighlights(checked) {
     dispatch({ type: "setHighlights", payload: checked });
@@ -77,42 +42,38 @@ function useInitialize(book, page, state, dispatch, settings) {
   }
 
   function handleSetFontSize(size) {
-    const clamped = clamp(size, 0.5, 3);
-    const rounded = Number(clamped.toFixed(2));
-    dispatch({ type: "setFontSize", payload: rounded });
-    localStorage.setItem("Lute.fontSize", JSON.stringify(rounded));
+    const rounded = Number(size.toFixed(2));
+    const clamped = clamp(rounded, 0.5, 3);
+    dispatch({ type: "setFontSize", payload: clamped });
+    localStorage.setItem("Lute.fontSize", JSON.stringify(clamped));
   }
 
   function handleSetWidth(width) {
-    const clamped = clamp(width, 5, 95);
-    const rounded = Number(clamped.toFixed(3));
-    dispatch({ type: "setWidth", payload: rounded });
-    localStorage.setItem("Lute.paneWidth", JSON.stringify(rounded));
+    const rounded = Number(width.toFixed(3));
+    const clamped = clamp(rounded, 5, 95);
+    dispatch({ type: "setWidth", payload: clamped });
+    localStorage.setItem("Lute.paneWidth", JSON.stringify(clamped));
   }
 
-  function handleResizeBegan() {
-    paneLeftRef.current.style.pointerEvents = "none";
-    paneRightRef.current.style.pointerEvents = "none";
-    dividerRef.current.style.background = `linear-gradient(
-                                          90deg,
-                                          rgba(0, 0, 0, 0) 25%,
-                                          var(--mantine-color-blue-filled) 25%,
-                                          var(--mantine-color-blue-filled) 75%,
-                                          rgba(0, 0, 0, 0) 75%
-                                        )`;
+  function handleSetHeight(height) {
+    const rounded = Number(height.toFixed(3));
+    const clamped = clamp(rounded, 5, 95);
+    dispatch({ type: "setHeight", payload: clamped });
+    localStorage.setItem("Lute.paneHeight", JSON.stringify(clamped));
   }
 
-  function handleResizeDone() {
-    paneLeftRef.current.style.pointerEvents = "unset";
-    paneRightRef.current.style.pointerEvents = "unset";
-    dividerRef.current.style.removeProperty("background");
-  }
-
-  function handleResizing(width) {
-    const clamped = clamp(width, 5, 95);
+  function handleXResizing(size) {
+    const rounded = Number(size.toFixed(3));
+    const clamped = clamp(rounded, 5, 95);
     paneLeftRef.current.style.width = `${clamped}%`;
     dividerRef.current.style.left = `${clamped}%`;
     paneRightRef.current.style.width = `${100 - clamped}%`;
+  }
+
+  function handleYResizing(size) {
+    const rounded = Number(size.toFixed(3));
+    const clamped = clamp(rounded, 5, 95);
+    termFormRef.current.style.height = `${clamped}%`;
   }
 
   const textItemRefs = useMemo(() => {
@@ -183,22 +144,21 @@ function useInitialize(book, page, state, dispatch, settings) {
 
   return {
     textItemRefs,
-    paneMainRef,
     paneLeftRef,
     paneRightRef,
     dividerRef,
     ctxMenuContainerRef,
     theTextRef,
-    handleResize,
+    termFormRef,
     handleToggleHighlights,
     handleToggleFocusMode,
     handleSetColumnCount,
     handleSetLineHeight,
     handleSetFontSize,
     handleSetWidth,
-    handleResizeBegan,
-    handleResizeDone,
-    handleResizing,
+    handleSetHeight,
+    handleXResizing,
+    handleYResizing,
   };
 }
 

@@ -1,7 +1,6 @@
 import {
   getTextItemsText,
   getMatchedTextItems,
-  clamp,
   copyToClipboard,
   getPressedKeysAsString,
 } from "./utils";
@@ -154,51 +153,6 @@ async function handleCopy(textitem, unit) {
   return matched;
 }
 
-function handleResizeVertical(
-  e,
-  height,
-  setHeight,
-  ref,
-  termFormRef,
-  dictPaneRef,
-  dividerRef,
-  y
-) {
-  e.preventDefault();
-  termFormRef.style.pointerEvents = "none";
-  dictPaneRef.style.pointerEvents = "none";
-  dividerRef.style.background = `linear-gradient(
-                                  rgba(0, 0, 0, 0) 25%,
-                                  var(--mantine-color-blue-filled) 25%,
-                                  var(--mantine-color-blue-filled) 75%,
-                                  rgba(0, 0, 0, 0) 75%
-                                )`;
-
-  let newHeight;
-
-  const containerHeight = parseFloat(
-    window.getComputedStyle(ref).getPropertyValue("height")
-  );
-
-  function resize(e) {
-    const delta = y - e.clientY;
-    const ratioInPct = (delta / containerHeight) * 100;
-    newHeight = height - ratioInPct;
-
-    termFormRef.style.height = `${newHeight}%`;
-  }
-
-  ref.addEventListener("mousemove", resize);
-
-  ref.addEventListener("mouseup", () => {
-    setHeight(clamp(newHeight, 5, 95));
-    ref.removeEventListener("mousemove", resize);
-    termFormRef.style.pointerEvents = "unset";
-    dictPaneRef.style.pointerEvents = "unset";
-    dividerRef.style.removeProperty("background");
-  });
-}
-
 function setupKeydownEvents(e, actions, settings) {
   if (document.querySelectorAll(".word").length === 0) {
     return; // Nothing to do.
@@ -268,6 +222,5 @@ export {
   setHighlightsOn,
   setHighlightsOff,
   handleCopy,
-  handleResizeVertical,
   setupKeydownEvents,
 };
