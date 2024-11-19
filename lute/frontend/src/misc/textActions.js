@@ -99,14 +99,6 @@ let _get_translation_dict_index = function (sentence, dicts) {
   return new_index;
 };
 
-function setFocusModeOn(panel) {
-  panel.collapse();
-}
-
-function setFocusModeOff(panel) {
-  panel.expand();
-}
-
 function setHighlightsOn(refs) {
   Object.values(refs).forEach((ref) => {
     ref.current.style.removeProperty("background-color");
@@ -253,7 +245,6 @@ export {
   setFontSize,
   setLineHeight,
   setColumnCount,
-  // setPaneWidth,
   handleToggleHighlights,
   handleToggleFocusMode,
   handleSetColumnCount,
@@ -264,8 +255,6 @@ export {
   handleTranslate,
   setHighlightsOn,
   setHighlightsOff,
-  setFocusModeOn,
-  setFocusModeOff,
   handleCopy,
   setupKeydownEvents,
 };

@@ -5,8 +5,6 @@ import {
   setFontSize,
   setHighlightsOff,
   setHighlightsOn,
-  setFocusModeOff,
-  setFocusModeOn,
   setLineHeight,
   setupKeydownEvents,
 } from "../misc/textActions";
@@ -54,10 +52,6 @@ function useInitialize(book, page, state, settings) {
     setFontSize(refs.textItems, state.fontSize);
     setLineHeight(refs.textItems, state.lineHeight);
     setColumnCount(refs.theText, state.columnCount);
-    state.focusMode
-      ? setFocusModeOn(refs.paneRight.current)
-      : setFocusModeOff(refs.paneRight.current);
-
     state.highlights
       ? setHighlightsOn(refs.textItems)
       : setHighlightsOff(refs.textItems);
@@ -66,10 +60,8 @@ function useInitialize(book, page, state, settings) {
     state.fontSize,
     state.highlights,
     state.lineHeight,
-    state.focusMode,
     refs.textItems,
     refs.theText,
-    refs.paneRight,
   ]);
 
   useEffect(() => {

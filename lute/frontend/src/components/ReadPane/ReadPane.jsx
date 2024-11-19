@@ -113,26 +113,31 @@ function ReadPane() {
           <ReadFooter />
         </Panel>
 
-        <PanelResizeHandle
-          hitAreaMargins={{ coarse: 10, fine: 10 }}
-          style={{ display: state.focusMode ? "none" : "initial" }}
-          className={styles.resizeHandle}
-          onDoubleClick={() => {
-            const panel = refs.paneRight.current;
-            if (panel) {
-              panel.getSize() < 15 ? panel.resize(50) : panel.resize(5);
-            }
-          }}
-        />
+        {!state.focusMode && (
+          <>
+            <PanelResizeHandle
+              hitAreaMargins={{ coarse: 10, fine: 10 }}
+              className={styles.resizeHandle}
+              onDoubleClick={() => {
+                const panel = refs.paneRight.current;
+                if (panel) {
+                  panel.getSize() < 15 ? panel.resize(50) : panel.resize(5);
+                }
+              }}
+            />
 
-        <Panel
-          ref={refs.paneRight}
-          defaultSize={50}
-          order={2}
-          collapsible={true}
-          minSize={5}>
-          {activeTerm.data && <LearnPane book={book} termData={activeTerm} />}
-        </Panel>
+            <Panel
+              ref={refs.paneRight}
+              defaultSize={50}
+              order={2}
+              collapsible={true}
+              minSize={5}>
+              {activeTerm.data && (
+                <LearnPane book={book} termData={activeTerm} />
+              )}
+            </Panel>
+          </>
+        )}
       </PanelGroup>
     </>
   );
