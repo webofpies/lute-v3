@@ -23,16 +23,12 @@ import {
 import ReadSlider from "./ReadSlider";
 import PageActionsMenu from "./PageActionsMenu";
 import styles from "./ReadPane.module.css";
+import {
+  handleToggleFocusMode,
+  handleToggleHighlights,
+} from "../../misc/textActions";
 
-function ReadPaneHeader({
-  drawerOpen,
-  pageNum,
-  book,
-  focusMode,
-  highlights,
-  onToggleHighlights,
-  onToggleFocusMode,
-}) {
+function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
@@ -67,10 +63,13 @@ function ReadPaneHeader({
             openDelay={800}
             refProp="rootRef">
             <Switch
-              checked={focusMode}
-              onChange={(e) =>
-                onToggleFocusMode(Boolean(e.currentTarget.checked))
-              }
+              checked={state.focusMode}
+              onChange={(e) => {
+                handleToggleFocusMode(
+                  Boolean(e.currentTarget.checked),
+                  dispatch
+                );
+              }}
               size="sm"
               onLabel="ON"
               offLabel="OFF"
@@ -90,9 +89,12 @@ function ReadPaneHeader({
             refProp="rootRef">
             <Switch
               size="sm"
-              checked={highlights}
+              checked={state.highlights}
               onChange={(e) => {
-                onToggleHighlights(Boolean(e.currentTarget.checked));
+                handleToggleHighlights(
+                  Boolean(e.currentTarget.checked),
+                  dispatch
+                );
               }}
               onLabel="ON"
               offLabel="OFF"

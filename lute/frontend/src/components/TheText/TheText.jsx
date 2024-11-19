@@ -14,7 +14,7 @@ import {
   handleMouseUp,
 } from "../../lute";
 
-function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
+function TheText({ pageData, onSetActiveTerm, refs }) {
   useEffect(() => {
     startHoverMode();
   });
@@ -26,7 +26,7 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
   }
 
   return (
-    <div ref={theTextRef} className="thetext">
+    <div ref={refs.theText} className="thetext">
       {pageData.map((paragraph, index) => (
         <p key={index} className="textparagraph">
           {paragraph.map((sentence, index) => (
@@ -38,7 +38,7 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
                 textitem.isWord ? (
                   <Popup id={textitem.wid} key={textitem.id}>
                     <TextItem
-                      ref={textItemRefs[textitem.order]}
+                      ref={refs.textItems[textitem.order]}
                       data={textitem}
                       onMouseDown={(e) => {
                         // trigger only with lmb
@@ -59,7 +59,7 @@ function TheText({ pageData, onSetActiveTerm, textItemRefs, theTextRef }) {
                 ) : (
                   // non-word spans
                   <TextItem
-                    ref={textItemRefs[textitem.order]}
+                    ref={refs.textItems[textitem.order]}
                     data={textitem}
                     key={textitem.id}
                   />

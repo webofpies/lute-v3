@@ -1,8 +1,9 @@
-import { useContext, useReducer, useRef, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { Divider, ScrollArea, Title } from "@mantine/core";
-import { useDisclosure, useMove } from "@mantine/hooks";
+import { ScrollArea, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import LearnPane from "./LearnPane";
 import ReadPaneHeader from "./ReadPaneHeader";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
@@ -15,7 +16,7 @@ import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
 import { useInitialize } from "../../hooks/book";
 import { bookQuery, pageQuery } from "../../queries/book";
-import { getFromLocalStorage } from "../../misc/utils";
+import { getFromLocalStorage, paneResizeStorage } from "../../misc/utils";
 import { handleClickOutside } from "../../lute";
 
 function reducer(state, action) {
@@ -24,10 +25,6 @@ function reducer(state, action) {
       return { ...state, focusMode: action.payload };
     case "setHighlights":
       return { ...state, highlights: action.payload };
-    case "setWidth":
-      return { ...state, paneWidth: action.payload };
-    case "setHeight":
-      return { ...state, paneHeight: action.payload };
     case "setColumnCount":
       return { ...state, columnCount: action.payload };
     case "setLineHeight":
@@ -50,78 +47,43 @@ function ReadPane() {
     fontSize: getFromLocalStorage("Lute.fontSize", 1),
     lineHeight: getFromLocalStorage("Lute.lineHeight", 1),
     columnCount: getFromLocalStorage("Lute.columnCount", 1),
-    paneWidth: getFromLocalStorage("Lute.paneWidth", 50),
-    paneHeight: getFromLocalStorage("Lute.paneHeight", 50),
     highlights: getFromLocalStorage("Lute.highlights", true),
     focusMode: getFromLocalStorage("Lute.focusMode", false),
   });
 
-  const {
-    textItemRefs,
-    paneLeftRef,
-    paneRightRef,
-    dividerRef,
-    ctxMenuContainerRef,
-    theTextRef,
-    termFormRef,
-    handleToggleHighlights,
-    handleToggleFocusMode,
-    handleSetColumnCount,
-    handleSetLineHeight,
-    handleSetFontSize,
-    handleSetWidth,
-    handleSetHeight,
-    handleXResizing,
-    handleYResizing,
-  } = useInitialize(book, page, state, dispatch, settings);
+  const refs = useInitialize(book, page, state, settings);
 
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
 
-  const dividerVClickedRef = useRef(false);
-  const dividerHClickedRef = useRef(false);
-  const mousePosRef = useRef({ x: 0, y: 0 });
-  const { ref: paneMainRef } = useMove(({ x, y }) => {
-    mousePosRef.current = { x: x * 100, y: y * 100 };
-    if (dividerVClickedRef.current) handleXResizing(mousePosRef.current.x);
-    if (dividerHClickedRef.current) handleYResizing(mousePosRef.current.y);
-  });
-
   return (
     <>
       <DrawerMenu opened={drawerOpened} close={drawerClose} />
-      <ContextMenu ref={ctxMenuContainerRef} />
-
-      <div ref={paneMainRef} style={{ height: "100%" }}>
-        <div
-          ref={paneLeftRef}
-          className={`${styles.paneLeft}`}
-          style={{ width: `${state.focusMode ? 100 : state.paneWidth}%` }}>
+      <ContextMenu ref={refs.contextMenuArea} />
+      <PanelGroup
+        autoSaveId="Lute.horizontalSize"
+        direction="horizontal"
+        storage={paneResizeStorage}>
+        <Panel
+          order={1}
+          defaultSize={50}
+          minSize={30}
+          className={`${styles.paneLeft}`}>
           <div style={{ position: "relative" }}>
             <ReadPaneHeader
               book={book}
               drawerOpen={drawerOpen}
               pageNum={Number(pageNum)}
-              focusMode={state.focusMode}
-              highlights={state.highlights}
-              onToggleFocusMode={handleToggleFocusMode}
-              onToggleHighlights={handleToggleHighlights}
+              state={state}
+              dispatch={dispatch}
             />
             {book.audio.name && <Player book={book} />}
-            <Toolbar
-              width={state.paneWidth}
-              fontSize={state.fontSize}
-              lineHeight={state.lineHeight}
-              onSetColumnCount={handleSetColumnCount}
-              onSetLineHeight={handleSetLineHeight}
-              onSetFontSize={handleSetFontSize}
-              onSetWidth={handleSetWidth}
-            />
+            <Toolbar state={state} dispatch={dispatch} />
           </div>
-
           <ScrollArea
-            ref={ctxMenuContainerRef}
+            type="scroll"
+            ref={refs.contextMenuArea}
             flex={1}
             onMouseDown={(e) => {
               const res = handleClickOutside(e);
@@ -131,14 +93,12 @@ function ReadPane() {
             <div
               className={`${styles.textContainer}`}
               style={{
-                width: `${state.focusMode ? state.paneWidth : 100}%`,
+                width: `${state.focusMode ? 50 : 100}%`,
                 marginInline: state.focusMode && "auto",
               }}>
               {Number(pageNum) === 1 && (
                 <Title
-                  style={{ overflowWrap: "break-word" }}
-                  size="xl"
-                  mb="lg"
+                  className={styles.title}
                   dir={book.isRightToLeft ? "rtl" : ""}>
                   {book.title}
                 </Title>
@@ -146,51 +106,34 @@ function ReadPane() {
               <TheText
                 pageData={page}
                 onSetActiveTerm={setActiveTerm}
-                textItemRefs={textItemRefs}
-                theTextRef={theTextRef}
+                refs={refs}
               />
             </div>
           </ScrollArea>
           <ReadFooter />
-        </div>
+        </Panel>
 
-        {!state.focusMode && (
-          <>
-            <Divider
-              ref={dividerRef}
-              style={{ left: `${state.paneWidth}%` }}
-              styles={{ root: { width: "8px", border: "none" } }}
-              className={`${styles.vdivider}`}
-              orientation="vertical"
-              onMouseDown={() => (dividerVClickedRef.current = true)}
-              onMouseUp={() => {
-                dividerVClickedRef.current = false;
-                handleSetWidth(mousePosRef.current.x);
-              }}
-              onDoubleClick={() =>
-                state.paneWidth > 85 ? handleSetWidth(50) : handleSetWidth(95)
-              }
-            />
+        <PanelResizeHandle
+          hitAreaMargins={{ coarse: 10, fine: 10 }}
+          style={{ display: state.focusMode ? "none" : "initial" }}
+          className={styles.resizeHandle}
+          onDoubleClick={() => {
+            const panel = refs.paneRight.current;
+            if (panel) {
+              panel.getSize() < 15 ? panel.resize(50) : panel.resize(5);
+            }
+          }}
+        />
 
-            <div
-              ref={paneRightRef}
-              className={`${styles.paneRight}`}
-              style={{ width: `${100 - state.paneWidth}%` }}>
-              {activeTerm.data && (
-                <LearnPane
-                  height={state.paneHeight}
-                  onSetHeight={handleSetHeight}
-                  dividerHClickedRef={dividerHClickedRef}
-                  termFormRef={termFormRef}
-                  mousePosRef={mousePosRef}
-                  book={book}
-                  termData={activeTerm}
-                />
-              )}
-            </div>
-          </>
-        )}
-      </div>
+        <Panel
+          ref={refs.paneRight}
+          defaultSize={50}
+          order={2}
+          collapsible={true}
+          minSize={5}>
+          {activeTerm.data && <LearnPane book={book} termData={activeTerm} />}
+        </Panel>
+      </PanelGroup>
     </>
   );
 }

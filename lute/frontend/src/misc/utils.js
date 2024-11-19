@@ -8,6 +8,21 @@ function getFromLocalStorage(item, defaultVal) {
   }
 }
 
+const paneResizeStorage = (() => {
+  function strip(name) {
+    return name.replace("react-resizable-panels:", "");
+  }
+
+  return {
+    getItem(name) {
+      return JSON.parse(localStorage.getItem(strip(name)));
+    },
+    setItem(name, value) {
+      localStorage.setItem(strip(name), JSON.stringify(value));
+    },
+  };
+})();
+
 function convertPixelsToRem(sizePx) {
   const bodyFontSize = window.getComputedStyle(
     document.querySelector("body")
@@ -138,6 +153,7 @@ function removeAllContainingClass(className) {
 }
 
 export {
+  paneResizeStorage,
   getFromLocalStorage,
   convertPixelsToRem,
   clamp,

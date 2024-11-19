@@ -1,19 +1,14 @@
-import { memo } from "react";
+import { memo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Divider, LoadingOverlay, Stack } from "@mantine/core";
+import { LoadingOverlay, Stack } from "@mantine/core";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DictPane from "../DictPane/DictPane";
 import TermForm from "../TermForm/TermForm";
 import styles from "./ReadPane.module.css";
+import { paneResizeStorage } from "../../misc/utils";
 
-function LearnPane({
-  height,
-  onSetHeight,
-  dividerHClickedRef,
-  mousePosRef,
-  termFormRef,
-  book,
-  termData,
-}) {
+function LearnPane({ book, termData }) {
+  const termPanelRef = useRef();
   const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
   if (error) return "An error has occurred: " + error.message;
 
@@ -28,32 +23,36 @@ function LearnPane({
         overlayProps={{ radius: "sm", blur: 2 }}
       />
       {isSuccess && (
-        <>
-          <div
-            ref={termFormRef}
-            style={{ height: `${height}%` }}
-            className="paneTerm">
+        <PanelGroup
+          direction="vertical"
+          autoSaveId="Lute.verticalSize"
+          storage={paneResizeStorage}>
+          <Panel order={1} defaultSize={40} ref={termPanelRef}>
             {/* need key to recreate the form */}
             <TermForm key={data.text} termData={data} />
-          </div>
-          <Divider
-            ref={dividerHClickedRef}
-            className={styles.hdivider}
-            styles={{ root: { height: "8px", border: "none" } }}
-            orientation="horizontal"
-            onMouseDown={() => (dividerHClickedRef.current = true)}
-            onMouseUp={() => {
-              dividerHClickedRef.current = false;
-              onSetHeight(mousePosRef.current.y);
-            }}
+          </Panel>
+
+          <PanelResizeHandle
+            hitAreaMargins={{ coarse: 10, fine: 10 }}
+            className={styles.resizeHandle}
             onDoubleClick={() => {
-              height < 50 ? onSetHeight(5) : onSetHeight(50);
+              const panel = termPanelRef.current;
+              if (panel) {
+                panel.getSize() < 15 ? panel.resize(40) : panel.resize(5);
+              }
             }}
           />
-          <div className={styles.dictPane}>
+
+          <Panel
+            order={1}
+            defaultSize={60}
+            minSize={20}
+            collapsible
+            collapsedSize={0}
+            className={styles.dictPane}>
             <DictPane term={data.text} dicts={book.dictionaries.term} />
-          </div>
-        </>
+          </Panel>
+        </PanelGroup>
       )}
     </Stack>
   );

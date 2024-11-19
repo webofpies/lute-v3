@@ -7,32 +7,25 @@ import {
   IconBaselineDensitySmall,
   IconColumns1,
   IconColumns2,
-  IconLayoutSidebarLeftExpand,
-  IconLayoutSidebarRightExpand,
+  // IconLayoutSidebarLeftExpand,
+  // IconLayoutSidebarRightExpand,
   IconTextDecrease,
   IconTextIncrease,
 } from "@tabler/icons-react";
+import {
+  handleSetColumnCount,
+  handleSetLineHeight,
+  handleSetFontSize,
+} from "../../misc/textActions";
 
-function Toolbar({
-  fontSize,
-  lineHeight,
-  width,
-  onSetColumnCount,
-  onSetLineHeight,
-  onSetFontSize,
-  onSetWidth,
-}) {
+function Toolbar({ state, dispatch }) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(() => setOpen(false));
 
   const toolbarButtons = getToolbarButtons(
-    fontSize,
-    lineHeight,
-    width,
-    onSetColumnCount,
-    onSetLineHeight,
-    onSetFontSize,
-    onSetWidth
+    state,
+    // onSetWidth,
+    dispatch
   );
 
   return (
@@ -74,64 +67,56 @@ function Toolbar({
   );
 }
 
-function getToolbarButtons(
-  fontSize,
-  lineHeight,
-  width,
-  onSetColumnCount,
-  onSetLineHeight,
-  onSetFontSize,
-  onSetWidth
-) {
+function getToolbarButtons(state, dispatch) {
   return [
     [
       {
         label: "Descrease font size",
         icon: IconTextDecrease,
-        action: () => onSetFontSize(fontSize - 0.1),
+        action: () => handleSetFontSize(state.fontSize - 0.1, dispatch),
       },
       {
         label: "Increase font size",
         icon: IconTextIncrease,
-        action: () => onSetFontSize(fontSize + 0.1),
+        action: () => handleSetFontSize(state.fontSize + 0.1, dispatch),
       },
     ],
     [
       {
         label: "Descrease line height",
         icon: IconBaselineDensityMedium,
-        action: () => onSetLineHeight(lineHeight - 1),
+        action: () => handleSetLineHeight(state.lineHeight - 1, dispatch),
       },
       {
         label: "Increase line height",
         icon: IconBaselineDensitySmall,
-        action: () => onSetLineHeight(lineHeight + 1),
+        action: () => handleSetLineHeight(state.lineHeight + 1, dispatch),
       },
     ],
     [
       {
         label: "Set columns to 1",
         icon: IconColumns1,
-        action: () => onSetColumnCount(1),
+        action: () => handleSetColumnCount(1, dispatch),
       },
       {
         label: "Set columns to 2",
         icon: IconColumns2,
-        action: () => onSetColumnCount(2),
+        action: () => handleSetColumnCount(2, dispatch),
       },
     ],
-    [
-      {
-        label: "Decrease pane width",
-        icon: IconLayoutSidebarRightExpand,
-        action: () => onSetWidth(width * 0.95),
-      },
-      {
-        label: "Increase pane width",
-        icon: IconLayoutSidebarLeftExpand,
-        action: () => onSetWidth(width * 1.05),
-      },
-    ],
+    // [
+    //   {
+    //     label: "Decrease pane width",
+    //     icon: IconLayoutSidebarRightExpand,
+    //     action: "() => onSetWidth(width * 0.95)",
+    //   },
+    //   {
+    //     label: "Increase pane width",
+    //     icon: IconLayoutSidebarLeftExpand,
+    //     action: "() => onSetWidth(width * 1.05)",
+    //   },
+    // ],
   ];
 }
 

@@ -8,9 +8,12 @@
 
 .paneRight {
   height: 100%;
-  position: fixed;
-  right: 0;
-  top: 0;
+}
+
+.title {
+  overflow-wrap: break-word;
+  font-size: 1.4rem;
+  margin-bottom: 0.9rem;
 }
 
 .textContainer {
@@ -25,50 +28,31 @@
   overflow: hidden;
 }
 
-.vdivider {
-  cursor: ew-resize;
-  position: fixed;
-  top: 0;
-  height: 100vh;
-  translate: -5px;
-  z-index: 12;
-  background: linear-gradient(
+.resizeHandle {
+  flex: 0 0 2px;
+  position: relative;
+  outline: none;
+
+  /* background: linear-gradient(
     90deg,
     #00000000 35%,
     #e3e3e3 35%,
     #e3e3e3 65%,
     #00000000 65%
-  );
+  ); */
+  background-color: #e3e3e3;
+  transition: background-color 0.1s;
 }
 
-.vdivider:hover {
-  background: linear-gradient(
+.resizeHandle[data-resize-handle-active] {
+  /* background: linear-gradient(
     90deg,
     #00000000 25%,
     var(--mantine-color-blue-filled) 25%,
     var(--mantine-color-blue-filled) 75%,
     #00000000 75%
-  );
-}
-
-.hdivider {
-  cursor: ns-resize;
-  z-index: 1;
-  background: linear-gradient(
-    #00000000 35%,
-    #e3e3e3 35%,
-    #e3e3e3 65%,
-    #00000000 65%
-  );
-}
-
-.hdivider:hover {
-  background: linear-gradient(
-    #00000000 25%,
-    var(--mantine-color-blue-filled) 25%,
-    var(--mantine-color-blue-filled) 75%,
-    #00000000 75%
-  );
+  ); */
+  background-color: var(--mantine-color-blue-filled);
 }
 
 .dictPane {

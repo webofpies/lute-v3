@@ -5,88 +5,33 @@ import {
   setFontSize,
   setHighlightsOff,
   setHighlightsOn,
+  setFocusModeOff,
+  setFocusModeOn,
   setLineHeight,
   setupKeydownEvents,
 } from "../misc/textActions";
 import { actions } from "../misc/actionsMap";
 import { nprogress } from "@mantine/nprogress";
-import { clamp } from "../misc/utils";
 
-function useInitialize(book, page, state, dispatch, settings) {
-  const paneLeftRef = useRef();
-  const paneRightRef = useRef();
-  const dividerRef = useRef();
-  const ctxMenuContainerRef = useRef();
-  const theTextRef = useRef();
-  const termFormRef = useRef();
-
-  function handleToggleHighlights(checked) {
-    dispatch({ type: "setHighlights", payload: checked });
-    localStorage.setItem("Lute.highlights", JSON.stringify(checked));
-  }
-
-  function handleToggleFocusMode(checked) {
-    dispatch({ type: "setFocusMode", payload: checked });
-    localStorage.setItem("Lute.focusMode", JSON.stringify(checked));
-  }
-
-  function handleSetColumnCount(count) {
-    dispatch({ type: "setColumnCount", payload: count });
-    localStorage.setItem("Lute.columnCount", JSON.stringify(count));
-  }
-
-  function handleSetLineHeight(amount) {
-    const clamped = clamp(amount, 0, 15);
-    dispatch({ type: "setLineHeight", payload: clamped });
-    localStorage.setItem("Lute.lineHeight", JSON.stringify(clamped));
-  }
-
-  function handleSetFontSize(size) {
-    const rounded = Number(size.toFixed(2));
-    const clamped = clamp(rounded, 0.5, 3);
-    dispatch({ type: "setFontSize", payload: clamped });
-    localStorage.setItem("Lute.fontSize", JSON.stringify(clamped));
-  }
-
-  function handleSetWidth(width) {
-    const rounded = Number(width.toFixed(3));
-    const clamped = clamp(rounded, 5, 95);
-    dispatch({ type: "setWidth", payload: clamped });
-    localStorage.setItem("Lute.paneWidth", JSON.stringify(clamped));
-  }
-
-  function handleSetHeight(height) {
-    const rounded = Number(height.toFixed(3));
-    const clamped = clamp(rounded, 5, 95);
-    dispatch({ type: "setHeight", payload: clamped });
-    localStorage.setItem("Lute.paneHeight", JSON.stringify(clamped));
-  }
-
-  function handleXResizing(size) {
-    const rounded = Number(size.toFixed(3));
-    const clamped = clamp(rounded, 5, 95);
-    paneLeftRef.current.style.width = `${clamped}%`;
-    dividerRef.current.style.left = `${clamped}%`;
-    paneRightRef.current.style.width = `${100 - clamped}%`;
-  }
-
-  function handleYResizing(size) {
-    const rounded = Number(size.toFixed(3));
-    const clamped = clamp(rounded, 5, 95);
-    termFormRef.current.style.height = `${clamped}%`;
-  }
-
+function useInitialize(book, page, state, settings) {
   const textItemRefs = useMemo(() => {
-    const refs = {};
+    const res = {};
     page.forEach((para) =>
       para.forEach((sentence) =>
         sentence.forEach((item) => {
-          refs[item.order] = createRef(null);
+          res[item.order] = createRef(null);
         })
       )
     );
-    return refs;
+    return res;
   }, [page]);
+
+  const refs = {
+    paneRight: useRef(null),
+    theText: useRef(null),
+    contextMenuArea: useRef(null),
+    textItems: textItemRefs,
+  };
 
   const navigation = useNavigation();
   useEffect(() => {
@@ -103,19 +48,25 @@ function useInitialize(book, page, state, dispatch, settings) {
   }, [book.title]);
 
   useEffect(() => {
-    setFontSize(textItemRefs, state.fontSize);
-    setLineHeight(textItemRefs, state.lineHeight);
-    setColumnCount(theTextRef, state.columnCount);
+    setFontSize(refs.textItems, state.fontSize);
+    setLineHeight(refs.textItems, state.lineHeight);
+    setColumnCount(refs.theText, state.columnCount);
+    state.focusMode
+      ? setFocusModeOn(refs.paneRight.current)
+      : setFocusModeOff(refs.paneRight.current);
+
     state.highlights
-      ? setHighlightsOn(textItemRefs)
-      : setHighlightsOff(textItemRefs);
+      ? setHighlightsOn(refs.textItems)
+      : setHighlightsOff(refs.textItems);
   }, [
     state.columnCount,
     state.fontSize,
     state.highlights,
     state.lineHeight,
-    textItemRefs,
-    theTextRef,
+    state.focusMode,
+    refs.textItems,
+    refs.theText,
+    refs.paneRight,
   ]);
 
   useEffect(() => {
@@ -142,24 +93,7 @@ function useInitialize(book, page, state, dispatch, settings) {
     settings,
   ]);
 
-  return {
-    textItemRefs,
-    paneLeftRef,
-    paneRightRef,
-    dividerRef,
-    ctxMenuContainerRef,
-    theTextRef,
-    termFormRef,
-    handleToggleHighlights,
-    handleToggleFocusMode,
-    handleSetColumnCount,
-    handleSetLineHeight,
-    handleSetFontSize,
-    handleSetWidth,
-    handleSetHeight,
-    handleXResizing,
-    handleYResizing,
-  };
+  return refs;
 }
 
 export { useInitialize };

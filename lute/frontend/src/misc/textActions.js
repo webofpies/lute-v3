@@ -3,6 +3,7 @@ import {
   getMatchedTextItems,
   copyToClipboard,
   getPressedKeysAsString,
+  clamp,
 } from "./utils";
 
 function handleAddBookmark(bookId, pageNum) {
@@ -98,6 +99,14 @@ let _get_translation_dict_index = function (sentence, dicts) {
   return new_index;
 };
 
+function setFocusModeOn(panel) {
+  panel.collapse();
+}
+
+function setFocusModeOff(panel) {
+  panel.expand();
+}
+
 function setHighlightsOn(refs) {
   Object.values(refs).forEach((ref) => {
     ref.current.style.removeProperty("background-color");
@@ -124,6 +133,34 @@ function setLineHeight(refs, amount) {
 
 function setColumnCount(ref, count) {
   ref.current.style.columnCount = count;
+}
+
+function handleToggleHighlights(checked, dispatch) {
+  dispatch({ type: "setHighlights", payload: checked });
+  localStorage.setItem("Lute.highlights", JSON.stringify(checked));
+}
+
+function handleToggleFocusMode(checked, dispatch) {
+  dispatch({ type: "setFocusMode", payload: checked });
+  localStorage.setItem("Lute.focusMode", JSON.stringify(checked));
+}
+
+function handleSetColumnCount(count, dispatch) {
+  dispatch({ type: "setColumnCount", payload: count });
+  localStorage.setItem("Lute.columnCount", JSON.stringify(count));
+}
+
+function handleSetLineHeight(amount, dispatch) {
+  const clamped = clamp(amount, 0, 15);
+  dispatch({ type: "setLineHeight", payload: clamped });
+  localStorage.setItem("Lute.lineHeight", JSON.stringify(clamped));
+}
+
+function handleSetFontSize(size, dispatch) {
+  const rounded = Number(size.toFixed(2));
+  const clamped = clamp(rounded, 0.5, 3);
+  dispatch({ type: "setFontSize", payload: clamped });
+  localStorage.setItem("Lute.fontSize", JSON.stringify(clamped));
 }
 
 async function handleCopy(textitem, unit) {
@@ -216,11 +253,19 @@ export {
   setFontSize,
   setLineHeight,
   setColumnCount,
+  // setPaneWidth,
+  handleToggleHighlights,
+  handleToggleFocusMode,
+  handleSetColumnCount,
+  handleSetLineHeight,
+  handleSetFontSize,
   handleAddBookmark,
   handleEditPage,
   handleTranslate,
   setHighlightsOn,
   setHighlightsOff,
+  setFocusModeOn,
+  setFocusModeOff,
   handleCopy,
   setupKeydownEvents,
 };
