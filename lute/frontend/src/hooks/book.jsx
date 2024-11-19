@@ -1,4 +1,4 @@
-import { createRef, useEffect, useMemo, useRef } from "react";
+import { createRef, useEffect, useMemo } from "react";
 import { useNavigation } from "react-router-dom";
 import {
   setColumnCount,
@@ -26,12 +26,15 @@ function useInitialize(book, page, state, settings) {
     return res;
   }, [page]);
 
-  const refs = {
-    paneRight: useRef(null),
-    theText: useRef(null),
-    contextMenuArea: useRef(null),
-    textItems: textItemRefs,
-  };
+  const refs = useMemo(
+    () => ({
+      paneRight: createRef(null),
+      theText: createRef(null),
+      contextMenuArea: createRef(null),
+      textItems: textItemRefs,
+    }),
+    [textItemRefs]
+  );
 
   const navigation = useNavigation();
   useEffect(() => {

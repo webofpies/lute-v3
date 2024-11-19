@@ -10,23 +10,14 @@ import {
   Paper,
   rem,
   Stack,
-  Switch,
   Text,
-  Tooltip,
 } from "@mantine/core";
-import {
-  IconFocus2,
-  IconHighlight,
-  IconLink,
-  IconMenu2,
-} from "@tabler/icons-react";
+import { IconLink, IconMenu2 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
 import PageActionsMenu from "./PageActionsMenu";
+import FocusSwitch from "./FocusSwitch";
+import HighlightsSwitch from "./HighlightsSwitch";
 import styles from "./ReadPane.module.css";
-import {
-  handleToggleFocusMode,
-  handleToggleHighlights,
-} from "../../misc/textActions";
 
 function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
   const navigation = useNavigation();
@@ -57,56 +48,8 @@ function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
         </Center>
         <Divider orientation="vertical" />
         <Stack gap="0.2rem">
-          <Tooltip
-            label="Focus mode"
-            position="left"
-            openDelay={800}
-            refProp="rootRef">
-            <Switch
-              checked={state.focusMode}
-              onChange={(e) => {
-                handleToggleFocusMode(
-                  Boolean(e.currentTarget.checked),
-                  dispatch
-                );
-              }}
-              size="sm"
-              onLabel="ON"
-              offLabel="OFF"
-              thumbIcon={
-                <IconFocus2
-                  style={{ width: rem(12), height: rem(12) }}
-                  color="teal"
-                  stroke={2}
-                />
-              }
-            />
-          </Tooltip>
-          <Tooltip
-            label="Term highlights"
-            position="left"
-            openDelay={800}
-            refProp="rootRef">
-            <Switch
-              size="sm"
-              checked={state.highlights}
-              onChange={(e) => {
-                handleToggleHighlights(
-                  Boolean(e.currentTarget.checked),
-                  dispatch
-                );
-              }}
-              onLabel="ON"
-              offLabel="OFF"
-              thumbIcon={
-                <IconHighlight
-                  style={{ width: rem(12), height: rem(12) }}
-                  color="teal"
-                  stroke={2}
-                />
-              }
-            />
-          </Tooltip>
+          <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
+          <HighlightsSwitch checked={state.highlights} dispatch={dispatch} />
         </Stack>
         <Divider orientation="vertical" />
         <Stack w="100%" gap={0}>
