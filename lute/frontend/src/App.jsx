@@ -18,6 +18,7 @@ import { loader as bookLoader } from "./queries/book";
 const queryClient = new QueryClient();
 
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
+const Statistics = lazy(() => import("./pages/Statistics"));
 
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense>
             <Shortcuts />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/stats",
+        element: (
+          <Suspense>
+            <Statistics />
           </Suspense>
         ),
       },
