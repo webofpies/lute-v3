@@ -89,17 +89,14 @@ function ReadPane() {
               setActiveTerm(res);
             }}>
             <div
+              dir={book.isRightToLeft ? "rtl" : "ltr"}
               className={`${styles.textContainer}`}
               style={{
                 width: `${state.focusMode ? 50 : 100}%`,
                 marginInline: state.focusMode && "auto",
               }}>
               {Number(pageNum) === 1 && (
-                <Title
-                  className={styles.title}
-                  dir={book.isRightToLeft ? "rtl" : ""}>
-                  {book.title}
-                </Title>
+                <Title className={styles.title}>{book.title}</Title>
               )}
               <TheText
                 pageData={page}
