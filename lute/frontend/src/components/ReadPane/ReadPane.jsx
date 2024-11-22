@@ -11,7 +11,6 @@ import Toolbar from "../Toolbar/Toolbar";
 import ContextMenu from "../ContextMenu/ContextMenu";
 import Player from "../Player/Player";
 import TheText from "../TheText/TheText";
-import ReadFooter from "./ReadFooter";
 import styles from "./ReadPane.module.css";
 import { UserSettingsContext } from "../../context/UserSettingsContext";
 import { useInitialize } from "../../hooks/book";
@@ -109,7 +108,6 @@ function ReadPane() {
               />
             </div>
           </ScrollArea>
-          <ReadFooter />
         </Panel>
 
         {!state.focusMode && (

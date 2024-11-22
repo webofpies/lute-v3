@@ -1,9 +1,10 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, Group, Burger, Container, Image } from "@mantine/core";
+import { NavLink, useLocation } from "react-router-dom";
+import { Menu, Group, Burger, Container, rem } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./MainMenuBar.module.css";
 import MenuSection from "./MenuSection";
 import { navLinks } from "../../misc/menus";
+import HomeImageLink from "../HomeImageLink/HomeImageLink";
 
 function MainMenuBar({ openVersionModal }) {
   const [opened, { toggle }] = useDisclosure(false);
@@ -33,9 +34,7 @@ function MainMenuBar({ openVersionModal }) {
       <Container size="xl">
         <div className={classes.inner}>
           <Group>
-            <Link to="/">
-              <Image w="auto" h="3rem" src="/images/logo.png" />
-            </Link>
+            <HomeImageLink size={rem(54)} />
             <h1>{pathNames[pathname]}</h1>
           </Group>
           <Group gap={5} visibleFrom="sm">

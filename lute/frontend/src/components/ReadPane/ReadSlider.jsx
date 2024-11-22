@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Group, rem, Slider } from "@mantine/core";
+import { ActionIcon, Group, rem, Slider, Tooltip } from "@mantine/core";
 import {
+  IconSquareRoundedCheckFilled,
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
 } from "@tabler/icons-react";
@@ -13,7 +14,7 @@ function ReadSlider({ book }) {
   const [changeVal, setChangeVal] = useState(page);
 
   return (
-    <Group gap="0.8rem" wrap="no-wrap">
+    <Group gap={rem(2)} wrap="no-wrap">
       <ActionIcon
         p={0}
         onClick={() => {
@@ -29,7 +30,6 @@ function ReadSlider({ book }) {
       </ActionIcon>
       <Slider
         style={{ flex: 1 }}
-        styles={{ root: { padding: 0 } }}
         size="md"
         thumbSize={rem(16)}
         value={changeVal}
@@ -41,18 +41,46 @@ function ReadSlider({ book }) {
         disabled={book.pageCount === 1}
         showLabelOnHover={false}
       />
-      <ActionIcon
-        onClick={() => {
-          const newPage = Math.min(page + 1, book.pageCount);
-          navigate(`/book/${book.id}/page/${newPage}`);
-          setChangeVal(newPage);
-        }}
-        size={rem(24)}
-        variant="transparent"
-        styles={{ root: { border: "none", backgroundColor: "transparent" } }}
-        disabled={book.pageCount === 1 || page === book.pageCount}>
-        <IconSquareRoundedChevronRightFilled />
-      </ActionIcon>
+      <Group gap={0} wrap="nowrap">
+        <ActionIcon
+          onClick={() => {
+            const newPage = Math.min(page + 1, book.pageCount);
+            navigate(`/book/${book.id}/page/${newPage}`);
+            setChangeVal(newPage);
+          }}
+          size={rem(24)}
+          variant="transparent"
+          styles={{ root: { border: "none", backgroundColor: "transparent" } }}
+          disabled={book.pageCount === 1 || page === book.pageCount}>
+          <IconSquareRoundedChevronRightFilled />
+        </ActionIcon>
+        <Tooltip
+          label={
+            page === book.pageCount
+              ? "Mark page as read"
+              : "Mark page as read and go to next page"
+          }>
+          <ActionIcon
+            color="green.6"
+            onClick={() => {
+              const newPage = Math.min(page + 1, book.pageCount);
+              navigate(`/book/${book.id}/page/${newPage}`);
+              setChangeVal(newPage);
+            }}
+            size={rem(24)}
+            variant="transparent"
+            styles={{
+              root: { border: "none", backgroundColor: "transparent" },
+            }}
+            disabled={book.pageCount === 1}>
+            {page === book.pageCount ? (
+              <IconSquareRoundedCheckFilled />
+            ) : (
+              <IconSquareRoundedChevronRightFilled />
+            )}
+          </ActionIcon>
+        </Tooltip>
+      </Group>
     </Group>
   );
 }

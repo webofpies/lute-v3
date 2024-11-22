@@ -1,11 +1,10 @@
 import { memo } from "react";
-import { Link, useNavigation, useParams } from "react-router-dom";
+import { useNavigation, useParams } from "react-router-dom";
 import {
   ActionIcon,
   Center,
   Divider,
   Group,
-  Image,
   Loader,
   Paper,
   rem,
@@ -18,6 +17,9 @@ import PageActionsMenu from "./PageActionsMenu";
 import FocusSwitch from "./FocusSwitch";
 import HighlightsSwitch from "./HighlightsSwitch";
 import BookSourceButton from "./BookSourceButton";
+import MarkRestAsKnownButton from "./MarkAsKnownButton";
+import PageCounter from "./PageCounter";
+import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
@@ -31,23 +33,16 @@ function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
       radius={0}
       shadow="sm"
       styles={{ root: { position: "relative", zIndex: 2 } }}>
-      <Group gap={10} wrap="nowrap" align="center" className={styles.header}>
+      <Group
+        gap={rem(5)}
+        wrap="nowrap"
+        align="center"
+        className={styles.header}>
         <ActionIcon onClick={drawerOpen} size="md">
           <IconMenu2 />
         </ActionIcon>
-        <Center w="2.8rem" h="2.8rem" styles={{ root: { flexShrink: 0 } }}>
-          {isLoading ? (
-            <Loader size="sm" />
-          ) : (
-            <Link to="/">
-              <Image
-                w="2.8rem"
-                h="2.8rem"
-                src="/images/logo.png"
-                style={{ objectFit: "contain" }}
-              />
-            </Link>
-          )}
+        <Center w={rem(48)} h={rem(48)} styles={{ root: { flexShrink: 0 } }}>
+          {isLoading ? <Loader size="sm" /> : <HomeImageLink size={rem(48)} />}
         </Center>
         <Divider orientation="vertical" />
         <Stack gap="0.2rem">
@@ -56,27 +51,21 @@ function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
         </Stack>
         <Divider orientation="vertical" />
         <Stack w="100%" gap={0}>
-          <Group justify="space-between" wrap="nowrap" fz="sm">
-            <Group gap="0.3rem" wrap="nowrap">
-              <Group flex={`0 0 ${rem(24)}`} justify="center">
-                {book.source && <BookSourceButton source={book.source} />}
-              </Group>
+          <Group justify="space-between" wrap="nowrap" fz="sm" gap={rem(4)}>
+            <Group flex={`0 0 ${rem(24)}`} justify="center">
+              {book.source && <BookSourceButton source={book.source} />}
+            </Group>
+            <Group justify="space-between" wrap="nowrap" flex={1}>
               {page > 1 && (
-                <Text
-                  pl="0.1rem"
-                  component="h1"
-                  fw="normal"
-                  fz="inherit"
-                  lineClamp={1}>
+                <Text component="h1" fw="normal" fz="inherit" lineClamp={1}>
                   {book.title}
                 </Text>
               )}
+              <PageCounter currentPage={page} pageCount={book.pageCount} />
             </Group>
             <Group gap={0} wrap="nowrap">
-              <Text component="span" fw={500} fz="inherit" lh={1}>
-                {`${page}/${book.pageCount}`}
-              </Text>
               <PageActionsMenu />
+              <MarkRestAsKnownButton />
             </Group>
           </Group>
           <ReadSlider book={book} />

@@ -35,7 +35,6 @@ function PageActionsMenu() {
       withArrow>
       <Menu.Target>
         <ActionIcon
-          ml={rem(6)}
           size={rem(24)}
           p={0}
           variant="transparent"
