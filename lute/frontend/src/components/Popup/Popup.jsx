@@ -14,8 +14,15 @@ function Popup({ children, id }) {
     <Popover
       position="bottom"
       middlewares={{ flip: { fallbackPlacements: ["top", "right", "left"] } }}
+      transitionProps={{
+        duration: 150,
+        transition: "pop",
+        enterDelay: 50,
+        exitDelay: 0,
+      }}
+      floatingStrategy="fixed"
+      keepMounted={true}
       withArrow
-      transitionProps={{ duration: 150 }}
       shadow="md"
       opened={opened}
       onOpen={async () => setPopupData(await handleFetch(id))}
@@ -24,7 +31,7 @@ function Popup({ children, id }) {
       onContextMenu={close}>
       <Popover.Target>{children}</Popover.Target>
       {popupData && (
-        <Popover.Dropdown>
+        <Popover.Dropdown style={{ pointerEvents: "none" }}>
           <PopupData data={popupData} />
         </Popover.Dropdown>
       )}
