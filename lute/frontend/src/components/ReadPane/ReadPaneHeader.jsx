@@ -12,11 +12,12 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { IconLink, IconMenu2 } from "@tabler/icons-react";
+import { IconMenu2 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
 import PageActionsMenu from "./PageActionsMenu";
 import FocusSwitch from "./FocusSwitch";
 import HighlightsSwitch from "./HighlightsSwitch";
+import BookSourceButton from "./BookSourceButton";
 import styles from "./ReadPane.module.css";
 
 function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
@@ -55,21 +56,9 @@ function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
         <Stack w="100%" gap={0}>
           <Group justify="space-between" wrap="nowrap" fz="sm">
             <Group gap="0.3rem" wrap="nowrap">
-              <ActionIcon
-                component="a"
-                href={book.source}
-                target="_blank"
-                size={rem(24)}
-                p={0}
-                variant="transparent"
-                styles={{
-                  root: {
-                    border: "none",
-                    visibility: `${book.source ? "visible" : "hidden"}`,
-                  },
-                }}>
-                <IconLink />
-              </ActionIcon>
+              <Group flex={`0 0 ${rem(24)}`} justify="center">
+                {book.source && <BookSourceButton source={book.source} />}
+              </Group>
               {pageNum > 1 && (
                 <Text
                   pl="0.1rem"
