@@ -50,7 +50,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/read/:id/:page",
+    path: "/book/:id/page/:page",
     element: <ReadPane />,
     loader: bookLoader(queryClient),
   },

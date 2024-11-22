@@ -74,7 +74,6 @@ function ReadPane() {
             <ReadPaneHeader
               book={book}
               drawerOpen={drawerOpen}
-              pageNum={Number(pageNum)}
               state={state}
               dispatch={dispatch}
             />

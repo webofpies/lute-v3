@@ -1,28 +1,30 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ActionIcon, Group, rem, Slider } from "@mantine/core";
 import {
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
 } from "@tabler/icons-react";
 
-function ReadSlider({ book, pageNum }) {
+function ReadSlider({ book }) {
+  const params = useParams();
+  const page = Number(params.page);
   const navigate = useNavigate();
-  const [changeVal, setChangeVal] = useState(pageNum);
+  const [changeVal, setChangeVal] = useState(page);
 
   return (
     <Group gap="0.8rem" wrap="no-wrap">
       <ActionIcon
         p={0}
         onClick={() => {
-          const newPage = Math.max(pageNum - 1, 1);
-          navigate(`/read/${book.id}/${newPage}`);
+          const newPage = Math.max(page - 1, 1);
+          navigate(`/book/${book.id}/page/${newPage}`);
           setChangeVal(newPage);
         }}
         size={rem(24)}
         variant="transparent"
         styles={{ root: { border: "none", backgroundColor: "transparent" } }}
-        disabled={book.pageCount === 1 || pageNum === 1}>
+        disabled={book.pageCount === 1 || page === 1}>
         <IconSquareRoundedChevronLeftFilled />
       </ActionIcon>
       <Slider
@@ -31,9 +33,9 @@ function ReadSlider({ book, pageNum }) {
         size="md"
         thumbSize={rem(16)}
         value={changeVal}
-        defaultValue={pageNum}
+        defaultValue={page}
         onChange={setChangeVal}
-        onChangeEnd={(v) => navigate(`/read/${book.id}/${v}`)}
+        onChangeEnd={(v) => navigate(`/book/${book.id}/page/${v}`)}
         min={1}
         max={book.pageCount}
         disabled={book.pageCount === 1}
@@ -41,14 +43,14 @@ function ReadSlider({ book, pageNum }) {
       />
       <ActionIcon
         onClick={() => {
-          const newPage = Math.min(pageNum + 1, book.pageCount);
-          navigate(`/read/${book.id}/${newPage}`);
+          const newPage = Math.min(page + 1, book.pageCount);
+          navigate(`/book/${book.id}/page/${newPage}`);
           setChangeVal(newPage);
         }}
         size={rem(24)}
         variant="transparent"
         styles={{ root: { border: "none", backgroundColor: "transparent" } }}
-        disabled={book.pageCount === 1 || pageNum === book.pageCount}>
+        disabled={book.pageCount === 1 || page === book.pageCount}>
         <IconSquareRoundedChevronRightFilled />
       </ActionIcon>
     </Group>

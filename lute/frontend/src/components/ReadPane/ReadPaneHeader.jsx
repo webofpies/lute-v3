@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Link, useNavigation } from "react-router-dom";
+import { Link, useNavigation, useParams } from "react-router-dom";
 import {
   ActionIcon,
   Center,
@@ -20,7 +20,9 @@ import HighlightsSwitch from "./HighlightsSwitch";
 import BookSourceButton from "./BookSourceButton";
 import styles from "./ReadPane.module.css";
 
-function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
+function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
+  const params = useParams();
+  const page = Number(params.page);
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
@@ -59,7 +61,7 @@ function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
               <Group flex={`0 0 ${rem(24)}`} justify="center">
                 {book.source && <BookSourceButton source={book.source} />}
               </Group>
-              {pageNum > 1 && (
+              {page > 1 && (
                 <Text
                   pl="0.1rem"
                   component="h1"
@@ -72,12 +74,12 @@ function ReadPaneHeader({ drawerOpen, pageNum, book, state, dispatch }) {
             </Group>
             <Group gap={0} wrap="nowrap">
               <Text component="span" fw={500} fz="inherit" lh={1}>
-                {`${pageNum}/${book.pageCount}`}
+                {`${page}/${book.pageCount}`}
               </Text>
-              <PageActionsMenu book={book} pageNum={pageNum} />
+              <PageActionsMenu />
             </Group>
           </Group>
-          <ReadSlider book={book} pageNum={pageNum} />
+          <ReadSlider book={book} />
         </Stack>
       </Group>
     </Paper>
