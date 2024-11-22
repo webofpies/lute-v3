@@ -3,7 +3,7 @@ import { IconRosetteDiscountCheckFilled } from "@tabler/icons-react";
 
 function MarkRestAsKnownButton() {
   return (
-    <Tooltip label="Mark rest as known">
+    <Tooltip label="Mark rest as known" position="right">
       <ActionIcon
         color="green.6"
         size={rem(24)}
