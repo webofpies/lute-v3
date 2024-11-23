@@ -3,12 +3,14 @@ Read service tests.
 """
 
 # from lute.db import db
-from lute.language import service
+from lute.language.service import Service
+from lute.db import db
 from tests.dbasserts import assert_sql_result
 
 
 def test_get_all_lang_defs(app_context):
     "Can get all predefined languages."
+    service = Service(db.session)
     defs = service.get_supported_defs()
     engs = [d for d in defs if d["language"].name == "English"]
     assert len(engs) == 1, "have english"
@@ -23,6 +25,7 @@ def test_get_language_def():
     """
     Smoke test, can load a new language from yaml definition.
     """
+    service = Service(db.session)
     lang = service.get_language_def("English")["language"]
 
     assert lang.name == "English"
@@ -31,10 +34,10 @@ def test_get_language_def():
 
     # pylint: disable=line-too-long
     expected = [
-        "terms; embeddedhtml; https://simple.wiktionary.org/wiki/###; True; 1",
-        "terms; popuphtml; https://www.collinsdictionary.com/dictionary/english/###; True; 2",
-        "sentences; popuphtml; https://www.deepl.com/translator#en/en/###; True; 3",
-        "terms; popuphtml; https://conjugator.reverso.net/conjugation-english-verb-###.html; True; 4",
+        "terms; embeddedhtml; https://simple.wiktionary.org/wiki/[LUTE]; True; 1",
+        "terms; popuphtml; https://www.collinsdictionary.com/dictionary/english/[LUTE]; True; 2",
+        "sentences; popuphtml; https://www.deepl.com/translator#en/en/[LUTE]; True; 3",
+        "terms; popuphtml; https://conjugator.reverso.net/conjugation-english-verb-[LUTE].html; True; 4",
     ]
     actual = [
         f"{ld.usefor}; {ld.dicttype}; {ld.dicturi}; {ld.is_active}; {ld.sort_order}"
@@ -50,6 +53,7 @@ def test_load_def_loads_lang_and_stories(empty_db):
     assert_sql_result(lang_sql, [], "no langs")
     assert_sql_result(story_sql, [], "nothing loaded")
 
+    service = Service(db.session)
     lang_id = service.load_language_def("English")
     assert lang_id > 0, "ID returned, used for filtering"
     assert_sql_result(lang_sql, ["English"], "eng loaded")
@@ -63,6 +67,7 @@ def test_load_all_defs_loads_lang_and_stories(empty_db):
     assert_sql_result(lang_sql, [], "no langs")
     assert_sql_result(story_sql, [], "nothing loaded")
 
+    service = Service(db.session)
     defs = service.get_supported_defs()
     langnames = [d["language"].name for d in defs]
     for n in langnames:

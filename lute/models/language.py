@@ -3,7 +3,6 @@ Language entity.
 """
 
 import re
-from sqlalchemy import text, func
 from lute.db import db
 from lute.parse.registry import get_parser, is_supported
 
@@ -114,43 +113,6 @@ class Language(
     def sentence_dict_uris(self):
         return self.active_dict_uris("sentences")
 
-    @classmethod
-    def all_dictionaries(cls):
-        """
-        All dictionaries for all languages.
-        """
-        lang_dicts = {}
-        for lang in Language.query.all():
-            lang_dicts[lang.id] = {
-                "term": lang.active_dict_uris("terms"),
-                "sentence": lang.active_dict_uris("sentences"),
-            }
-        return lang_dicts
-
-    @staticmethod
-    def delete(language):
-        """
-        Hacky method to delete language and all terms, books, and dicts
-        associated with it.
-
-        There is _certainly_ a better way to do this using
-        Sqlalchemy relationships and cascade deletes, but I
-        was running into problems with it (things not cascading,
-        or warnings ("SAWarning: Object of type <Term> not in
-        session, add operation along 'Language.terms' will not
-        proceed") during test runs.  It would be nice to have
-        a "correct" mapping, but this is good enough for now.
-
-        TODO zzfuture fix: fix Language-Book and -Term mappings.
-        """
-        sqls = [
-            "pragma foreign_keys = ON",
-            f"delete from languages where LgID = {language.id}",
-        ]
-        for s in sqls:
-            db.session.execute(text(s))
-        db.session.commit()
-
     @property
     def parser(self):
         "Note: this throws if the parser is not supported!!!"
@@ -166,20 +128,6 @@ class Language(
 
     def get_lowercase(self, s) -> str:
         return self.parser.get_lowercase(s)
-
-    @staticmethod
-    def find(language_id):
-        "Get by ID."
-        return db.session.query(Language).filter(Language.id == language_id).first()
-
-    @staticmethod
-    def find_by_name(name):
-        "Get by name."
-        return (
-            db.session.query(Language)
-            .filter(func.lower(Language.name) == func.lower(name))
-            .first()
-        )
 
     def to_dict(self):
         "Return dictionary of data, for serialization."
