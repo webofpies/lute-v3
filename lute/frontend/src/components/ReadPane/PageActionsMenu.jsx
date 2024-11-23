@@ -28,10 +28,9 @@ function PageActionsMenu() {
 
   return (
     <Menu
-      withinPortal={false}
       styles={{ dropdown: { width: "min-content" } }}
       trigger="click"
-      position="bottom-end"
+      position="bottom"
       withArrow>
       <Menu.Target>
         <ActionIcon

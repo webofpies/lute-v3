@@ -62,7 +62,7 @@ function PlayerMenu({ children, audio, state, dispatch }) {
   }
 
   return (
-    <Menu withinPortal={false} position="bottom-end" offset={0}>
+    <Menu position="bottom" offset={0}>
       <Menu.Target>{children}</Menu.Target>
 
       <Menu.Dropdown p={0}>
