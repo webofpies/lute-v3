@@ -4,6 +4,7 @@ Language mapping tests.
 
 import json
 from lute.models.language import Language, LanguageDictionary
+from lute.models.repositories import LanguageRepository
 from lute.db import db
 from tests.dbasserts import assert_sql_result
 from tests.utils import make_text, add_terms
@@ -45,20 +46,20 @@ def test_language_dictionaries_smoke_test(empty_db):
     ld = LanguageDictionary()
     ld.usefor = "terms"
     ld.dicttype = "embeddedhtml"
-    ld.dicturi = "1?###"
+    ld.dicturi = "1?[LUTE]"
     ld.sort_order = 1
     lang.dictionaries.append(ld)
     ld2 = LanguageDictionary()
     ld2.usefor = "terms"
     ld2.dicttype = "popuphtml"
-    ld2.dicturi = "2?###"
+    ld2.dicturi = "2?[LUTE]"
     ld2.sort_order = 2
     lang.dictionaries.append(ld2)
 
     ld3 = LanguageDictionary()
     ld3.usefor = "sentences"
     ld3.dicttype = "popuphtml"
-    ld3.dicturi = "3?###"
+    ld3.dicturi = "3?[LUTE]"
     ld3.sort_order = 3
     lang.dictionaries.append(ld3)
 
@@ -72,9 +73,9 @@ def test_language_dictionaries_smoke_test(empty_db):
     assert_sql_result(
         sqldicts,
         [
-            "abc; terms; embeddedhtml; 1?###",
-            "abc; terms; popuphtml; 2?###",
-            "abc; sentences; popuphtml; 3?###",
+            "abc; terms; embeddedhtml; 1?[LUTE]",
+            "abc; terms; popuphtml; 2?[LUTE]",
+            "abc; sentences; popuphtml; 3?[LUTE]",
         ],
         "dict saved",
     )
@@ -83,15 +84,17 @@ def test_language_dictionaries_smoke_test(empty_db):
     assert len(retrieved.dictionaries) == 3, "have dicts"
     ld = retrieved.dictionaries[0]
     assert ld.dicttype == "embeddedhtml", "type"
-    assert ld.dicturi == "1?###", "uri"
+    assert ld.dicturi == "1?[LUTE]", "uri"
 
-    expected = """{"1": {"term": ["1?###", "*2?###"], "sentence": ["*3?###"]}}"""
-    assert json.dumps(Language.all_dictionaries()) == expected
+    exp = """{"1": {"term": ["1?[LUTE]", "*2?[LUTE]"], "sentence": ["*3?[LUTE]"]}}"""
+    repo = LanguageRepository(db.session)
+    dicts = repo.all_dictionaries()
+    assert json.dumps(dicts) == exp
 
 
 def test_delete_language_removes_book_and_terms(app_context, spanish):
     """
-    Test HACKY Language.delete() method to ensure deletes cascade.
+    Test HACKY LanguageRepository.delete() method to ensure deletes cascade.
     """
     add_terms(spanish, ["gato", "perro"])
     t = make_text("hola", "Hola amigo", spanish)
@@ -100,7 +103,7 @@ def test_delete_language_removes_book_and_terms(app_context, spanish):
     ld = LanguageDictionary()
     ld.usefor = "terms"
     ld.dicttype = "embeddedhtml"
-    ld.dicturi = "something?###"
+    ld.dicturi = "something?[LUTE]"
     ld.sort_order = 1
     spanish.dictionaries.append(ld)
     db.session.add(spanish)
@@ -109,12 +112,13 @@ def test_delete_language_removes_book_and_terms(app_context, spanish):
 
     sqlterms = "select WoText from words order by WoText"
     sqlbook = "select BkTitle from books where BkTitle = 'hola'"
-    sqldict = "select LdDictURI from languagedicts where LdDictURI = 'something?###'"
+    sqldict = "select LdDictURI from languagedicts where LdDictURI = 'something?[LUTE]'"
     assert_sql_result(sqlterms, ["gato", "perro"], "initial terms")
     assert_sql_result(sqlbook, ["hola"], "initial book")
-    assert_sql_result(sqldict, ["something?###"], "dict")
+    assert_sql_result(sqldict, ["something?[LUTE]"], "dict")
 
-    Language.delete(spanish)
+    repo = LanguageRepository(db.session)
+    repo.delete(spanish)
 
     assert_sql_result(sqlbook, [], "book deleted")
     assert_sql_result(sqlterms, [], "terms deleted")
