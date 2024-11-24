@@ -277,19 +277,22 @@ def edit_page(bookid, pagenum):
 def book_info(bookid):
     "book object to json"
 
-    book = Book.find(bookid)
+    book = _find_book(bookid)
     if book is None:
         return redirect("/", 302)
 
     page_num = 1
     text = book.texts[0]
     if book.current_tx_id:
-        text = Text.find(book.current_tx_id)
+        text = db.session.get(Text, book.current_tx_id)
         page_num = text.order
 
     lang = book.language
+    lang_repo = LanguageRepository(db.session)
+    term_dicts = lang_repo.all_dictionaries()[lang.id]["term"]
+    sentence_dicts = lang_repo.all_dictionaries()[lang.id]["sentence"]
     # show_highlights = bool(int(UserSetting.get_value("show_highlights")))
-    term_dicts = lang.all_dictionaries()[lang.id]["term"]
+    # term_dicts = lang.all_dictionaries()[lang.id]["term"]
 
     def get_dict_info(dictURL, dictID):
         is_external = dictURL[0] == "*"
@@ -314,7 +317,7 @@ def book_info(bookid):
 
     term_dicts = [get_dict_info(dict, index) for index, dict in enumerate(term_dicts)]
     sentence_dicts = [
-        get_dict_info(dict, index) for index, dict in enumerate(lang.sentence_dict_uris)
+        get_dict_info(dict, index) for index, dict in enumerate(sentence_dicts)
     ]
 
     book_dict = {
@@ -345,13 +348,15 @@ def book_info(bookid):
 @bp.route("/<int:bookid>/<int:pagenum>/pageinfo", methods=["GET"])
 def page_info(bookid, pagenum):
     "send book info in json"
-    book = Book.find(bookid)
+    book = _find_book(bookid)
     if book is None:
         return redirect("/", 302)
 
     # paragraphs = start_reading(book, pagenum, db.session)
 
-    paragraphs = get_page_paragraphs(bookid, pagenum)
+    # paragraphs = get_page_paragraphs(bookid, pagenum)
+    service = Service(db.session)
+    paragraphs = service.start_reading(book, pagenum)
     paras = [
         [
             [
@@ -404,13 +409,13 @@ def page_info(bookid, pagenum):
 #     return True
 
 
-def get_page_paragraphs(bookid, pagenum):
-    "does what it says"
-    book = Book.find(bookid)
-    text = book.text_at_page(pagenum)
-    lang = text.book.language
+# def get_page_paragraphs(bookid, pagenum):
+#     "does what it says"
+#     book = _find_book(bookid)
+#     text = book.text_at_page(pagenum)
+#     lang = text.book.language
 
-    return get_paragraphs(text.text, lang)
+#     return get_paragraphs(text.text, lang)
 
 
 @bp.route("/terms/<int:term_id>", methods=["GET", "POST"])
@@ -418,13 +423,10 @@ def term_info(term_id):
     """
     term info for term form
     """
-    repo = Repository(db)
+    repo = Repository(db.session)
     term = repo.load(term_id)
-    # print(f"editing term {term_id}", flush=True)
     if term.status == 0:
         term.status = 1
-    # print(vars(term), "term")
-    # print(repo, "repo")
     return {
         "text": term.text,
         "textLC": term.text_lc,
@@ -444,8 +446,9 @@ def multiterm_info(langid, text):
     """
     multiterm info for term form
     """
-    repo = Repository(db)
-    term = repo.find_or_new(langid, text)
+    usetext = text.replace("LUTESLASH", "/")
+    repo = Repository(db.session)
+    term = repo.find_or_new(langid, usetext)
     if term.status == 0:
         term.status = 1
 
@@ -468,7 +471,8 @@ def popup_content(termid):
     """
     Show a term popup for the given DBTerm.
     """
-    d = get_popup_data(termid)
+    service = Service(db.session)
+    d = service.get_popup_data(termid)
     if d is None:
         return jsonify(None)
 

@@ -20,6 +20,7 @@ import lute.utils.formutils
 from lute.db import db
 
 from lute.models.language import Language
+from lute.models.book import Text, Book as BookModel
 from lute.models.repositories import (
     BookRepository,
     UserSettingRepository,
@@ -231,13 +232,13 @@ def table_stats(bookid):
 def all_books():
     "Hacky listing."
     results = []
-    books = db.session.query(DBBook).all()
+    books = db.session.query(BookModel).all()
 
     def get_current_page(book):
         page_num = 1
         text = book.texts[0]
         if book.current_tx_id:
-            text = Text.find(book.current_tx_id)
+            text = db.session.get(Text, book.current_tx_id)
             page_num = text.order
 
         return page_num
@@ -263,6 +264,7 @@ def all_books():
 @bp.route("/<int:bookid>/stats", methods=["GET"])
 def book_stats(bookid):
     "Calc stats for the book using the status distribution."
-    book = DBBook.find(bookid)
-    status_distribution = calc_status_distribution(book)
+    book = _find_book(bookid)
+    svc = StatsService(db.session)
+    status_distribution = svc.calc_status_distribution(book)
     return jsonify(status_distribution)
