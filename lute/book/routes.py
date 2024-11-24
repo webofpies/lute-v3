@@ -20,7 +20,6 @@ import lute.utils.formutils
 from lute.db import db
 
 from lute.models.language import Language
-from lute.models.book import Text, Book as BookModel
 from lute.models.repositories import (
     BookRepository,
     UserSettingRepository,
@@ -225,46 +224,3 @@ def table_stats(bookid):
         "status_distribution": stats.status_distribution,
     }
     return jsonify(ret)
-
-
-# API for React
-@bp.route("/books", methods=["GET"])
-def all_books():
-    "Hacky listing."
-    results = []
-    books = db.session.query(BookModel).all()
-
-    def get_current_page(book):
-        page_num = 1
-        text = book.texts[0]
-        if book.current_tx_id:
-            text = db.session.get(Text, book.current_tx_id)
-            page_num = text.order
-
-        return page_num
-
-    for b in books:
-        row = {
-            "id": b.id,
-            "title": b.title,
-            "language": b.language.name,
-            "wordCount": sum([text.word_count for text in b.texts]),
-            "tags": [
-                {"id": tag.id, "text": tag.text, "comment": tag.comment}
-                for tag in b.book_tags
-            ],
-            "currentPage": get_current_page(b),
-            # "statusDistribution": get_status_distribution(b)
-        }
-        results.append(row)
-
-    return jsonify(results)
-
-
-@bp.route("/<int:bookid>/stats", methods=["GET"])
-def book_stats(bookid):
-    "Calc stats for the book using the status distribution."
-    book = _find_book(bookid)
-    svc = StatsService(db.session)
-    status_distribution = svc.calc_status_distribution(book)
-    return jsonify(status_distribution)

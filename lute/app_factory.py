@@ -39,7 +39,6 @@ from lute.settings.current import refresh_global_settings, current_settings
 from lute.models.repositories import UserSettingRepository
 from lute.book.stats import Service as StatsService
 
-from lute.api.routes import bp as api_bp
 from lute.book.routes import bp as book_bp
 from lute.bookmarks.routes import bp as bookmarks_bp
 from lute.language.routes import bp as language_bp
@@ -56,6 +55,7 @@ from lute.settings.routes import bp as settings_bp
 from lute.themes.routes import bp as themes_bp
 from lute.stats.routes import bp as stats_bp
 from lute.cli.commands import bp as cli_bp
+from lute.api.routes import bp as api_bp
 
 
 def _setup_app_dir(dirname, readme_content):
@@ -275,19 +275,6 @@ def _add_base_routes(app, app_config):
             404,
         )
 
-    # API for React
-    @app.route("/api/appinfo")
-    def version():
-        ac = current_app.env_config
-        return jsonify(
-            {
-                "version": lute.__version__,
-                "datapath": ac.datapath,
-                "database": ac.dbfilename,
-                "isDocker": ac.is_docker,
-            }
-        )
-
 
 def _create_app(app_config, extra_config):
     """
@@ -334,7 +321,6 @@ def _create_app(app_config, extra_config):
     app.db = db
 
     _add_base_routes(app, app_config)
-    app.register_blueprint(api_bp)
     app.register_blueprint(language_bp)
     app.register_blueprint(book_bp)
     app.register_blueprint(bookmarks_bp)
@@ -350,6 +336,7 @@ def _create_app(app_config, extra_config):
     app.register_blueprint(themes_bp)
     app.register_blueprint(stats_bp)
     app.register_blueprint(cli_bp)
+    app.register_blueprint(api_bp)
     if app_config.is_test_db:
         app.register_blueprint(dev_api_bp)
 
