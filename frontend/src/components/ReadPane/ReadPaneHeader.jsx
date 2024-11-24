@@ -55,7 +55,7 @@ function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
             <Group flex={`0 0 ${rem(24)}`} justify="center">
               {book.source && <BookSourceButton source={book.source} />}
             </Group>
-            <Group justify="space-between" wrap="nowrap" flex={1}>
+            <Group justify="space-between" wrap="nowrap" flex={1} miw={0}>
               {page > 1 && (
                 <Text component="h1" fw="normal" fz="inherit" lineClamp={1}>
                   {book.title}

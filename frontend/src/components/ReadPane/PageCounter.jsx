@@ -7,6 +7,7 @@ function PageCounter({ currentPage, pageCount }) {
       fw={500}
       fz="inherit"
       lh={1}
+      ml="auto"
       miw={rem(24)}
       style={{ flexShrink: 0 }}>
       {`${currentPage}/${pageCount}`}
