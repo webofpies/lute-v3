@@ -39,6 +39,7 @@ from lute.settings.current import refresh_global_settings, current_settings
 from lute.models.repositories import UserSettingRepository
 from lute.book.stats import Service as StatsService
 
+from lute.api.routes import bp as api_bp
 from lute.book.routes import bp as book_bp
 from lute.bookmarks.routes import bp as bookmarks_bp
 from lute.language.routes import bp as language_bp
@@ -333,6 +334,7 @@ def _create_app(app_config, extra_config):
     app.db = db
 
     _add_base_routes(app, app_config)
+    app.register_blueprint(api_bp)
     app.register_blueprint(language_bp)
     app.register_blueprint(book_bp)
     app.register_blueprint(bookmarks_bp)

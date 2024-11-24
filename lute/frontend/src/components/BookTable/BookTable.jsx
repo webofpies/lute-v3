@@ -8,7 +8,7 @@ export default function BookTable() {
   const { isPending, isFetching, error, data } = useQuery({
     queryKey: ["allBooks"],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/book/books`);
+      const response = await fetch(`http://localhost:5001/api/books`);
       return await response.json();
     },
     staleTime: Infinity,

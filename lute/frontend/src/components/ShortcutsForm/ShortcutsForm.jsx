@@ -8,7 +8,7 @@ function ShortcutsForm() {
   const { isSuccess, error, data } = useQuery({
     queryKey: ["shortcuts"],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/settings/keys`);
+      const response = await fetch(`http://localhost:5001/api/settings/keys`);
       return await response.json();
     },
   });

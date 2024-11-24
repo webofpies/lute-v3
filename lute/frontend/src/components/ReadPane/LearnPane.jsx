@@ -67,7 +67,7 @@ function useFetchTerm(termData) {
   return useQuery({
     queryKey: ["termData", key],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/read/terms/${key}`);
+      const response = await fetch(`http://localhost:5001/api/terms/${key}`);
       return await response.json();
     },
     refetchOnWindowFocus: false,
