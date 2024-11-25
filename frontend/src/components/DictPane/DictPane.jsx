@@ -1,14 +1,15 @@
 import { memo } from "react";
-import { Button, Image, rem, Tabs, Text, Tooltip } from "@mantine/core";
+import { Button, rem, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconExternalLink, IconPhoto } from "@tabler/icons-react";
 import DictIFrame from "./DictIFrame";
+import DictFavicon from "./DictFavicon";
 import Sentences from "./Sentences";
 import classes from "./DictPane.module.css";
 
-function DictPane({ dicts, term }) {
+function DictPane({ dicts, term, activeTab, onSetActiveTab }) {
   return (
     <Tabs
-      defaultValue="0"
+      value={activeTab}
       classNames={{ root: classes.tabs }}
       styles={{ tab: { paddingBlock: "xs" }, tabLabel: { minWidth: 0 } }}>
       <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
@@ -16,16 +17,9 @@ function DictPane({ dicts, term }) {
           style={{
             display: "grid",
             alignItems: "center",
-            gridTemplateColumns: `repeat(${dicts.length}, minmax(2rem, 8rem))`,
+            gridTemplateColumns: `repeat(${dicts.length}, minmax(3rem, 8rem))`,
           }}>
           {dicts.map((dict, index) => {
-            const favicon = (
-              <Image
-                h={16}
-                w={16}
-                src={`http://www.google.com/s2/favicons?domain=${dict.hostname}`}
-              />
-            );
             return (
               <Tooltip key={dict.label} label={dict.label} openDelay={200}>
                 {dict.isExternal ? (
@@ -34,9 +28,9 @@ function DictPane({ dicts, term }) {
                     ml={rem(2)}
                     variant="default"
                     fw="normal"
-                    leftSection={favicon}
+                    leftSection={<DictFavicon hostname={dict.hostname} />}
                     rightSection={
-                      <IconExternalLink size={rem(16)} stroke={1.6} />
+                      <IconExternalLink size={rem(14)} stroke={1.6} />
                     }
                     onClick={() =>
                       handleExternal(getLookupURL(dict.url, term))
@@ -45,10 +39,11 @@ function DictPane({ dicts, term }) {
                   </Button>
                 ) : (
                   <Tabs.Tab
+                    onClick={() => onSetActiveTab(String(index))}
                     className={classes.flex}
                     id={String(index)}
                     value={String(index)}
-                    leftSection={favicon}>
+                    leftSection={<DictFavicon hostname={dict.hostname} />}>
                     <Text size="sm" style={{ overflow: "hidden" }}>
                       {dict.label}
                     </Text>
@@ -62,7 +57,8 @@ function DictPane({ dicts, term }) {
           <Tabs.Tab
             className={classes.flex}
             id="sentencesTab"
-            value="sentencesTab">
+            value="sentencesTab"
+            onClick={() => onSetActiveTab("sentencesTab")}>
             <Text size="sm" style={{ overflow: "hidden" }}>
               Sentences
             </Text>
@@ -71,7 +67,8 @@ function DictPane({ dicts, term }) {
             className={classes.flex}
             styles={{ tabLabel: { minWidth: 0 } }}
             id="imagesTab"
-            value="imagesTab">
+            value="imagesTab"
+            onClick={() => onSetActiveTab("imagesTab")}>
             <IconPhoto size={rem(18)} />
           </Tabs.Tab>
         </div>

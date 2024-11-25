@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingOverlay, Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -10,6 +10,7 @@ import { paneResizeStorage } from "../../misc/utils";
 function LearnPane({ book, termData }) {
   const termPanelRef = useRef();
   const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
+  const [activeTab, setActiveTab] = useState("0");
   if (error) return "An error has occurred: " + error.message;
 
   return (
@@ -50,7 +51,12 @@ function LearnPane({ book, termData }) {
             collapsible
             collapsedSize={0}
             className={styles.dictPane}>
-            <DictPane term={data.text} dicts={book.dictionaries.term} />
+            <DictPane
+              term={data.text}
+              dicts={book.dictionaries.term}
+              activeTab={activeTab}
+              onSetActiveTab={setActiveTab}
+            />
           </Panel>
         </PanelGroup>
       )}
