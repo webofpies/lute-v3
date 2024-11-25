@@ -260,7 +260,7 @@ def popup_content(termid):
 
 
 #
-@bp.route("/sent/<int:langid>/<text>", methods=["GET"])
+@bp.route("/sentences/<int:langid>/<text>", methods=["GET"])
 def get_sentences(langid, text):
     "Get sentences for terms."
     repo = Repository(db)
@@ -295,7 +295,7 @@ def get_sentences(langid, text):
 
 
 #
-@bp.route("/keys", methods=["GET", "POST"])
+@bp.route("/shortcuts", methods=["GET", "POST"])
 def keys():
     """
     Return hotkey UserSetting keys and values,
