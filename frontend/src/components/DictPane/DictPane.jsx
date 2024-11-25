@@ -15,6 +15,7 @@ function DictPane({ dicts, term }) {
         <div
           style={{
             display: "grid",
+            alignItems: "center",
             gridTemplateColumns: `repeat(${dicts.length}, minmax(2rem, 8rem))`,
           }}>
           {dicts.map((dict, index) => {
