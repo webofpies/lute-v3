@@ -1,6 +1,6 @@
 import { memo, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { LoadingOverlay, Stack } from "@mantine/core";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DictPane from "../DictTabs/DictTabs";
 import TermForm from "../TermForm/TermForm";
@@ -9,8 +9,9 @@ import { paneResizeStorage } from "../../misc/utils";
 
 function TranslationPane({ book, termData }) {
   const termPanelRef = useRef();
-  const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
+  const { isSuccess, data, error } = useFetchTerm(termData);
   const [activeTab, setActiveTab] = useState("0");
+
   if (error) return "An error has occurred: " + error.message;
 
   return (
@@ -18,11 +19,6 @@ function TranslationPane({ book, termData }) {
       gap={0}
       dir="column"
       style={{ position: "relative", height: "100%" }}>
-      <LoadingOverlay
-        visible={isFetching}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
       {isSuccess && (
         <PanelGroup
           direction="vertical"
@@ -77,8 +73,7 @@ function useFetchTerm(termData) {
       return await response.json();
     },
     refetchOnWindowFocus: false,
-    // enabled: !termData.multi && !!termData.data,
-    // staleTime: Infinity, // relicking the same work opens an empty form
+    placeholderData: keepPreviousData,
   });
 }
 
