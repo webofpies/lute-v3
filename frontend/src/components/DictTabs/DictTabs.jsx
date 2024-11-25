@@ -1,12 +1,11 @@
 import { memo } from "react";
 import { Button, rem, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconExternalLink, IconPhoto } from "@tabler/icons-react";
-import DictIFrame from "./DictIFrame";
+import Iframe from "./Iframe";
 import DictFavicon from "./DictFavicon";
-import Sentences from "./Sentences";
-import classes from "./DictPane.module.css";
+import classes from "./DictTabs.module.css";
 
-function DictPane({ dicts, term, activeTab, onSetActiveTab }) {
+function DictTabs({ dicts, term, activeTab, onSetActiveTab }) {
   return (
     <Tabs
       value={activeTab}
@@ -82,7 +81,7 @@ function DictPane({ dicts, term, activeTab, onSetActiveTab }) {
               key={dict.label}
               id={String(index)}
               value={String(index)}>
-              <DictIFrame src={getLookupURL(dict.url, term)} />
+              <Iframe src={getLookupURL(dict.url, term)} />
             </Tabs.Panel>
           )
         );
@@ -126,4 +125,4 @@ function handleExternal(url) {
   window.open(url, "otherwin", settings);
 }
 
-export default memo(DictPane);
+export default memo(DictTabs);

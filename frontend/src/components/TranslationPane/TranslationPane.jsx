@@ -2,12 +2,12 @@ import { memo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingOverlay, Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import DictPane from "../DictPane/DictPane";
+import DictPane from "../DictTabs/DictTabs";
 import TermForm from "../TermForm/TermForm";
-import styles from "./ReadPane.module.css";
+import classes from "./TranslationPane.module.css";
 import { paneResizeStorage } from "../../misc/utils";
 
-function LearnPane({ book, termData }) {
+function TranslationPane({ book, termData }) {
   const termPanelRef = useRef();
   const { isFetching, isSuccess, data, error } = useFetchTerm(termData);
   const [activeTab, setActiveTab] = useState("0");
@@ -35,7 +35,7 @@ function LearnPane({ book, termData }) {
 
           <PanelResizeHandle
             hitAreaMargins={{ coarse: 10, fine: 10 }}
-            className={styles.resizeHandle}
+            className={classes.resizeHandle}
             onDoubleClick={() => {
               const panel = termPanelRef.current;
               if (panel) {
@@ -50,7 +50,7 @@ function LearnPane({ book, termData }) {
             minSize={20}
             collapsible
             collapsedSize={0}
-            className={styles.dictPane}>
+            className={classes.dictPane}>
             <DictPane
               term={data.text}
               dicts={book.dictionaries.term}
@@ -82,4 +82,4 @@ function useFetchTerm(termData) {
   });
 }
 
-export default memo(LearnPane);
+export default memo(TranslationPane);

@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-function DictIFrame({ src }) {
+function Iframe({ src }) {
   // lazy loading makes sure dict loads only on tab open. if not set all dicts load at the same time
   return (
     <iframe
@@ -12,4 +12,4 @@ function DictIFrame({ src }) {
   );
 }
 
-export default memo(DictIFrame);
+export default memo(Iframe);

@@ -1,0 +1,24 @@
+.paneLeft {
+  width: 100%;
+  overflow: hidden; /*to hide header shadow*/
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.paneRight {
+  height: 100%;
+}
+
+.resizeHandle {
+  flex: 0 0 2px;
+  position: relative;
+  outline: none;
+
+  background-color: #e3e3e3;
+  transition: background-color 0.1s;
+}
+
+.resizeHandle[data-resize-handle-active] {
+  background-color: var(--mantine-color-blue-filled);
+}

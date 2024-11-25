@@ -20,9 +20,9 @@ import BookSourceButton from "./BookSourceButton";
 import MarkRestAsKnownButton from "./MarkAsKnownButton";
 import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
-import styles from "./ReadPane.module.css";
+import classes from "./ReadHeader.module.css";
 
-function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
+function ReadHeader({ drawerOpen, book, state, dispatch }) {
   const params = useParams();
   const page = Number(params.page);
   const navigation = useNavigation();
@@ -37,24 +37,30 @@ function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
         gap={rem(5)}
         wrap="nowrap"
         align="center"
-        className={styles.header}>
+        className={classes.header}>
         <ActionIcon onClick={drawerOpen} size="md">
           <IconMenu2 />
         </ActionIcon>
+
         <Center w={rem(48)} h={rem(48)} styles={{ root: { flexShrink: 0 } }}>
           {isLoading ? <Loader size="sm" /> : <HomeImageLink size={rem(48)} />}
         </Center>
+
         <Divider orientation="vertical" />
+
         <Stack gap="0.2rem">
           <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
           <HighlightsSwitch checked={state.highlights} dispatch={dispatch} />
         </Stack>
+
         <Divider orientation="vertical" />
+
         <Stack w="100%" gap={0}>
           <Group justify="space-between" wrap="nowrap" fz="sm" gap={rem(4)}>
             <Group flex={`0 0 ${rem(24)}`} justify="center">
               {book.source && <BookSourceButton source={book.source} />}
             </Group>
+
             <Group justify="space-between" wrap="nowrap" flex={1} miw={0}>
               {page > 1 && (
                 <Text component="h1" fw="normal" fz="inherit" lineClamp={1}>
@@ -63,11 +69,13 @@ function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
               )}
               <PageCounter currentPage={page} pageCount={book.pageCount} />
             </Group>
+
             <Group gap={0} wrap="nowrap">
               <PageActionsMenu />
               <MarkRestAsKnownButton />
             </Group>
           </Group>
+
           <ReadSlider book={book} />
         </Stack>
       </Group>
@@ -75,4 +83,4 @@ function ReadPaneHeader({ drawerOpen, book, state, dispatch }) {
   );
 }
 
-export default memo(ReadPaneHeader);
+export default memo(ReadHeader);
