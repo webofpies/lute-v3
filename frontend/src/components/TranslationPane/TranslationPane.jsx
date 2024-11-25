@@ -2,9 +2,9 @@ import { memo, useRef, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import DictPane from "../DictTabs/DictTabs";
+import DictTabs from "../DictTabs/DictTabs";
 import TermForm from "../TermForm/TermForm";
-import classes from "./TranslationPane.module.css";
+import classes from "../BookView/BookView.module.css";
 import { paneResizeStorage } from "../../misc/utils";
 
 function TranslationPane({ book, termData }) {
@@ -15,10 +15,7 @@ function TranslationPane({ book, termData }) {
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <Stack
-      gap={0}
-      dir="column"
-      style={{ position: "relative", height: "100%" }}>
+    <Stack gap={0} dir="column" className={classes.translationContainer}>
       {isSuccess && (
         <PanelGroup
           direction="vertical"
@@ -46,8 +43,8 @@ function TranslationPane({ book, termData }) {
             minSize={20}
             collapsible
             collapsedSize={0}
-            className={classes.dictPane}>
-            <DictPane
+            className={classes.dictTabsContainer}>
+            <DictTabs
               term={data.text}
               dicts={book.dictionaries.term}
               activeTab={activeTab}

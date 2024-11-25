@@ -4,7 +4,7 @@ import ReadHeader from "../ReadHeader/ReadHeader";
 import Player from "../Player/Player";
 import Toolbar from "../Toolbar/Toolbar";
 import TheText from "../TheText/TheText";
-import classes from "./ReadPane.module.css";
+import classes from "../BookView/BookView.module.css";
 import { handleClickOutside } from "../../lute";
 
 function ReadPane({

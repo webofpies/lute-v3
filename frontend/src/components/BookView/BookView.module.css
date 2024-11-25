@@ -22,3 +22,29 @@
 .resizeHandle[data-resize-handle-active] {
   background-color: var(--mantine-color-blue-filled);
 }
+
+/* read pane */
+.title {
+  overflow-wrap: break-word;
+  font-size: 1.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.textContainer {
+  padding: 2.3rem 3rem;
+  width: 100%;
+}
+
+/* translation pane */
+.translationContainer {
+  position: relative;
+  height: 100%;
+}
+
+.dictTabsContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  z-index: 2;
+}
