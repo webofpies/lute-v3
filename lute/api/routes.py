@@ -17,6 +17,7 @@ from lute.db import db
 from lute.models.book import Text, Book as BookModel
 from lute.book.stats import Service as StatsService
 from lute.read.service import Service
+from lute.read.render.service import Service as RenderService
 from lute.term.model import Repository
 from lute.models.repositories import BookRepository, LanguageRepository
 from lute.models.setting import UserSetting
@@ -154,11 +155,13 @@ def page_info(bookid, pagenum):
     if book is None:
         return redirect("/", 302)
 
-    # paragraphs = start_reading(book, pagenum, db.session)
-
-    # paragraphs = get_page_paragraphs(bookid, pagenum)
     service = Service(db.session)
-    paragraphs = service.start_reading(book, pagenum)
+    text = book.text_at_page(pagenum)
+    text.load_sentences()  # determine if this is need at the load time
+    lang = text.book.language
+    rs = RenderService(service.session)
+    paragraphs = rs.get_paragraphs(text.text, lang)
+
     paras = [
         [
             [
@@ -174,8 +177,6 @@ def page_info(bookid, pagenum):
                     "order": textitem.index,
                     "wid": textitem.wo_id,
                     "isWord": textitem.is_word,
-                    # "hasPopup": has_popup(textitem.wo_id) if textitem.wo_id else False,
-                    # "hasPopup": True if textitem.wo_id else False,
                 }
                 for textitem in sentence
             ]
