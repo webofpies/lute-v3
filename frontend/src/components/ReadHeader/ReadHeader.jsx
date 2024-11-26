@@ -62,11 +62,13 @@ function ReadHeader({ drawerOpen, book, state, dispatch }) {
             </Group>
 
             <Group justify="space-between" wrap="nowrap" flex={1} miw={0}>
-              {page > 1 && (
-                <Text component="h1" fw="normal" fz="inherit" lineClamp={1}>
-                  {book.title}
-                </Text>
-              )}
+              <Text
+                component={page === 1 ? "h2" : "h1"}
+                fw="normal"
+                fz="inherit"
+                lineClamp={1}>
+                {book.title}
+              </Text>
               <PageCounter currentPage={page} pageCount={book.pageCount} />
             </Group>
 
