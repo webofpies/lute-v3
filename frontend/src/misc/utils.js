@@ -152,6 +152,14 @@ function removeAllContainingClass(className) {
   elements.forEach((element) => element.classList.remove(`${className}`));
 }
 
+function convertSecsToDisplayString(secs) {
+  const minutes = Math.floor(secs / 60);
+  const seconds = (secs % 60).toFixed(1);
+  const m = minutes < 10 ? `0${minutes}` : `${minutes}`;
+  const s = secs % 60 < 10 ? `0${seconds}` : `${seconds}`;
+  return `${m}:${s}`;
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -164,4 +172,5 @@ export {
   addFlash,
   removeFlash,
   removeAllContainingClass,
+  convertSecsToDisplayString,
 };

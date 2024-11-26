@@ -17,64 +17,9 @@ import {
   IconPlayerTrackPrevFilled,
 } from "@tabler/icons-react";
 import PlayerMenu from "./PlayerMenu";
+import { convertSecsToDisplayString } from "../../misc/utils";
 
 const audio = new Audio();
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "statusToggled":
-      return { ...state, playing: !state.playing };
-    case "volumeChanged":
-      return { ...state, volume: action.payload };
-    case "rateChanged":
-      return { ...state, rate: action.payload };
-    case "timeChanged":
-      return { ...state, time: action.payload };
-    case "durationSet":
-      return { ...state, duration: action.payload };
-    case "bookmarkSaved":
-      return {
-        ...state,
-        bookmarks: [...state.bookmarks, { value: action.payload }].toSorted(
-          function (a, b) {
-            return a.value - b.value;
-          }
-        ),
-      };
-    case "bookmarkRemoved":
-      return {
-        ...state,
-        bookmarks: state.bookmarks.filter(
-          (mark) => mark.value !== action.payload
-        ),
-      };
-    case "bookmarkActive":
-      return {
-        ...state,
-        bookmarkActive: action.payload,
-      };
-    case "skipAmount":
-      return {
-        ...state,
-        skipAmount: action.payload,
-      };
-    case "controlsReset":
-      return { ...state, rate: 1, volume: 1, playing: false };
-    default:
-      throw new Error();
-  }
-}
-
-const initialState = {
-  playing: false,
-  volume: 1,
-  rate: 1,
-  time: 0,
-  duration: 0,
-  bookmarks: [],
-  bookmarkActive: false,
-  skipAmount: "5",
-};
 
 function Player({ book }) {
   const [state, dispatch] = useInitializePlayer(
@@ -170,7 +115,7 @@ function Player({ book }) {
             component="span"
             miw={rem(50)}
             style={{ textAlign: "center" }}>
-            {timeToDisplayString(state.time)}
+            {convertSecsToDisplayString(state.time)}
           </Text>
           {/* TIME SLIDER */}
           <Slider
@@ -196,7 +141,7 @@ function Player({ book }) {
             component="span"
             miw={rem(50)}
             style={{ textAlign: "center" }}>
-            {timeToDisplayString(state.duration)}
+            {convertSecsToDisplayString(state.duration)}
           </Text>
         </Group>
 
@@ -222,6 +167,62 @@ function Player({ book }) {
     </Paper>
   );
 }
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "statusToggled":
+      return { ...state, playing: !state.playing };
+    case "volumeChanged":
+      return { ...state, volume: action.payload };
+    case "rateChanged":
+      return { ...state, rate: action.payload };
+    case "timeChanged":
+      return { ...state, time: action.payload };
+    case "durationSet":
+      return { ...state, duration: action.payload };
+    case "bookmarkSaved":
+      return {
+        ...state,
+        bookmarks: [...state.bookmarks, { value: action.payload }].toSorted(
+          function (a, b) {
+            return a.value - b.value;
+          }
+        ),
+      };
+    case "bookmarkRemoved":
+      return {
+        ...state,
+        bookmarks: state.bookmarks.filter(
+          (mark) => mark.value !== action.payload
+        ),
+      };
+    case "bookmarkActive":
+      return {
+        ...state,
+        bookmarkActive: action.payload,
+      };
+    case "skipAmount":
+      return {
+        ...state,
+        skipAmount: action.payload,
+      };
+    case "controlsReset":
+      return { ...state, rate: 1, volume: 1, playing: false };
+    default:
+      throw new Error();
+  }
+}
+
+const initialState = {
+  playing: false,
+  volume: 1,
+  rate: 1,
+  time: 0,
+  duration: 0,
+  bookmarks: [],
+  bookmarkActive: false,
+  skipAmount: "5",
+};
 
 function useInitializePlayer(id, position, bookmarks) {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -260,14 +261,6 @@ function useInitializePlayer(id, position, bookmarks) {
   }, [bookmarks, position, id]);
 
   return [state, dispatch];
-}
-
-function timeToDisplayString(secs) {
-  const minutes = Math.floor(secs / 60);
-  const seconds = (secs % 60).toFixed(1);
-  const m = minutes < 10 ? `0${minutes}` : `${minutes}`;
-  const s = secs % 60 < 10 ? `0${seconds}` : `${seconds}`;
-  return `${m}:${s}`;
 }
 
 export default memo(Player);
