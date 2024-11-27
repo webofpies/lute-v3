@@ -8,7 +8,7 @@ function NoSentences({ text }) {
           The page containing this word may not be marked as &quot;read&quot;
           (see{" "}
           <a
-            to="https://luteorg.github.io/lute-manual/faq/terms/sentences-only-shown-when-page-is-read.html"
+            href="https://luteorg.github.io/lute-manual/faq/terms/sentences-only-shown-when-page-is-read.html"
             target="_blank"
             rel="noopener noreferrer">
             the manual

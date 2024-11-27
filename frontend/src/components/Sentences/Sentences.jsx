@@ -33,7 +33,7 @@ function Sentences({ sentencesFetchOptions }) {
                           }}
                         />
                         <a
-                          to={`/book/${reference.bookId}/page/${reference.pageNumber}`}
+                          href={`/book/${reference.bookId}/page/${reference.pageNumber}`}
                           target="_blank"
                           className={classes.bookLink}>
                           {reference.bookTitle}
