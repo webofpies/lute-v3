@@ -1,12 +1,14 @@
 import { memo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, rem, Tabs, Text, Tooltip } from "@mantine/core";
-import { IconExternalLink, IconPhoto } from "@tabler/icons-react";
+import { rem, Tabs, Text, Tooltip } from "@mantine/core";
+import { IconPhoto } from "@tabler/icons-react";
 import Iframe from "./Iframe";
-import DictFavicon from "./DictFavicon";
 import Sentences from "../Sentences/Sentences";
+import DictTab from "../DictTab/DictTab";
+import DictTabExternal from "../DictTab/DictTabExternal";
 import classes from "./DictTabs.module.css";
 import { sentencesFetchOptions } from "../../queries/sentences";
+import { getLookupURL } from "../../misc/utils";
 
 function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
   const queryClient = useQueryClient();
@@ -27,39 +29,28 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
             alignItems: "center",
             gridTemplateColumns: `repeat(${dicts.length}, minmax(3rem, 8rem))`,
           }}>
-          {dicts.map((dict, index) => {
-            return (
-              <Tooltip key={dict.label} label={dict.label} openDelay={200}>
-                {dict.isExternal ? (
-                  <Button
-                    component="a"
-                    ml={rem(2)}
-                    variant="default"
-                    fw="normal"
-                    leftSection={<DictFavicon hostname={dict.hostname} />}
-                    rightSection={
-                      <IconExternalLink size={rem(14)} stroke={1.6} />
-                    }
-                    onClick={() =>
-                      handleExternal(getLookupURL(dict.url, term))
-                    }>
-                    {dict.label}
-                  </Button>
-                ) : (
-                  <Tabs.Tab
-                    onClick={() => onSetActiveTab(String(index))}
-                    className={classes.flex}
-                    id={String(index)}
-                    value={String(index)}
-                    leftSection={<DictFavicon hostname={dict.hostname} />}>
-                    <Text size="sm" style={{ overflow: "hidden" }}>
-                      {dict.label}
-                    </Text>
-                  </Tabs.Tab>
-                )}
-              </Tooltip>
-            );
-          })}
+          {dicts.map((dict, index) => (
+            <Tooltip
+              key={dict.label}
+              label={dict.label}
+              openDelay={150}
+              refProp="innerRef">
+              {dict.isExternal ? (
+                <DictTabExternal
+                  dict={dict}
+                  onHandleExternal={() =>
+                    handleExternal(getLookupURL(dict.url, term))
+                  }
+                />
+              ) : (
+                <DictTab
+                  dict={dict}
+                  value={String(index)}
+                  onSetActiveTab={() => onSetActiveTab(String(index))}
+                />
+              )}
+            </Tooltip>
+          ))}
         </div>
         <div style={{ display: "flex" }}>
           <Tabs.Tab
@@ -118,24 +109,6 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
       </Tabs.Panel>
     </Tabs>
   );
-}
-
-function getLookupURL(dictURL, term) {
-  let url = dictURL;
-  url = url.replace("###", getCleanTermString(term));
-
-  return url;
-}
-
-function getCleanTermString(term) {
-  // Terms are saved with zero-width space between each token;
-  // remove that for dict searches.
-  const zeroWidthSpace = "\u200b";
-  const sqlZWS = "%E2%80%8B";
-  const cleanText = term.replaceAll(zeroWidthSpace, "").replace(/\s+/g, " ");
-  const searchTerm = encodeURIComponent(cleanText).replaceAll(sqlZWS, "");
-
-  return searchTerm;
 }
 
 function handleExternal(url) {

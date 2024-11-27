@@ -160,6 +160,24 @@ function convertSecsToDisplayString(secs) {
   return `${m}:${s}`;
 }
 
+function getLookupURL(dictURL, term) {
+  let url = dictURL;
+  url = url.replace("###", getCleanTermString(term));
+
+  return url;
+}
+
+function getCleanTermString(term) {
+  // Terms are saved with zero-width space between each token;
+  // remove that for dict searches.
+  const zeroWidthSpace = "\u200b";
+  const sqlZWS = "%E2%80%8B";
+  const cleanText = term.replaceAll(zeroWidthSpace, "").replace(/\s+/g, " ");
+  const searchTerm = encodeURIComponent(cleanText).replaceAll(sqlZWS, "");
+
+  return searchTerm;
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -173,4 +191,5 @@ export {
   removeFlash,
   removeAllContainingClass,
   convertSecsToDisplayString,
+  getLookupURL,
 };
