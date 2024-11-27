@@ -20,7 +20,6 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
       styles={{
         tab: { paddingBlock: "xs" },
         tabLabel: { minWidth: 0 },
-        root: { height: "100%" },
       }}>
       <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
         <div
@@ -36,12 +35,7 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
               openDelay={150}
               refProp="innerRef">
               {dict.isExternal ? (
-                <DictTabExternal
-                  dict={dict}
-                  onHandleExternal={() =>
-                    handleExternal(getLookupURL(dict.url, term))
-                  }
-                />
+                <DictTabExternal dict={dict} term={term} />
               ) : (
                 <DictTab
                   dict={dict}
@@ -109,13 +103,6 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
       </Tabs.Panel>
     </Tabs>
   );
-}
-
-function handleExternal(url) {
-  let settings =
-    "width=800, height=600, scrollbars=yes, menubar=no, resizable=yes, status=no";
-  // if (newTab) settings = null;
-  window.open(url, "otherwin", settings);
 }
 
 export default memo(DictTabs);
