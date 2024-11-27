@@ -47,6 +47,7 @@ function TranslationPane({ book, termData }) {
             <DictTabs
               term={data.text}
               dicts={book.dictionaries.term}
+              langId={book.languageId}
               activeTab={activeTab}
               onSetActiveTab={setActiveTab}
             />

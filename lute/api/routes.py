@@ -264,7 +264,7 @@ def popup_content(termid):
 @bp.route("/sentences/<int:langid>/<text>", methods=["GET"])
 def get_sentences(langid, text):
     "Get sentences for terms."
-    repo = Repository(db)
+    repo = Repository(db.session)
     # Use find_or_new(): if the user clicks on a parent tag
     # in the term form, and the parent does not exist yet, then
     # we're creating a new term.
@@ -278,21 +278,24 @@ def get_sentences(langid, text):
         refdata.append((f"\"{p['term']}\"", p["refs"]))
 
     refcount = sum(len(ref[1]) for ref in refdata)
-    references = [
+    variations = [
         {
-            "dto": {
-                "sentence": dto.sentence,
-                "bookId": dto.book_id,
-                "pageNumber": dto.page_number,
-                "title": dto.title,
-            },
             "term": k,
+            "references": [
+                {
+                    "id": dtos.index(dto),
+                    "sentence": dto.sentence,
+                    "bookId": dto.book_id,
+                    "bookTitle": dto.title,
+                    "pageNumber": dto.page_number,
+                }
+                for dto in dtos
+            ],
         }
         for k, dtos in refdata
-        for dto in dtos
     ]
 
-    return jsonify({"text": text, "references": references if refcount > 0 else []})
+    return jsonify({"text": text, "variations": variations if refcount > 0 else []})
 
 
 #

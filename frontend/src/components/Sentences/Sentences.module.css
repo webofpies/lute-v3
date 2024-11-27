@@ -1,0 +1,39 @@
+.mainList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  list-style: none;
+}
+
+.innerList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+
+  list-style: disc;
+}
+
+.bookLink {
+  display: block;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.2rem;
+  color: #2a72d1;
+}
+
+.bookLink:link {
+  color: #2a72d1;
+}
+
+.term {
+  /* font-style: italic; */
+  background-color: #9cdfff;
+  margin-bottom: 0.5rem;
+  padding-inline: 0.4rem;
+}
+
+.container {
+  position: relative;
+  padding: 1.9rem 2.3rem;
+}

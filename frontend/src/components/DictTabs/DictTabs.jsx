@@ -1,16 +1,25 @@
 import { memo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button, rem, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconExternalLink, IconPhoto } from "@tabler/icons-react";
 import Iframe from "./Iframe";
 import DictFavicon from "./DictFavicon";
+import Sentences from "../Sentences/Sentences";
 import classes from "./DictTabs.module.css";
+import { sentencesFetchOptions } from "../../queries/sentences";
 
-function DictTabs({ dicts, term, activeTab, onSetActiveTab }) {
+function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
+  const queryClient = useQueryClient();
+
   return (
     <Tabs
       value={activeTab}
       classNames={{ root: classes.tabs }}
-      styles={{ tab: { paddingBlock: "xs" }, tabLabel: { minWidth: 0 } }}>
+      styles={{
+        tab: { paddingBlock: "xs" },
+        tabLabel: { minWidth: 0 },
+        root: { height: "100%" },
+      }}>
       <Tabs.List className={`${classes.flex} ${classes.tabList}`}>
         <div
           style={{
@@ -57,6 +66,9 @@ function DictTabs({ dicts, term, activeTab, onSetActiveTab }) {
             className={classes.flex}
             id="sentencesTab"
             value="sentencesTab"
+            onMouseEnter={() =>
+              queryClient.prefetchQuery(sentencesFetchOptions(langId, term))
+            }
             onClick={() => onSetActiveTab("sentencesTab")}>
             <Text size="sm" style={{ overflow: "hidden" }}>
               Sentences
@@ -87,13 +99,21 @@ function DictTabs({ dicts, term, activeTab, onSetActiveTab }) {
         );
       })}
       <Tabs.Panel
-        style={{ height: "100%" }}
+        style={{ overflowY: "auto", flexGrow: 1 }}
         id="sentencesTab"
-        value="sentencesTab">
-        {/* <Sentences /> */}
-        SENTENCES
+        value="sentencesTab"
+        key="sentencesTab">
+        {activeTab === "sentencesTab" && (
+          <Sentences
+            sentencesFetchOptions={sentencesFetchOptions(langId, term)}
+          />
+        )}
       </Tabs.Panel>
-      <Tabs.Panel style={{ height: "100%" }} id="imagesTab" value="imagesTab">
+      <Tabs.Panel
+        style={{ height: "100%" }}
+        id="imagesTab"
+        value="imagesTab"
+        key="imagesTab">
         IMAGES
       </Tabs.Panel>
     </Tabs>
