@@ -18,6 +18,7 @@ import {
   IconHeadphones,
   IconLanguage,
   IconLink,
+  IconPictureInPictureFilled,
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
@@ -26,12 +27,18 @@ import classes from "./CreateBookForm.module.css";
 function CreateBookForm() {
   return (
     <form className={classes.container}>
-      <Select
-        withAsterisk
-        label="Language"
-        leftSection={<IconLanguage />}
-        autoFocus
-      />
+      <Group align="flex-end">
+        <Select
+          withAsterisk
+          label="Language"
+          searchable={true}
+          leftSection={<IconLanguage />}
+          autoFocus
+        />
+        <Button variant="filled" rightSection={<IconPictureInPictureFilled />}>
+          Create new
+        </Button>
+      </Group>
       <TextInput
         withAsterisk
         label="Title"
@@ -39,6 +46,7 @@ function CreateBookForm() {
         disabled
       />
       <Fieldset
+        variant="filled"
         legend="Content"
         flex={1}
         className={classes.content}
@@ -54,7 +62,9 @@ function CreateBookForm() {
             minRows={15}
             maxRows={40}
           />
+
           <p>or</p>
+
           <FileInput
             disabled
             label="Import from file"
@@ -63,7 +73,9 @@ function CreateBookForm() {
             leftSection={<IconBookUpload />}
             clearable
           />
+
           <p>or</p>
+
           <Group align="flex-end">
             <TextInput
               flex={1}
