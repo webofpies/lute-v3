@@ -8,6 +8,7 @@ import {
   rem,
   Select,
   Stack,
+  Text,
   TextInput,
 } from "@mantine/core";
 import {
@@ -26,6 +27,9 @@ function CreateLanguageForm({ predefined }) {
 
   return (
     <form className={classes.container}>
+      <Text fw={700} fz={rem(22)} mb="xs">
+        Create new language
+      </Text>
       <Group align="flex-end">
         <Select
           label="Load from predefined"

@@ -1,73 +1,13 @@
 import CreateLanguageForm from "../components/CreateLanguageForm/CreateLanguageForm";
+import PageContainer from "../components/PageContainer/PageContainer";
+import { predefined } from "../misc/tempdata";
 
 function Languages() {
-  // temporary hardcoded data
-  const predefined = [
-    "Afrikaans",
-    "Ainu",
-    "Albanian",
-    "Amharic",
-    "Arabic",
-    "Armenian",
-    "Azerbaijani",
-    "Basque",
-    "Belarusian",
-    "Bengali",
-    "Bosnian",
-    "Breton",
-    "Bulgarian",
-    "Catalan",
-    "Classical Chinese",
-    "Croatian",
-    "Czech",
-    "Danish",
-    "Dutch",
-    "English",
-    "Esperanto",
-    "Estonian",
-    "Farsi",
-    "Finnish",
-    "French",
-    "Galician",
-    "Generic",
-    "Georgian",
-    "German",
-    "Gothic",
-    "Greek",
-    "Hebrew",
-    "Hindi",
-    "Hungarian",
-    "Icelandic",
-    "Indonesian",
-    "Italian",
-    "Kazakh",
-    "Latin",
-    "Latvian",
-    "Lithuanian",
-    "Macedonian",
-    "Nahuatl",
-    "Navajo",
-    "Norwegian",
-    "Okinawan",
-    "Polish",
-    "Portuguese",
-    "Punjabi",
-    "Romanian",
-    "Russian",
-    "Sanskrit",
-    "Serbian",
-    "Slovak",
-    "Slovene",
-    "Spanish",
-    "Swahili",
-    "Swedish",
-    "Tibetan",
-    "Turkish",
-    "Ukrainian",
-    "Vietnamese",
-  ];
-
-  return <CreateLanguageForm predefined={predefined} />;
+  return (
+    <PageContainer>
+      <CreateLanguageForm predefined={predefined} />
+    </PageContainer>
+  );
 }
 
 export default Languages;

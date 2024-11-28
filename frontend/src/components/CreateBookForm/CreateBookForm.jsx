@@ -18,13 +18,12 @@ import {
   IconHeadphones,
   IconLanguage,
   IconLink,
-  IconPictureInPictureFilled,
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
 import classes from "./CreateBookForm.module.css";
 
-function CreateBookForm() {
+function CreateBookForm({ openDrawer }) {
   return (
     <form className={classes.container}>
       <Group align="flex-end">
@@ -35,8 +34,8 @@ function CreateBookForm() {
           leftSection={<IconLanguage />}
           autoFocus
         />
-        <Button variant="filled" rightSection={<IconPictureInPictureFilled />}>
-          Create new
+        <Button variant="filled" onClick={openDrawer}>
+          New
         </Button>
       </Group>
       <TextInput
