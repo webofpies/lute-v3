@@ -2,7 +2,7 @@ import { Tabs, Text } from "@mantine/core";
 import classes from "../DictTabs/DictTabs.module.css";
 import DictFavicon from "../DictTabs/DictFavicon";
 
-function DictTab({ dict, value, onSetActiveTab, innerRef }) {
+function DictTabEmbedded({ dict, value, onSetActiveTab, innerRef }) {
   return (
     <Tabs.Tab
       ref={innerRef}
@@ -18,4 +18,4 @@ function DictTab({ dict, value, onSetActiveTab, innerRef }) {
   );
 }
 
-export default DictTab;
+export default DictTabEmbedded;

@@ -4,7 +4,7 @@ import { rem, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
 import Iframe from "./Iframe";
 import Sentences from "../Sentences/Sentences";
-import DictTab from "../DictTab/DictTab";
+import DictTabEmbedded from "../DictTab/DictTabEmbedded";
 import DictTabExternal from "../DictTab/DictTabExternal";
 import classes from "./DictTabs.module.css";
 import { sentencesFetchOptions } from "../../queries/sentences";
@@ -37,7 +37,7 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
               {dict.isExternal ? (
                 <DictTabExternal dict={dict} term={term} />
               ) : (
-                <DictTab
+                <DictTabEmbedded
                   dict={dict}
                   value={String(index)}
                   onSetActiveTab={() => onSetActiveTab(String(index))}
