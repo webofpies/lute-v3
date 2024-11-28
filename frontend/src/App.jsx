@@ -18,6 +18,7 @@ import { loader as bookLoader } from "./queries/book";
 const queryClient = new QueryClient();
 
 const CreateBook = lazy(() => import("./pages/CreateBook"));
+const Languages = lazy(() => import("./pages/Languages"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
 
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense>
             <CreateBook />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/languages",
+        element: (
+          <Suspense>
+            <Languages />
           </Suspense>
         ),
       },

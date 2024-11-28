@@ -15,9 +15,10 @@ from flask import (
 from lute import __version__
 from lute.db import db
 from lute.models.book import Text, Book as BookModel
-from lute.book.stats import Service as StatsService
-from lute.read.service import Service
+from lute.read.service import Service as ReadService
+from lute.language.service import Service as LangService
 from lute.read.render.service import Service as RenderService
+from lute.book.stats import Service as StatsService
 from lute.term.model import Repository
 from lute.models.repositories import BookRepository, LanguageRepository
 from lute.models.setting import UserSetting
@@ -155,7 +156,7 @@ def page_info(bookid, pagenum):
     if book is None:
         return redirect("/", 302)
 
-    service = Service(db.session)
+    service = ReadService(db.session)
     text = book.text_at_page(pagenum)
     text.load_sentences()  # determine if this is need at the load time
     lang = text.book.language
@@ -241,7 +242,7 @@ def popup_content(termid):
     """
     Show a term popup for the given DBTerm.
     """
-    service = Service(db.session)
+    service = ReadService(db.session)
     d = service.get_popup_data(termid)
     if d is None:
         return jsonify(None)
@@ -442,3 +443,12 @@ def get_image(lgid, term):
     directory = os.path.join(datapath, "userimages", str(lgid))
     filename = term + ".jpeg"
     return send_from_directory(directory, filename)
+
+
+@bp.route("/languages/predefined", methods=["GET"])
+def get_predefined_languages():
+    "Get predefined languages"
+    service = LangService(db.session)
+    predefined = service.predefined_languages()
+
+    return jsonify([language.name for language in predefined])

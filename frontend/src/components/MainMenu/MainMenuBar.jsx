@@ -20,7 +20,7 @@ function MainMenuBar({ openVersionModal }) {
     "/termimport/index": "Import Terms",
     "/termtag/index": "Term Tags",
 
-    "/language/index": "Languages",
+    "/languages": "Languages",
     "/settings/index": "Settings",
     "/settings/shortcuts": "Shortcuts",
 

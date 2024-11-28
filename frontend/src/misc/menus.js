@@ -38,7 +38,7 @@ const navLinks = [
     icon: IconSettings,
 
     links: [
-      { label: "Languages", link: "/language/index" },
+      { label: "Languages", link: "/languages" },
       { label: "Settings", link: "/settings/index" },
       { label: "Keyboard shortcuts", link: "/settings/shortcuts" },
     ],
