@@ -1,11 +1,10 @@
-import CreateLanguageForm from "../components/CreateLanguageForm/CreateLanguageForm";
+import LanguageForm from "../components/LanguageForm/LanguageForm";
 import PageContainer from "../components/PageContainer/PageContainer";
-import { predefined } from "../misc/tempdata";
 
 function Languages() {
   return (
-    <PageContainer>
-      <CreateLanguageForm predefined={predefined} />
+    <PageContainer width="75%">
+      <LanguageForm />
     </PageContainer>
   );
 }

@@ -1,9 +1,8 @@
 import { Drawer, ScrollAreaAutosize } from "@mantine/core";
-import CreateBookForm from "../components/CreateBookForm/CreateBookForm";
 import { useDisclosure } from "@mantine/hooks";
-import CreateLanguageForm from "../components/CreateLanguageForm/CreateLanguageForm";
+import CreateBookForm from "../components/CreateBookForm/CreateBookForm";
+import LanguageForm from "../components/LanguageForm/LanguageForm";
 import PageContainer from "../components/PageContainer/PageContainer";
-import { predefined } from "../misc/tempdata";
 
 function CreateBook() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -24,7 +23,7 @@ function CreateBook() {
             </Drawer.Header>
             <Drawer.Body>
               <PageContainer>
-                <CreateLanguageForm predefined={predefined} />
+                <LanguageForm />
               </PageContainer>
             </Drawer.Body>
           </ScrollAreaAutosize>

@@ -12,6 +12,7 @@ from flask import (
     send_from_directory,
     current_app,
 )
+from sqlalchemy import text as SQLText
 from lute import __version__
 from lute.db import db
 from lute.models.book import Text, Book as BookModel
@@ -452,3 +453,37 @@ def get_predefined_languages():
     predefined = service.predefined_languages()
 
     return jsonify([language.name for language in predefined])
+
+
+@bp.route("/languages/defined")
+def get_defined_languages():
+    """
+    List all languages, with book and term counts.
+    """
+
+    # Using plain sql, easier to get bulk quantities.
+    sql = """
+    select LgID, LgName, book_count, term_count from languages
+    left outer join (
+      select BkLgID, count(BkLgID) as book_count from books
+      group by BkLgID
+    ) bc on bc.BkLgID = LgID
+    left outer join (
+      select WoLgID, count(WoLgID) as term_count from words
+      where WoStatus != 0
+      group by WoLgID
+    ) tc on tc.WoLgID = LgID
+    order by LgName
+    """
+    result = db.session.execute(SQLText(sql)).all()
+    languages = [
+        {
+            "id": row[0],
+            "name": row[1],
+            "bookCount": row[2] or 0,
+            "termCount": row[3] or 0,
+        }
+        for row in result
+    ]
+
+    return jsonify(languages)

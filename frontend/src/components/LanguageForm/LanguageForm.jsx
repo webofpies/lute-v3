@@ -6,7 +6,6 @@ import {
   Fieldset,
   Group,
   rem,
-  Select,
   Stack,
   Text,
   TextInput,
@@ -15,33 +14,23 @@ import {
   IconAbc,
   IconAlt,
   IconCut,
-  IconLanguage,
-  IconListSearch,
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
-import DictionaryBar from "./DictionaryBar";
-import classes from "./CreateLanguageForm.module.css";
+import LanguageSelect from "../LanguageSelect/LanguageSelect";
+import DictionaryBar from "../DictionaryBar/DictionaryBar";
+import classes from "./LanguageForm.module.css";
 
-function CreateLanguageForm({ predefined }) {
+function LanguageForm() {
   const [dicts, setDicts] = useState([0]);
 
   return (
     <form className={classes.container}>
-      <Text fw={700} fz={rem(22)} mb="xs">
-        Create new language
+      <Text fw={700} fz={rem(22)}>
+        Create or Edit
       </Text>
-      <Group align="flex-end">
-        <Select
-          label="Load from predefined"
-          searchable={true}
-          leftSection={<IconListSearch />}
-          data={predefined}
-        />
-        <Button variant="filled" disabled>
-          Load
-        </Button>
+      <Group wrap="nowrap" align="flex-end">
+        <LanguageSelect />
       </Group>
-      <TextInput withAsterisk label="Name" leftSection={<IconLanguage />} />
       <Fieldset
         variant="filled"
         legend="Dictionaries"
@@ -111,4 +100,4 @@ function CreateLanguageForm({ predefined }) {
   );
 }
 
-export default CreateLanguageForm;
+export default LanguageForm;
