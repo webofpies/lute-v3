@@ -16,7 +16,7 @@ function ReadSlider({ book }) {
 
   function goToPage(num) {
     const clamped = clamp(num, 1, book.pageCount);
-    navigate(`/book/${book.id}/page/${clamped}`);
+    navigate(`/books/${book.id}/pages/${clamped}`);
     setChangeVal(clamped);
   }
 
