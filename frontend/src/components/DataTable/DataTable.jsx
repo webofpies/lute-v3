@@ -106,7 +106,7 @@ export default function DataTable({ data }) {
     <Table.Tr key={book.title}>
       <Table.Td>
         <Link
-          to={`/book/${book.id}/page/${book.currentPage}`}
+          to={`/books/${book.id}/pages/${book.currentPage}`}
           style={{ color: "inherit" }}>
           <Text lineClamp={1}>{book.title}</Text>{" "}
         </Link>

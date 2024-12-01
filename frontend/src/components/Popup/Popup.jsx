@@ -44,7 +44,9 @@ async function handleFetch(id) {
     const data = await queryClient.fetchQuery({
       queryKey: ["popupData", id],
       queryFn: async () => {
-        const response = await fetch(`http://localhost:5001/api/popup/${id}`);
+        const response = await fetch(
+          `http://localhost:5001/api/terms/${id}/popup`
+        );
         return await response.json();
       },
       enabled: id !== null,

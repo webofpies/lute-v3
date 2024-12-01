@@ -1,6 +1,6 @@
 function sentencesFetchOptions(langId, termId) {
   return {
-    queryKey: ["sentences", langId, termId],
+    queryKey: ["sentences", termId, langId],
     queryFn: () => fetchSentences(langId, termId),
     staleTime: Infinity,
   };
@@ -8,7 +8,7 @@ function sentencesFetchOptions(langId, termId) {
 
 async function fetchSentences(langId, term) {
   const res = await fetch(
-    `http://localhost:5001/api/sentences/${langId}/${term}`
+    `http://localhost:5001/api/terms/${term}/${langId}/sentences`
   );
   return await res.json();
 }

@@ -61,7 +61,7 @@ function TranslationPane({ book, termData }) {
 function useFetchTerm(termData) {
   const key =
     termData.type === "multi"
-      ? `${termData.langID}/${termData.data}`
+      ? `${termData.data}/${termData.langID}`
       : termData.data;
 
   return useQuery({

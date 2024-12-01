@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Homepage /> },
       {
-        path: "/book/new",
+        path: "/books/new",
         element: (
           <Suspense>
             <CreateBook />
@@ -68,7 +68,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/book/:id/page/:page",
+    path: "/books/:id/pages/:page",
     element: <BookView />,
     loader: bookLoader(queryClient),
   },

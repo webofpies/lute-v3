@@ -228,7 +228,7 @@ function useInitializePlayer(id, position, bookmarks) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    audio.src = `http://localhost:5001/api/audio/${id}`;
+    audio.src = `http://localhost:5001/api/books/${id}/audio`;
 
     // retrieve last position
     audio.currentTime = position;

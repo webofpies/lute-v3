@@ -14,12 +14,12 @@ import { IconLanguage } from "@tabler/icons-react";
 let languages = [];
 let allLanguages = [];
 
-export function LanguageSelect() {
+export function LanguageSelect({ setPredefinedLang }) {
   const predefinedQuery = useQuery({
     queryKey: ["predefined"],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:5001/api/languages/predefined`
+        `http://localhost:5001/api/languages/?type=predefined`
       );
       return await response.json();
     },
@@ -30,9 +30,7 @@ export function LanguageSelect() {
   const definedQuery = useQuery({
     queryKey: ["defined"],
     queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/defined`
-      );
+      const response = await fetch(`http://localhost:5001/api/languages`);
       return await response.json();
     },
     staleTime: Infinity,
@@ -44,8 +42,13 @@ export function LanguageSelect() {
       {
         label: "Edit existing",
         options: [...definedQuery.data.map((obj) => obj.name)],
+        id: "existing",
       },
-      { label: "Create from predefined", options: predefinedQuery.data },
+      {
+        label: "Create from predefined",
+        options: predefinedQuery.data,
+        id: "predefined",
+      },
     ];
 
     allLanguages = languages.reduce(
@@ -93,7 +96,7 @@ export function LanguageSelect() {
 
   const groups = filteredGroups.map((group) => {
     const options = group.options.map((item) => (
-      <Combobox.Option value={item} key={item}>
+      <Combobox.Option value={group.id + item} key={item}>
         {item}
       </Combobox.Option>
     ));
@@ -109,19 +112,25 @@ export function LanguageSelect() {
     <Combobox
       store={combobox}
       withinPortal={false}
-      onOptionSubmit={(val) => {
+      onOptionSubmit={(v) => {
+        const val = v.replace("predefined", "").replace("existing", "");
         if (val === "$create") {
           // setData((current) => [...current, search]);
           setValue(search);
         } else {
           setValue(val);
           setSearch(val);
+
+          if (v.includes("predefined")) {
+            setPredefinedLang(val);
+          }
         }
 
         combobox.closeDropdown();
       }}>
       <Combobox.Target>
         <InputBase
+          w="fit-content"
           label="Name"
           leftSection={<IconLanguage />}
           rightSection={

@@ -20,7 +20,7 @@ function bookQuery(id) {
   return {
     queryKey: ["bookData", id],
     queryFn: async () => {
-      const bookResponse = await fetch(`http://localhost:5001/api/book/${id}`);
+      const bookResponse = await fetch(`http://localhost:5001/api/books/${id}`);
       const book = await bookResponse.json();
       return book;
     },
@@ -33,7 +33,7 @@ function pageQuery(bookId, pageNum) {
     queryKey: ["pageData", bookId, pageNum],
     queryFn: async () => {
       const pageResponse = await fetch(
-        `http://localhost:5001/api/book/${bookId}/page/${pageNum}`
+        `http://localhost:5001/api/books/${bookId}/pages/${pageNum}`
       );
       const pageData = await pageResponse.json();
       return pageData;

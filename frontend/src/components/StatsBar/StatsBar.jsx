@@ -26,7 +26,7 @@ function StatsBar({ book }) {
     queryKey: ["bookStats", book.id],
     queryFn: async () => {
       const response = await fetch(
-        `http://localhost:5001/api/book/${book.id}/stats`
+        `http://localhost:5001/api/books/${book.id}/stats`
       );
       const data = await response.json();
 
