@@ -26,7 +26,7 @@ function ReadPane({
           state={state}
           dispatch={dispatch}
         />
-        {book.audio.name && <Player book={book} />}
+        {book.audio && <Player book={book} />}
         <Toolbar state={state} dispatch={dispatch} />
       </div>
       <ScrollArea
