@@ -14,7 +14,7 @@ import { nprogress } from "@mantine/nprogress";
 function useInitialize(book, page, state, settings) {
   const textItemRefs = useMemo(() => {
     const res = {};
-    page.forEach((para) =>
+    page.paragraphs.forEach((para) =>
       para.forEach((sentence) =>
         sentence.forEach((item) => {
           res[item.order] = createRef(null);
@@ -22,7 +22,7 @@ function useInitialize(book, page, state, settings) {
       )
     );
     return res;
-  }, [page]);
+  }, [page.paragraphs]);
 
   const refs = useMemo(
     () => ({

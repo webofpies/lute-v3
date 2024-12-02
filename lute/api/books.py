@@ -134,7 +134,7 @@ def page_info(bookid, pagenum):
         for paragraph in paragraphs
     ]
 
-    return jsonify(paras)
+    return jsonify({"text": text.text, "paragraphs": paras})
 
 
 @bp.route("<int:bookid>/audio", methods=["GET"])

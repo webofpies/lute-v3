@@ -34,9 +34,6 @@ function handleAddBookmark(bookId, pageNum) {
     });
 }
 
-function handleEditPage(bookId, pageNum) {
-  location.href = `/read/editpage/${bookId}/${pageNum}`;
-}
 /** Show the translation using the next dictionary. */
 function handleTranslate(attr) {
   const tis = getMatchedTextItems(attr);
@@ -101,30 +98,30 @@ let _get_translation_dict_index = function (sentence, dicts) {
 
 function setHighlightsOn(refs) {
   Object.values(refs).forEach((ref) => {
-    ref.current.style.removeProperty("background-color");
+    if (ref.current) ref.current.style.removeProperty("background-color");
   });
 }
 
 function setHighlightsOff(refs) {
   Object.values(refs).forEach((ref) => {
-    ref.current.style.backgroundColor = "transparent";
+    if (ref.current) ref.current.style.backgroundColor = "transparent";
   });
 }
 
 function setFontSize(refs, size) {
   Object.values(refs).forEach((ref) => {
-    ref.current.style.fontSize = `${size}rem`;
+    if (ref.current) ref.current.style.fontSize = `${size}rem`;
   });
 }
 
 function setLineHeight(refs, amount) {
   Object.values(refs).forEach((ref) => {
-    ref.current.style.marginBottom = `${amount}px`;
+    if (ref.current) ref.current.style.marginBottom = `${amount}px`;
   });
 }
 
 function setColumnCount(ref, count) {
-  ref.current.style.columnCount = count;
+  if (ref.current) ref.current.style.columnCount = count;
 }
 
 function handleToggleHighlights(checked, dispatch) {
@@ -251,7 +248,6 @@ export {
   handleSetLineHeight,
   handleSetFontSize,
   handleAddBookmark,
-  handleEditPage,
   handleTranslate,
   setHighlightsOn,
   setHighlightsOff,

@@ -14,7 +14,7 @@ import {
   handleMouseUp,
 } from "../../lute";
 
-function TheText({ pageData, onSetActiveTerm, refs }) {
+function TheText({ paragraphs, onSetActiveTerm, refs }) {
   useEffect(() => {
     startHoverMode();
   });
@@ -27,7 +27,7 @@ function TheText({ pageData, onSetActiveTerm, refs }) {
 
   return (
     <div ref={refs.theText} className="thetext">
-      {pageData.map((paragraph, index) => (
+      {paragraphs.map((paragraph, index) => (
         <p key={index} className="textparagraph">
           {paragraph.map((sentence, index) => (
             <span

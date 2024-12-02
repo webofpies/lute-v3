@@ -2,7 +2,7 @@ import {
   handleAddBookmark,
   handleTranslate,
   handleCopy,
-  handleEditPage,
+  // handleEditPage,
 } from "./textActions";
 import {
   moveCursor,
@@ -51,7 +51,7 @@ export const actions = {
   hotkey_StatusIgnore: updateStatusForMarked,
   hotkey_StatusWellKnown: updateStatusForMarked,
   hotkey_DeleteTerm: updateStatusForMarked,
-  hotkey_EditPage: handleEditPage,
+  // hotkey_EditPage: handleEditPage,
   hotkey_NextTheme: goToNextTheme,
   hotkey_ToggleHighlight: "",
 };

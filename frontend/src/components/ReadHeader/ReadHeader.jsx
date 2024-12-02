@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
 } from "@mantine/core";
-import { IconMenu2 } from "@tabler/icons-react";
+import { IconEdit, IconMenu2 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
 import PageActionsMenu from "./PageActionsMenu";
 import FocusSwitch from "./FocusSwitch";
@@ -22,7 +22,7 @@ import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
 
-function ReadHeader({ drawerOpen, book, state, dispatch }) {
+function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
   const params = useParams();
   const page = Number(params.page);
   const navigation = useNavigation();
@@ -57,11 +57,23 @@ function ReadHeader({ drawerOpen, book, state, dispatch }) {
 
         <Stack w="100%" gap={0}>
           <Group justify="space-between" wrap="nowrap" fz="sm" gap={rem(4)}>
-            <Group flex={`0 0 ${rem(24)}`} justify="center">
-              {book.source && <BookSourceButton source={book.source} />}
-            </Group>
+            <ActionIcon
+              onClick={onActivateEdit}
+              size={rem(24)}
+              p={0}
+              variant="transparent"
+              styles={{ root: { border: "none" } }}>
+              <IconEdit size={rem(22)} />
+            </ActionIcon>
 
-            <Group justify="space-between" wrap="nowrap" flex={1} miw={0}>
+            <Group
+              justify="space-between"
+              wrap="nowrap"
+              flex={1}
+              miw={0}
+              gap={0}>
+              {book.source && <BookSourceButton source={book.source} />}
+
               <Text
                 component={page === 1 ? "h2" : "h1"}
                 fw="normal"
