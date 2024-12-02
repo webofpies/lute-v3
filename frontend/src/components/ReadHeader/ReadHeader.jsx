@@ -65,15 +65,12 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
               styles={{ root: { border: "none" } }}>
               <IconEdit size={rem(22)} />
             </ActionIcon>
-
             <Group
               justify="space-between"
               wrap="nowrap"
               flex={1}
               miw={0}
-              gap={0}>
-              {book.source && <BookSourceButton source={book.source} />}
-
+              gap={rem(5)}>
               <Text
                 component={page === 1 ? "h2" : "h1"}
                 fw="normal"
@@ -81,6 +78,7 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
                 lineClamp={1}>
                 {book.title}
               </Text>
+              {book.source && <BookSourceButton source={book.source} />}
               <PageCounter currentPage={page} pageCount={book.pageCount} />
             </Group>
 
