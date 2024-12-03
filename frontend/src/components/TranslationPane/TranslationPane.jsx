@@ -1,4 +1,4 @@
-import { memo, useRef, useState } from "react";
+import { memo, useRef } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
@@ -10,7 +10,7 @@ import { paneResizeStorage } from "../../misc/utils";
 function TranslationPane({ book, termData }) {
   const termPanelRef = useRef();
   const { isSuccess, data, error } = useFetchTerm(termData);
-  const [activeTab, setActiveTab] = useState("0");
+  const translationFieldRef = useRef();
 
   if (error) return "An error has occurred: " + error.message;
 
@@ -23,7 +23,11 @@ function TranslationPane({ book, termData }) {
           storage={paneResizeStorage}>
           <Panel order={1} defaultSize={40} ref={termPanelRef}>
             {/* need key to recreate the form */}
-            <TermForm key={data.text} termData={data} />
+            <TermForm
+              key={data.text}
+              termData={data}
+              translationFieldRef={translationFieldRef}
+            />
           </Panel>
 
           <PanelResizeHandle
@@ -48,8 +52,7 @@ function TranslationPane({ book, termData }) {
               term={data.text}
               dicts={book.dictionaries.term}
               langId={book.languageId}
-              activeTab={activeTab}
-              onSetActiveTab={setActiveTab}
+              translationFieldRef={translationFieldRef}
             />
           </Panel>
         </PanelGroup>

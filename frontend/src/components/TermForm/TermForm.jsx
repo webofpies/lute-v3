@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { memo } from "react";
 
-function TermForm({ termData }) {
+function TermForm({ termData, translationFieldRef }) {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -56,6 +56,8 @@ function TermForm({ termData }) {
           styles={{ inner: { flexWrap: "nowrap" } }}>
           <Grid.Col span={11} flex="1">
             <Textarea
+              ref={translationFieldRef}
+              autoFocus
               resize="vertical"
               placeholder="Translation"
               key={form.key("translation")}
@@ -75,7 +77,6 @@ function TermForm({ termData }) {
         </Grid>
         <Group gap="1.5rem" style={{ rowGap: "0.6rem" }}>
           <Radio.Group
-            defaultValue="1"
             name="status"
             key={form.key("status")}
             {...form.getInputProps("status")}>

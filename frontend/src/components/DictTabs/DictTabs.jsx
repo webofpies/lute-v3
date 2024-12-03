@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { rem, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
@@ -10,8 +10,15 @@ import classes from "./DictTabs.module.css";
 import { sentencesFetchOptions } from "../../queries/sentences";
 import { getLookupURL } from "../../misc/utils";
 
-function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
+function DictTabs({ dicts, langId, term, translationFieldRef }) {
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("0");
+
+  function handleFocus() {
+    setTimeout(() => {
+      translationFieldRef.current.focus();
+    }, 0);
+  }
 
   return (
     <Tabs
@@ -40,7 +47,8 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
                 <DictTabEmbedded
                   dict={dict}
                   value={String(index)}
-                  onSetActiveTab={() => onSetActiveTab(String(index))}
+                  onSetActiveTab={() => setActiveTab(String(index))}
+                  onHandleFocus={handleFocus}
                 />
               )}
             </Tooltip>
@@ -54,7 +62,7 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
             onMouseEnter={() =>
               queryClient.prefetchQuery(sentencesFetchOptions(langId, term))
             }
-            onClick={() => onSetActiveTab("sentencesTab")}>
+            onClick={() => setActiveTab("sentencesTab")}>
             <Text size="sm" style={{ overflow: "hidden" }}>
               Sentences
             </Text>
@@ -64,7 +72,7 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
             styles={{ tabLabel: { minWidth: 0 } }}
             id="imagesTab"
             value="imagesTab"
-            onClick={() => onSetActiveTab("imagesTab")}>
+            onClick={() => setActiveTab("imagesTab")}>
             <IconPhoto size={rem(18)} />
           </Tabs.Tab>
         </div>
@@ -78,7 +86,10 @@ function DictTabs({ dicts, langId, term, activeTab, onSetActiveTab }) {
               key={dict.label}
               id={String(index)}
               value={String(index)}>
-              <Iframe src={getLookupURL(dict.url, term)} />
+              <Iframe
+                src={getLookupURL(dict.url, term)}
+                onHandleFocus={handleFocus}
+              />
             </Tabs.Panel>
           )
         );

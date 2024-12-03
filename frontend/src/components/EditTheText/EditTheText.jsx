@@ -1,10 +1,10 @@
-function TheTextRaw({ text, fontSize, dir }) {
+function TheTextRaw({ text }) {
   return (
     <div
+      // using div because of textarea sizing issues with the panel handle
       suppressContentEditableWarning={true}
-      dir={dir}
       style={{
-        fontSize: `${fontSize}rem`,
+        fontSize: "inherit",
         whiteSpace: "pre-wrap",
         outline: "none",
       }}

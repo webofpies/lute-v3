@@ -1,7 +1,6 @@
 import { Fragment, memo, useState } from "react";
 import { ActionIcon, Divider, Group, Paper, Tooltip } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
-import classes from "./Toolbar.module.css";
 import {
   IconBaselineDensityMedium,
   IconBaselineDensitySmall,
@@ -16,7 +15,8 @@ import {
   handleSetColumnCount,
   handleSetLineHeight,
   handleSetFontSize,
-} from "../../misc/textActions";
+} from "../../misc/actions";
+import classes from "./Toolbar.module.css";
 
 function Toolbar({ state, dispatch }) {
   const [open, setOpen] = useState(false);

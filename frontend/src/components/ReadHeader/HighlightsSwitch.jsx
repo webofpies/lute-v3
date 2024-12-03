@@ -1,6 +1,6 @@
 import { rem, Switch, Tooltip } from "@mantine/core";
 import { IconHighlight } from "@tabler/icons-react";
-import { handleToggleHighlights } from "../../misc/textActions";
+import { handleToggleHighlights } from "../../misc/actions";
 
 function HighlightsSwitch({ checked, dispatch }) {
   return (

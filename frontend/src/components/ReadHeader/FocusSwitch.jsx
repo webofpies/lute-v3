@@ -1,6 +1,6 @@
 import { rem, Switch, Tooltip } from "@mantine/core";
 import { IconFocus2 } from "@tabler/icons-react";
-import { handleToggleFocusMode } from "../../misc/textActions";
+import { handleToggleFocusMode } from "../../misc/actions";
 
 function FocusSwitch({ checked, dispatch }) {
   return (

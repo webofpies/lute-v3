@@ -1,4 +1,4 @@
-import { useContext, useReducer, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
@@ -6,8 +6,6 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ReadPane from "../ReadPane/ReadPane";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
-import ContextMenu from "../ContextMenu/ContextMenu";
-import { UserSettingsContext } from "../../context/UserSettingsContext";
 import { useInitialize } from "../../hooks/book";
 import { bookQuery, pageQuery } from "../../queries/book";
 import { getFromLocalStorage, paneResizeStorage } from "../../misc/utils";
@@ -30,23 +28,34 @@ function reducer(state, action) {
   }
 }
 
+const initialState = {
+  fontSize: 1,
+  lineHeight: 1,
+  columnCount: 1,
+  highlights: true,
+  focusMode: false,
+};
+
 function BookView() {
   const { id, page: pageNum } = useParams();
-  const { settings } = useContext(UserSettingsContext);
 
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
 
   const [state, dispatch] = useReducer(reducer, {
-    fontSize: getFromLocalStorage("Lute.fontSize", 1),
-    lineHeight: getFromLocalStorage("Lute.lineHeight", 1),
-    columnCount: getFromLocalStorage("Lute.columnCount", 1),
-    highlights: getFromLocalStorage("Lute.highlights", true),
-    focusMode: getFromLocalStorage("Lute.focusMode", false),
+    fontSize: getFromLocalStorage("Lute.fontSize", initialState.fontSize),
+    lineHeight: getFromLocalStorage("Lute.lineHeight", initialState.lineHeight),
+    columnCount: getFromLocalStorage(
+      "Lute.columnCount",
+      initialState.columnCount
+    ),
+    highlights: getFromLocalStorage("Lute.highlights", initialState.highlights),
+    focusMode: getFromLocalStorage("Lute.focusMode", initialState.focusMode),
   });
 
-  const refs = useInitialize(book, page, state, settings);
+  useInitialize(book);
 
+  const paneRightRef = useRef(null);
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
@@ -54,7 +63,7 @@ function BookView() {
   return (
     <>
       <DrawerMenu opened={drawerOpened} close={drawerClose} />
-      <ContextMenu ref={refs.contextMenuArea} />
+
       <PanelGroup
         autoSaveId="Lute.horizontalSize"
         direction="horizontal"
@@ -67,7 +76,6 @@ function BookView() {
           <ReadPane
             book={book}
             page={page}
-            refs={refs}
             state={state}
             dispatch={dispatch}
             onSetActiveTerm={setActiveTerm}
@@ -81,15 +89,14 @@ function BookView() {
               hitAreaMargins={{ coarse: 10, fine: 10 }}
               className={classes.resizeHandle}
               onDoubleClick={() => {
-                const panel = refs.paneRight.current;
-                if (panel) {
+                const panel = paneRightRef.current;
+                if (panel)
                   panel.getSize() < 15 ? panel.resize(50) : panel.resize(5);
-                }
               }}
             />
 
             <Panel
-              ref={refs.paneRight}
+              ref={paneRightRef}
               defaultSize={50}
               order={2}
               collapsible={true}

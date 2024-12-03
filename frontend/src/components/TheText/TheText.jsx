@@ -14,7 +14,7 @@ import {
   handleMouseUp,
 } from "../../lute";
 
-function TheText({ paragraphs, onSetActiveTerm, refs }) {
+function TheText({ paragraphs, onSetActiveTerm }) {
   useEffect(() => {
     startHoverMode();
   });
@@ -25,53 +25,44 @@ function TheText({ paragraphs, onSetActiveTerm, refs }) {
     onSetActiveTerm(termData);
   }
 
-  return (
-    <div ref={refs.theText} className="thetext">
-      {paragraphs.map((paragraph, index) => (
-        <p key={index} className="textparagraph">
-          {paragraph.map((sentence, index) => (
-            <span
-              key={`sent_${index + 1}`}
-              className="textsentence"
-              id={`sent_${index + 1}`}>
-              {sentence.map((textitem) =>
-                textitem.isWord ? (
-                  <Popup id={textitem.wid} key={textitem.id}>
-                    <TextItem
-                      ref={refs.textItems[textitem.order]}
-                      data={textitem}
-                      onMouseDown={(e) => {
-                        // trigger only with lmb
-                        if (e.button !== 0) return;
-                        handleMouseDown(e);
-                      }}
-                      onMouseUp={(e) => {
-                        if (e.button !== 0) return;
-                        const termData = handleMouseUp(e);
-                        if (!termData) return;
-                        handleSetTerm(termData);
-                        handleCopyText(termData);
-                      }}
-                      onMouseOver={handleMouseOver}
-                      onMouseOut={hoverOut}
-                    />
-                  </Popup>
-                ) : (
-                  // non-word spans
-                  <TextItem
-                    ref={refs.textItems[textitem.order]}
-                    data={textitem}
-                    key={textitem.id}
-                  />
-                )
-              )}
-            </span>
-          ))}
-          <span className="textitem">{"\u200B"}</span>
-        </p>
+  return paragraphs.map((paragraph, index) => (
+    <p key={index} className="textparagraph">
+      {paragraph.map((sentence, index) => (
+        <span
+          key={`sent_${index + 1}`}
+          className="textsentence"
+          id={`sent_${index + 1}`}>
+          {sentence.map((textitem) =>
+            textitem.isWord ? (
+              <Popup id={textitem.wid} key={textitem.id}>
+                <TextItem
+                  data={textitem}
+                  onMouseDown={(e) => {
+                    // trigger only with lmb
+                    if (e.button !== 0) return;
+                    handleMouseDown(e);
+                  }}
+                  onMouseUp={(e) => {
+                    if (e.button !== 0) return;
+                    const termData = handleMouseUp(e);
+                    if (!termData) return;
+                    handleSetTerm(termData);
+                    handleCopyText(termData);
+                  }}
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={hoverOut}
+                />
+              </Popup>
+            ) : (
+              // non-word spans
+              <TextItem data={textitem} key={textitem.id} />
+            )
+          )}
+        </span>
       ))}
-    </div>
-  );
+      <span className="textitem">{"\u200B"}</span>
+    </p>
+  ));
 }
 
 async function handleCopyText(termData) {

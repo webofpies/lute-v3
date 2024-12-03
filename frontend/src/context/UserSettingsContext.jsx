@@ -26,6 +26,10 @@ export function UserSettingsProvider({ children }) {
     hotkey_StartHover: "escape",
     hotkey_PrevWord: "arrowleft",
     hotkey_NextWord: "arrowright",
+    hotkey_PrevUnknownWord: "k",
+    hotkey_NextUnknownWord: "l",
+    hotkey_PrevSentence: "",
+    hotkey_NextSentence: "",
     hotkey_StatusUp: "arrowup",
     hotkey_StatusDown: "arrowdown",
     hotkey_Bookmark: "b",
@@ -47,10 +51,6 @@ export function UserSettingsProvider({ children }) {
     hotkey_DeleteTerm: "",
     hotkey_EditPage: "",
     hotkey_TranslatePage: "",
-    hotkey_PrevUnknownWord: "",
-    hotkey_NextUnknownWord: "",
-    hotkey_PrevSentence: "",
-    hotkey_NextSentence: "",
   };
 
   // local settings

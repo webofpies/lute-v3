@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ScrollArea, Title } from "@mantine/core";
 import ReadHeader from "../ReadHeader/ReadHeader";
@@ -8,11 +9,11 @@ import classes from "../BookView/BookView.module.css";
 import { handleClickOutside } from "../../lute";
 import EditTheText from "../EditTheText/EditTheText";
 import EditHeader from "../EditHeader/EditHeader";
+import ContextMenu from "../ContextMenu/ContextMenu";
 
 function ReadPane({
   book,
   page,
-  refs,
   state,
   dispatch,
   onSetActiveTerm,
@@ -20,6 +21,7 @@ function ReadPane({
 }) {
   const { page: pageNum } = useParams();
   const [params, setParams] = useSearchParams();
+  const contextMenuAreaRef = useRef(null);
 
   const editMode = params.get("edit") === "true";
 
@@ -30,6 +32,7 @@ function ReadPane({
 
   return (
     <>
+      {!editMode && <ContextMenu forwardedRef={contextMenuAreaRef} />}
       <div style={{ position: "relative" }}>
         {editMode ? (
           <EditHeader book={book} page={pageNum} onSetEdit={setParams} />
@@ -49,7 +52,7 @@ function ReadPane({
       </div>
       <ScrollArea
         type="scroll"
-        ref={refs.contextMenuArea}
+        ref={contextMenuAreaRef}
         flex={1}
         onMouseDown={(e) => {
           const res = handleClickOutside(e);
@@ -58,27 +61,27 @@ function ReadPane({
         }}>
         <div
           dir={book.isRightToLeft ? "rtl" : "ltr"}
-          className={`${classes.textContainer}`}
+          className={`${classes.textContainer} `}
           style={{
+            fontSize: `${state.fontSize}rem`,
             width: `${state.focusMode ? 50 : 100}%`,
             marginInline: state.focusMode && "auto",
           }}>
           {editMode ? (
-            <EditTheText
-              dir={book.isRightToLeft ? "rtl" : "ltr"}
-              text={page.text}
-              fontSize={state.fontSize}
-            />
+            <EditTheText text={page.text} />
           ) : (
             <>
               {Number(pageNum) === 1 && (
                 <Title className={classes.title}>{book.title}</Title>
               )}
-              <TheText
-                paragraphs={page.paragraphs}
-                onSetActiveTerm={onSetActiveTerm}
-                refs={refs}
-              />
+              <div
+                style={{ columnCount: state.columnCount }}
+                className={`thetext ${state.highlights && "highlight"}`}>
+                <TheText
+                  paragraphs={page.paragraphs}
+                  onSetActiveTerm={onSetActiveTerm}
+                />
+              </div>
             </>
           )}
         </div>

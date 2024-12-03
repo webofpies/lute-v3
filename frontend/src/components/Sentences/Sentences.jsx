@@ -1,7 +1,7 @@
 import { LoadingOverlay } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import classes from "./Sentences.module.css";
 import NoSentences from "./NoSentences";
+import classes from "./Sentences.module.css";
 
 function Sentences({ sentencesFetchOptions }) {
   const { data, isSuccess, error } = useQuery(sentencesFetchOptions);
@@ -33,7 +33,7 @@ function Sentences({ sentencesFetchOptions }) {
                           }}
                         />
                         <a
-                          href={`/book/${reference.bookId}/page/${reference.pageNumber}`}
+                          href={`/books/${reference.bookId}/pages/${reference.pageNumber}`}
                           target="_blank"
                           className={classes.bookLink}>
                           {reference.bookTitle}

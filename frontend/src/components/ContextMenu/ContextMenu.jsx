@@ -1,8 +1,8 @@
-import { forwardRef, Fragment, memo, useEffect, useRef, useState } from "react";
+import { Fragment, memo, useEffect, useRef, useState } from "react";
 import { Affix, Menu } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
-import { actions } from "../../misc/actionsMap";
 import { addFlash, removeFlash } from "../../misc/utils";
+import { handleCopy, handleTranslate } from "../../misc/actions";
 import {
   IconClick,
   IconAlignLeft,
@@ -12,7 +12,7 @@ import {
   IconClipboardTypography,
 } from "@tabler/icons-react";
 
-const ContextMenu = forwardRef(function ContextMenu(props, forwardedRef) {
+function ContextMenu({ forwardedRef }) {
   const [coords, setCoords] = useState({ clientX: null, clientY: null });
   const selectedTextItemRef = useRef();
 
@@ -43,10 +43,7 @@ const ContextMenu = forwardRef(function ContextMenu(props, forwardedRef) {
   });
 
   async function handleRightClick(item) {
-    const textItemSelection = await actions[item.action](
-      selectedTextItemRef.current,
-      item.arg
-    );
+    const textItemSelection = await item.action(selectedTextItemRef.current);
 
     addFlash(textItemSelection);
     setTimeout(() => removeFlash(), 1000);
@@ -96,7 +93,7 @@ const ContextMenu = forwardRef(function ContextMenu(props, forwardedRef) {
       </Menu>
     </Affix>
   );
-});
+}
 
 function getItems() {
   return [
@@ -106,20 +103,17 @@ function getItems() {
         {
           label: "Selection",
           icon: IconClick,
-          action: "translateSelection",
-          arg: "",
+          action: (textitem) => handleTranslate(textitem),
         },
         {
           label: "Sentence",
           icon: IconAlignLeft,
-          action: "translateSentence",
-          arg: "sentence",
+          action: (textitem) => handleTranslate(textitem, "sentence"),
         },
         {
           label: "Paragraph",
           icon: IconPilcrow,
-          action: "translateParagraph",
-          arg: "paragraph",
+          action: (textitem) => handleTranslate(textitem, "paragraph"),
         },
       ],
     },
@@ -129,26 +123,22 @@ function getItems() {
         {
           label: "Selection",
           icon: IconClipboardCheck,
-          action: "copySelection",
-          arg: "",
+          action: (textitem) => handleCopy(textitem),
         },
         {
           label: "Sentence",
           icon: IconClipboardText,
-          action: "copySentence",
-          arg: "sentence",
+          action: (textitem) => handleCopy(textitem, "sentence"),
         },
         {
           label: "Paragraph",
           icon: IconClipboardTypography,
-          action: "copyParagraph",
-          arg: "paragraph",
+          action: (textitem) => handleCopy(textitem, "paragraph"),
         },
         {
           label: "Page",
           icon: IconClipboardTypography,
-          action: "copyParagraph",
-          arg: "page",
+          action: (textitem) => handleCopy(textitem, "page"),
         },
       ],
     },
