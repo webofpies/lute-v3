@@ -112,6 +112,6 @@ body {
   background: #ffe066;
 }
 
-.flash-highlight {
+.textitem.flash-highlight {
   background-color: var(--text-highlight-color);
 }
