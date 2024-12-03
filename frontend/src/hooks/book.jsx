@@ -50,6 +50,8 @@ function setupKeydownEvents(e, book, settings) {
     return; // Nothing to do.
   }
 
+  let selected;
+
   const next = book.isRightToLeft ? -1 : 1;
   const prev = -1 * next;
 
@@ -64,9 +66,9 @@ function setupKeydownEvents(e, book, settings) {
     [settings.hotkey_PrevSentence]: () => moveCursor(".sentencestart", prev),
     [settings.hotkey_NextSentence]: () => moveCursor(".sentencestart", next),
 
-    [settings.hotkey_CopySentence]: () => handleCopy("sentence"),
-    [settings.hotkey_CopyPara]: () => handleCopy("paragraph"),
-    [settings.hotkey_CopyPage]: () => handleCopy(null),
+    [settings.hotkey_CopySentence]: () => handleCopy(selected, "sentence"),
+    [settings.hotkey_CopyPara]: () => handleCopy(selected, "paragraph"),
+    [settings.hotkey_CopyPage]: () => handleCopy(selected, null),
 
     [settings.hotkey_TranslateSentence]: () => handleTranslate("sentence"),
     [settings.hotkey_TranslatePara]: () => handleTranslate("paragraph"),
@@ -94,6 +96,7 @@ function setupKeydownEvents(e, book, settings) {
 
   const key = getPressedKeysAsString(e);
   if (key in map) {
+    selected = e.target.matches(".word") ? e.target : null;
     // Override any existing event - e.g., if "up" arrow is in the map,
     // don't scroll screen.
     e.preventDefault();

@@ -3,6 +3,8 @@ import {
   getMatchedTextItems,
   copyToClipboard,
   clamp,
+  addFlash,
+  removeFlash,
 } from "./utils";
 
 function handleAddBookmark(book) {
@@ -124,7 +126,7 @@ function handleSetFontSize(size, dispatch) {
   localStorage.setItem("Lute.fontSize", JSON.stringify(clamped));
 }
 
-async function handleCopy(textitem, unit) {
+async function _copyUnit(textitem, unit) {
   let attr;
   let matched;
 
@@ -149,6 +151,12 @@ async function handleCopy(textitem, unit) {
   await copyToClipboard(text);
 
   return matched;
+}
+
+async function handleCopy(textitem, unit) {
+  const res = await _copyUnit(textitem, unit);
+  addFlash(res);
+  setTimeout(() => removeFlash(), 1000);
 }
 
 /** Move to the next/prev candidate determined by the selector.

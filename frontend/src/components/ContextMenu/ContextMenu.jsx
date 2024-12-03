@@ -123,6 +123,7 @@ function getItems() {
         {
           label: "Selection",
           icon: IconClipboardCheck,
+          // !FIX have changed handleCopy in the actions file. fix
           action: (textitem) => handleCopy(textitem),
         },
         {
