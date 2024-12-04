@@ -19,7 +19,7 @@ const navLinks = [
 
     links: [
       { label: "New", link: "/books/new" },
-      { label: "Archive", link: "/books/archived" },
+      { label: "Archived", link: "/books/archived" },
     ],
   },
   {
@@ -37,7 +37,7 @@ const navLinks = [
     icon: IconSettings,
 
     links: [
-      { label: "Settings", link: "/settings/index" },
+      { label: "Settings", link: "/settings" },
       { label: "Keyboard shortcuts", link: "/settings/shortcuts" },
     ],
   },

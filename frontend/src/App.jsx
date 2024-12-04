@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { createTheme, MantineProvider } from "@mantine/core";
+import { Center, createTheme, Loader, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -21,6 +21,13 @@ const CreateBook = lazy(() => import("./pages/CreateBook"));
 const Languages = lazy(() => import("./pages/Languages"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
+const Settings = lazy(() => import("./pages/Settings"));
+
+const pageSpinner = (
+  <Center>
+    <Loader />
+  </Center>
+);
 
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
@@ -36,7 +43,7 @@ const router = createBrowserRouter([
       {
         path: "/books/new",
         element: (
-          <Suspense>
+          <Suspense fallback={pageSpinner}>
             <CreateBook />
           </Suspense>
         ),
@@ -44,7 +51,7 @@ const router = createBrowserRouter([
       {
         path: "/languages",
         element: (
-          <Suspense>
+          <Suspense fallback={pageSpinner}>
             <Languages />
           </Suspense>
         ),
@@ -52,15 +59,23 @@ const router = createBrowserRouter([
       {
         path: "/settings/shortcuts",
         element: (
-          <Suspense>
+          <Suspense fallback={pageSpinner}>
             <Shortcuts />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/settings/",
+        element: (
+          <Suspense fallback={pageSpinner}>
+            <Settings />
           </Suspense>
         ),
       },
       {
         path: "/stats",
         element: (
-          <Suspense>
+          <Suspense fallback={pageSpinner}>
             <Statistics />
           </Suspense>
         ),

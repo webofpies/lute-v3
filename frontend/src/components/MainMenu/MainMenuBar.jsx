@@ -20,7 +20,7 @@ function MainMenuBar({ openVersionModal }) {
     "/terms/tags": "Term Tags",
 
     "/languages": "Languages",
-    "/settings/index": "Settings",
+    "/settings": "Settings",
     "/settings/shortcuts": "Shortcuts",
 
     "/backup/index": "Backups",
