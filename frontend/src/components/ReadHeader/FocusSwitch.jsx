@@ -1,6 +1,6 @@
 import { rem, Switch, Tooltip } from "@mantine/core";
 import { IconFocus2 } from "@tabler/icons-react";
-import { handleToggleFocusMode } from "../../misc/actions";
+import { handleSetFocusMode } from "../../misc/actions";
 
 function FocusSwitch({ checked, dispatch }) {
   return (
@@ -12,7 +12,7 @@ function FocusSwitch({ checked, dispatch }) {
       <Switch
         checked={checked}
         onChange={(e) => {
-          handleToggleFocusMode(Boolean(e.currentTarget.checked), dispatch);
+          handleSetFocusMode(Boolean(e.currentTarget.checked), dispatch);
         }}
         size="sm"
         onLabel="ON"

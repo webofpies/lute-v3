@@ -1,6 +1,6 @@
 import { rem, Switch, Tooltip } from "@mantine/core";
 import { IconHighlight } from "@tabler/icons-react";
-import { handleToggleHighlights } from "../../misc/actions";
+import { handleSetHighlights } from "../../misc/actions";
 
 function HighlightsSwitch({ checked, dispatch }) {
   return (
@@ -10,11 +10,11 @@ function HighlightsSwitch({ checked, dispatch }) {
       openDelay={800}
       refProp="rootRef">
       <Switch
-        size="sm"
         checked={checked}
         onChange={(e) => {
-          handleToggleHighlights(Boolean(e.currentTarget.checked), dispatch);
+          handleSetHighlights(Boolean(e.currentTarget.checked), dispatch);
         }}
+        size="sm"
         onLabel="ON"
         offLabel="OFF"
         thumbIcon={

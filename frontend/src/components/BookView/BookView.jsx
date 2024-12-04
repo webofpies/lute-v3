@@ -1,4 +1,4 @@
-import { useReducer, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
@@ -8,33 +8,8 @@ import TranslationPane from "../TranslationPane/TranslationPane";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
 import { useInitialize } from "../../hooks/book";
 import { bookQuery, pageQuery } from "../../queries/book";
-import { getFromLocalStorage, paneResizeStorage } from "../../misc/utils";
+import { paneResizeStorage } from "../../misc/utils";
 import classes from "./BookView.module.css";
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "setFocusMode":
-      return { ...state, focusMode: action.payload };
-    case "setHighlights":
-      return { ...state, highlights: action.payload };
-    case "setColumnCount":
-      return { ...state, columnCount: action.payload };
-    case "setLineHeight":
-      return { ...state, lineHeight: action.payload };
-    case "setFontSize":
-      return { ...state, fontSize: action.payload };
-    default:
-      throw new Error();
-  }
-}
-
-const initialState = {
-  fontSize: 1,
-  lineHeight: 1,
-  columnCount: 1,
-  highlights: true,
-  focusMode: false,
-};
 
 function BookView() {
   const { id, page: pageNum } = useParams();
@@ -42,18 +17,7 @@ function BookView() {
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
 
-  const [state, dispatch] = useReducer(reducer, {
-    fontSize: getFromLocalStorage("Lute.fontSize", initialState.fontSize),
-    lineHeight: getFromLocalStorage("Lute.lineHeight", initialState.lineHeight),
-    columnCount: getFromLocalStorage(
-      "Lute.columnCount",
-      initialState.columnCount
-    ),
-    highlights: getFromLocalStorage("Lute.highlights", initialState.highlights),
-    focusMode: getFromLocalStorage("Lute.focusMode", initialState.focusMode),
-  });
-
-  useInitialize(book);
+  const [state, dispatch] = useInitialize(book);
 
   const paneRightRef = useRef(null);
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =

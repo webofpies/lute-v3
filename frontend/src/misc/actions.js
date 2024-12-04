@@ -5,6 +5,7 @@ import {
   clamp,
   addFlash,
   removeFlash,
+  getFromLocalStorage,
 } from "./utils";
 
 function handleAddBookmark(book) {
@@ -98,14 +99,26 @@ let _get_translation_dict_index = function (sentence, dicts) {
   return new_index;
 };
 
-function handleToggleHighlights(checked, dispatch) {
+function handleSetHighlights(checked, dispatch) {
   dispatch({ type: "setHighlights", payload: checked });
   localStorage.setItem("Lute.highlights", JSON.stringify(checked));
 }
 
-function handleToggleFocusMode(checked, dispatch) {
+function handleToggleHighlights(dispatch) {
+  dispatch({ type: "toggleHighlights" });
+  const state = getFromLocalStorage("Lute.highlights", false);
+  localStorage.setItem("Lute.highlights", JSON.stringify(!state));
+}
+
+function handleSetFocusMode(checked, dispatch) {
   dispatch({ type: "setFocusMode", payload: checked });
   localStorage.setItem("Lute.focusMode", JSON.stringify(checked));
+}
+
+function handleToggleFocusMode(dispatch) {
+  dispatch({ type: "toggleFocusMode" });
+  const state = getFromLocalStorage("Lute.focusMode", false);
+  localStorage.setItem("Lute.focusMode", JSON.stringify(!state));
 }
 
 function handleSetColumnCount(count, dispatch) {
@@ -404,7 +417,8 @@ function _updateTermForm(el, new_status) {
 
 export {
   handleToggleHighlights,
-  handleToggleFocusMode,
+  handleSetHighlights,
+  handleSetFocusMode,
   handleSetColumnCount,
   handleSetLineHeight,
   handleSetFontSize,
@@ -415,4 +429,5 @@ export {
   updateStatusForMarked,
   incrementStatusForMarked,
   goToNextTheme,
+  handleToggleFocusMode,
 };

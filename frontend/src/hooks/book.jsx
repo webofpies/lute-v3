@@ -1,20 +1,62 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useReducer } from "react";
 import { useNavigation } from "react-router-dom";
 import { nprogress } from "@mantine/nprogress";
 import { UserSettingsContext } from "../context/UserSettingsContext";
-import { getPressedKeysAsString } from "../misc/utils";
+import { getFromLocalStorage, getPressedKeysAsString } from "../misc/utils";
 import { startHoverMode } from "../lute";
 import {
   handleAddBookmark,
   handleCopy,
+  handleToggleFocusMode,
+  handleToggleHighlights,
   handleTranslate,
   incrementStatusForMarked,
   moveCursor,
   updateStatusForMarked,
 } from "../misc/actions";
 
+function reducer(state, action) {
+  switch (action.type) {
+    case "setFocusMode":
+      return { ...state, focusMode: action.payload };
+    case "toggleFocusMode":
+      return { ...state, focusMode: !state.focusMode };
+    case "setHighlights":
+      return { ...state, highlights: action.payload };
+    case "toggleHighlights":
+      return { ...state, highlights: !state.highlights };
+    case "setColumnCount":
+      return { ...state, columnCount: action.payload };
+    case "setLineHeight":
+      return { ...state, lineHeight: action.payload };
+    case "setFontSize":
+      return { ...state, fontSize: action.payload };
+    default:
+      throw new Error();
+  }
+}
+
+const initialState = {
+  fontSize: 1,
+  lineHeight: 1,
+  columnCount: 1,
+  highlights: true,
+  focusMode: false,
+};
+
 function useInitialize(book) {
   const { settings } = useContext(UserSettingsContext);
+
+  const [state, dispatch] = useReducer(reducer, {
+    fontSize: getFromLocalStorage("Lute.fontSize", initialState.fontSize),
+    lineHeight: getFromLocalStorage("Lute.lineHeight", initialState.lineHeight),
+    columnCount: getFromLocalStorage(
+      "Lute.columnCount",
+      initialState.columnCount
+    ),
+    highlights: getFromLocalStorage("Lute.highlights", initialState.highlights),
+    focusMode: getFromLocalStorage("Lute.focusMode", initialState.focusMode),
+  });
 
   const navigation = useNavigation();
   useEffect(() => {
@@ -32,7 +74,7 @@ function useInitialize(book) {
 
   useEffect(() => {
     function handleKeydown(e) {
-      setupKeydownEvents(e, book, settings);
+      setupKeydownEvents(e, book, settings, dispatch);
     }
 
     document.addEventListener("keydown", handleKeydown);
@@ -41,11 +83,13 @@ function useInitialize(book) {
       document.removeEventListener("keydown", handleKeydown);
     };
   }, []);
+
+  return [state, dispatch];
 }
 
 export { useInitialize };
 
-function setupKeydownEvents(e, book, settings) {
+function setupKeydownEvents(e, book, settings, dispatch) {
   if (document.querySelectorAll(".word").length === 0) {
     return; // Nothing to do.
   }
@@ -90,8 +134,8 @@ function setupKeydownEvents(e, book, settings) {
     [settings.hotkey_EditPage]: () => "handleEditPage(book)",
 
     [settings.hotkey_NextTheme]: "",
-    [settings.hotkey_ToggleHighlight]: "",
-    [settings.hotkey_ToggleFocus]: "",
+    [settings.hotkey_ToggleHighlight]: () => handleToggleHighlights(dispatch),
+    [settings.hotkey_ToggleFocus]: () => handleToggleFocusMode(dispatch),
   };
 
   const key = getPressedKeysAsString(e);
