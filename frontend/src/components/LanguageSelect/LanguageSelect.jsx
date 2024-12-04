@@ -9,39 +9,31 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
+import {
+  definedListQueryObj,
+  predefinedListQueryObj,
+} from "../../queries/language";
+import { useSearchParams } from "react-router-dom";
 
 // https://mantine.dev/combobox/?e=SelectAsync
 let languages = [];
 let allLanguages = [];
 
 export function LanguageSelect({ setPredefinedLang }) {
-  const predefinedQuery = useQuery({
-    queryKey: ["predefined"],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/?type=predefined`
-      );
-      return await response.json();
-    },
-    staleTime: Infinity,
-    enabled: false,
-  });
+  const [params] = useSearchParams();
+  const newBookLanguage = params.get("new-book-lang") === "true";
 
-  const definedQuery = useQuery({
-    queryKey: ["defined"],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/languages`);
-      return await response.json();
-    },
-    staleTime: Infinity,
-    enabled: false,
-  });
+  const predefinedQuery = useQuery(predefinedListQueryObj);
+  const definedQuery = useQuery(definedListQueryObj);
 
   if (definedQuery.data && predefinedQuery.data) {
+    // with no options list, mantine automatically doesn't create a group
     languages = [
       {
         label: "Edit existing",
-        options: [...definedQuery.data.map((obj) => obj.name)],
+        options: newBookLanguage
+          ? []
+          : [...definedQuery.data.map((obj) => obj.name)],
         id: "existing",
       },
       {
@@ -95,11 +87,13 @@ export function LanguageSelect({ setPredefinedLang }) {
   );
 
   const groups = filteredGroups.map((group) => {
-    const options = group.options.map((item) => (
-      <Combobox.Option value={group.id + item} key={item}>
-        {item}
-      </Combobox.Option>
-    ));
+    const options = group.options.map((item) => {
+      return (
+        <Combobox.Option value={group.id + item} key={group.id + item}>
+          {item}
+        </Combobox.Option>
+      );
+    });
 
     return (
       <Combobox.Group label={group.label} key={group.label}>

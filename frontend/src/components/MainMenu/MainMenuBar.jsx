@@ -12,13 +12,12 @@ function MainMenuBar({ openVersionModal }) {
 
   const pathNames = {
     "/": "Lute",
-    "/book/new": "Create New Book",
-    "/book/import_webpage": "Import Webpage",
-    "/book/archived": "Book Archive",
+    "/books/new": "New Book",
+    "/books/archived": "Archive",
 
-    "/term/index": "Terms",
-    "/termimport/index": "Import Terms",
-    "/termtag/index": "Term Tags",
+    "/terms": "Terms",
+    "/terms/import": "Import Terms",
+    "/terms/tags": "Term Tags",
 
     "/languages": "Languages",
     "/settings/index": "Settings",

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
-
 import {
   ActionIcon,
   Box,
@@ -26,38 +25,14 @@ import {
 } from "@tabler/icons-react";
 import LanguageSelect from "../LanguageSelect/LanguageSelect";
 import DictionaryBar from "../DictionaryBar/DictionaryBar";
+import { parsersQueryObj, predefinedOptionsObj } from "../../queries/language";
 import classes from "./LanguageForm.module.css";
-
-const predefinedQueryOptions = (predefinedLang) => {
-  return {
-    queryKey: ["predefinedOptions", predefinedLang],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/new/${predefinedLang}`
-      );
-      return await response.json();
-    },
-    staleTime: Infinity,
-    enabled: predefinedLang !== null,
-  };
-};
 
 function LanguageForm() {
   const [predefinedLang, setPredefinedLang] = useState(null);
-  const predefinedOptionsQuery = useQuery(
-    predefinedQueryOptions(predefinedLang)
-  );
+  const predefinedOptionsQuery = useQuery(predefinedOptionsObj(predefinedLang));
 
-  const parsersQuery = useQuery({
-    queryKey: ["languageParsers"],
-    queryFn: async () => {
-      const response = await fetch(
-        "http://localhost:5001/api/languages/parsers"
-      );
-      return await response.json();
-    },
-    staleTime: Infinity,
-  });
+  const parsersQuery = useQuery(parsersQueryObj);
 
   const form = useForm({
     mode: "uncontrolled",

@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "@mantine/form";
 import {
   Button,
   Fieldset,
@@ -21,30 +25,60 @@ import {
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
+import { definedListQueryObj } from "../../queries/language";
 import classes from "./CreateBookForm.module.css";
 
 function CreateBookForm({ openDrawer }) {
+  const definedQuery = useQuery(definedListQueryObj);
+  const [disabled, setDisabled] = useState(true);
+  const [, setParams] = useSearchParams();
+
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      wordsPerPage: 250,
+    },
+  });
+
   return (
     <form className={classes.container}>
-      <Group align="flex-end">
+      <Group align="flex-end" wrap="nowrap">
         <Select
+          onDropdownOpen={() =>
+            !(definedQuery.data && definedQuery.isLoading) &&
+            definedQuery.refetch()
+          }
+          onOptionSubmit={() => setDisabled(false)}
+          allowDeselect={false}
+          required
           withAsterisk
           label="Language"
+          placeholder="Pick a language"
           searchable={true}
+          withCheckIcon={false}
           leftSection={<IconLanguage />}
-          autoFocus
+          data={
+            definedQuery.data ? definedQuery.data.map((lang) => lang.name) : []
+          }
         />
-        <Button variant="filled" onClick={openDrawer}>
+        <Button
+          variant="filled"
+          onClick={() => {
+            openDrawer();
+            setParams({ "new-book-lang": "true" });
+          }}>
           New
         </Button>
       </Group>
       <TextInput
+        disabled={disabled}
+        required
         withAsterisk
         label="Title"
         leftSection={<IconHeading />}
-        disabled
       />
       <Fieldset
+        disabled={disabled}
         variant="filled"
         legend="Content"
         flex={1}
@@ -54,7 +88,6 @@ function CreateBookForm({ openDrawer }) {
         }}>
         <Stack wrap="nowrap" gap={rem(5)}>
           <Textarea
-            disabled
             label="Text"
             resize="vertical"
             autosize
@@ -65,7 +98,6 @@ function CreateBookForm({ openDrawer }) {
           <p>or</p>
 
           <FileInput
-            disabled
             label="Import from file"
             description=".txt, .epub, .pdf, .srt, .vtt"
             accept="text/txt,text/apub,text/pdf,text/srt,text/vtt"
@@ -78,21 +110,19 @@ function CreateBookForm({ openDrawer }) {
           <Group align="flex-end">
             <TextInput
               flex={1}
-              disabled
               label="Import from URL"
-              description="Primitive import: it grabs all the headings and text from an HTML page. Likely will include stuff you don't want, so you can edit the resulting text"
+              description="Grab all the headings and text from an HTML page. Likely will include unneeded stuff. You are able to edit the resulting text"
               leftSection={<IconWorldWww />}
             />
-            <Button variant="filled" disabled>
-              Import
-            </Button>
+            <Button variant="filled">Import</Button>
           </Group>
         </Stack>
       </Fieldset>
 
       <NumberInput
         label="Words per page"
-        defaultValue={250}
+        key={form.key("wordsPerPage")}
+        {...form.getInputProps("wordsPerPage")}
         leftSection={<IconBracketsContain />}
       />
 

@@ -18,27 +18,25 @@ const navLinks = [
     icon: IconBooks,
 
     links: [
-      { label: "Create New Book", link: "/book/new" },
-      { label: "Import web page", link: "/" },
-      { label: "Book archive", link: "/" },
+      { label: "New", link: "/books/new" },
+      { label: "Archive", link: "/books/archived" },
     ],
+  },
+  {
+    label: "Languages",
+    icon: IconSettings,
+    links: "/languages",
   },
   {
     label: "Terms",
     icon: IconBracketsContain,
-
-    links: [
-      { label: "Terms", link: "/term/index" },
-      { label: "Import terms", link: "/termimport/index" },
-      { label: "Term tags", link: "/termtag/index" },
-    ],
+    links: "/terms",
   },
   {
     label: "Settings",
     icon: IconSettings,
 
     links: [
-      { label: "Languages", link: "/languages" },
       { label: "Settings", link: "/settings/index" },
       { label: "Keyboard shortcuts", link: "/settings/shortcuts" },
     ],
@@ -57,7 +55,7 @@ const navLinks = [
     icon: IconInfoCircle,
 
     links: [
-      { label: "Version and software info", link: "/version" },
+      { label: "Software info", link: "/about" },
       { label: "Statistics", link: "/stats" },
       {
         label: "Documentation",
