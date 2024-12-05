@@ -34,7 +34,7 @@ function MainMenuBar({ openVersionModal }) {
         <div className={classes.inner}>
           <Group wrap="nowrap">
             <HomeImageLink size={rem(54)} />
-            <h1>{pathNames[pathname]}</h1>
+            <h1 className={classes.heading}>{pathNames[pathname]}</h1>
           </Group>
           <Group gap={5} visibleFrom="sm" wrap="nowrap">
             {navLinks.map((item) =>

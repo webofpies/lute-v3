@@ -6,6 +6,10 @@
     light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
+.heading {
+  text-wrap: nowrap;
+}
+
 .inner {
   height: 3.5rem;
   display: flex;
