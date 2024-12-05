@@ -1,19 +1,21 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Center, createTheme, Loader, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/nprogress/styles.css";
 import "./index.css";
-import { lazy, Suspense } from "react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import Layout from "./pages/Layout";
 import Homepage from "./pages/Homepage";
 import BookView from "./components/BookView/BookView";
 import { UserSettingsProvider } from "./context/UserSettingsContext";
 import { loader as bookLoader } from "./queries/book";
+import { loader as languagesLoader } from "./queries/language";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,7 @@ const router = createBrowserRouter([
             <CreateBook />
           </Suspense>
         ),
+        loader: languagesLoader(queryClient),
       },
       {
         path: "/languages",
@@ -55,6 +58,7 @@ const router = createBrowserRouter([
             <Languages />
           </Suspense>
         ),
+        loader: languagesLoader(queryClient),
       },
       {
         path: "/settings/shortcuts",

@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation, useNavigation, useSearchParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
+import { nprogress } from "@mantine/nprogress";
 import {
   ActionIcon,
   Box,
@@ -23,16 +25,31 @@ import {
   IconCut,
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
+import {
+  definedListQueryObj,
+  parsersQueryObj,
+  predefinedListQueryObj,
+  predefinedOptionsObj,
+  definedOptionsObj,
+} from "../../queries/language";
 import LanguageSelect from "../LanguageSelect/LanguageSelect";
 import DictionaryBar from "../DictionaryBar/DictionaryBar";
-import { parsersQueryObj, predefinedOptionsObj } from "../../queries/language";
+import LanguageCards from "../LanguageCards/LanguageCards";
 import classes from "./LanguageForm.module.css";
 
 function LanguageForm() {
-  const [predefinedLang, setPredefinedLang] = useState(null);
+  const { pathname } = useLocation();
+  const navigation = useNavigation();
+  const [params] = useSearchParams();
+  const openedFromLanguages = pathname === "/languages";
+  const predefinedLang = params.get("predef");
+  const definedLang = params.get("def");
   const predefinedOptionsQuery = useQuery(predefinedOptionsObj(predefinedLang));
+  const definedOptionsQuery = useQuery(definedOptionsObj(definedLang));
 
-  const parsersQuery = useQuery(parsersQueryObj);
+  const { data: defined } = useQuery(definedListQueryObj());
+  const { data: predefined } = useQuery(predefinedListQueryObj());
+  const { data: parsers } = useQuery(parsersQueryObj());
 
   const form = useForm({
     mode: "uncontrolled",
@@ -65,9 +82,15 @@ function LanguageForm() {
   });
 
   useEffect(() => {
+    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
+  });
+
+  useEffect(() => {
     if (predefinedOptionsQuery.isSuccess) {
       const { dictionaries, ...rest } = predefinedOptionsQuery.data;
       form.setValues(rest);
+
+      form.setFieldValue("dictionaries", []);
 
       dictionaries.forEach((dict, index) =>
         form.insertListItem("dictionaries", { ...dict, key: randomId() }, index)
@@ -75,14 +98,33 @@ function LanguageForm() {
     }
   }, [predefinedOptionsQuery.data, predefinedOptionsQuery.isSuccess]);
 
+  useEffect(() => {
+    if (definedOptionsQuery.isSuccess) {
+      const { dictionaries, ...rest } = definedOptionsQuery.data;
+      form.setValues(rest);
+
+      form.setFieldValue("dictionaries", []);
+
+      dictionaries.forEach((dict, index) =>
+        form.insertListItem("dictionaries", { ...dict, key: randomId() }, index)
+      );
+    }
+  }, [definedOptionsQuery.data, definedOptionsQuery.isSuccess]);
+
   return (
     <form>
-      <Text fw={700} fz={rem(22)}>
-        Create or Edit
+      {openedFromLanguages && (
+        <>
+          <Text fw={700} fz={rem(22)} mb={rem(10)}>
+            My languages
+          </Text>
+          <LanguageCards languages={defined} />
+        </>
+      )}
+      <Text fw={700} fz={rem(18)}>
+        Settings
       </Text>
-      {/* <Group wrap="nowrap" align="flex-end"> */}
-      <LanguageSelect form={form} setPredefinedLang={setPredefinedLang} />
-      {/* </Group> */}
+      <LanguageSelect form={form} predefined={predefined} />
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay
           visible={
@@ -117,7 +159,7 @@ function LanguageForm() {
               <IconSquareRoundedPlusFilled />
             </ActionIcon>
 
-            <ScrollArea.Autosize mah={250} offsetScrollbars="y" flex={1}>
+            <ScrollArea.Autosize mah={300} offsetScrollbars="y" flex={1}>
               <Stack gap={rem(5)}>
                 {form.getValues().dictionaries.map((dict, index) => (
                   <DictionaryBar key={dict.key} form={form} index={index} />
@@ -141,7 +183,7 @@ function LanguageForm() {
           label="Parse as"
           withCheckIcon={false}
           searchable={false}
-          data={parsersQuery.isSuccess ? parsersQuery.data : []}
+          data={parsers}
           key={form.key("parser_type")}
           {...form.getInputProps("parser_type")}
         />
@@ -161,7 +203,7 @@ function LanguageForm() {
             {...form.getInputProps("split_sentences")}
           />
           <TextInput
-            flex={1}
+            flex={2}
             label="Exceptions"
             key={form.key("split_sentence_exceptions")}
             {...form.getInputProps("split_sentence_exceptions")}

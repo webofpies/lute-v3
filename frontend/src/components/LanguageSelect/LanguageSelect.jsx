@@ -1,73 +1,46 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import {
   CloseButton,
   Combobox,
   InputBase,
-  Loader,
+  rem,
   ScrollArea,
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
-import {
-  definedListQueryObj,
-  predefinedListQueryObj,
-} from "../../queries/language";
 import { useSearchParams } from "react-router-dom";
 
 // https://mantine.dev/combobox/?e=SelectAsync
 let languages = [];
 let allLanguages = [];
 
-export function LanguageSelect({ setPredefinedLang }) {
-  const [params] = useSearchParams();
-  const newBookLanguage = params.get("new-book-lang") === "true";
+export function LanguageSelect({ predefined }) {
+  const [params, setParams] = useSearchParams();
 
-  const predefinedQuery = useQuery(predefinedListQueryObj);
-  const definedQuery = useQuery(definedListQueryObj);
+  languages = [
+    {
+      label: "Create from predefined",
+      options: predefined,
+      // id: "predefined",
+    },
+  ];
 
-  if (definedQuery.data && predefinedQuery.data) {
-    // with no options list, mantine automatically doesn't create a group
-    languages = [
-      {
-        label: "Edit existing",
-        options: newBookLanguage
-          ? []
-          : [...definedQuery.data.map((obj) => obj.name)],
-        id: "existing",
-      },
-      {
-        label: "Create from predefined",
-        options: predefinedQuery.data,
-        id: "predefined",
-      },
-    ];
-
-    allLanguages = languages.reduce(
-      (acc, group) => [...acc, ...group.options],
-      []
-    );
-  }
+  allLanguages = languages.reduce(
+    (acc, group) => [...acc, ...group.options],
+    []
+  );
 
   // const [data, setData] = useState(allLanguages);
   const [value, setValue] = useState(null);
   const [search, setSearch] = useState("");
 
+  useEffect(() => {
+    const definedLang = params.get("def");
+    definedLang && setSearch(definedLang);
+  }, [params]);
+
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
-    onDropdownOpen: () => {
-      // if (data.length === 0) {
-      if (!predefinedQuery.data && !predefinedQuery.isLoading) {
-        predefinedQuery.refetch(); // Manually trigger refetch
-      }
-      if (!definedQuery.data && !definedQuery.isLoading) {
-        definedQuery.refetch(); // Manually trigger refetch
-      }
-      predefinedQuery.data &&
-        definedQuery.data &&
-        combobox.resetSelectedOption();
-      // }
-    },
   });
 
   const shouldFilterOptions = allLanguages.every((item) => item !== search);
@@ -89,7 +62,7 @@ export function LanguageSelect({ setPredefinedLang }) {
   const groups = filteredGroups.map((group) => {
     const options = group.options.map((item) => {
       return (
-        <Combobox.Option value={group.id + item} key={group.id + item}>
+        <Combobox.Option value={item} key={item}>
           {item}
         </Combobox.Option>
       );
@@ -106,31 +79,27 @@ export function LanguageSelect({ setPredefinedLang }) {
     <Combobox
       store={combobox}
       withinPortal={false}
-      onOptionSubmit={(v) => {
-        const val = v.replace("predefined", "").replace("existing", "");
+      onOptionSubmit={(val) => {
+        // const val = v.replace("predefined", "").replace("existing", "");
         if (val === "$create") {
           // setData((current) => [...current, search]);
           setValue(search);
         } else {
           setValue(val);
           setSearch(val);
-
-          if (v.includes("predefined")) {
-            setPredefinedLang(val);
-          }
+          setParams({ predef: val });
         }
 
         combobox.closeDropdown();
       }}>
       <Combobox.Target>
         <InputBase
+          mb={rem(10)}
           w="fit-content"
           label="Name"
           leftSection={<IconLanguage />}
           rightSection={
-            predefinedQuery.isLoading || definedQuery.isLoading ? (
-              <Loader size={18} />
-            ) : value !== null ? (
+            value !== null ? (
               <CloseButton
                 size="sm"
                 onMouseDown={(event) => event.preventDefault()}
@@ -156,7 +125,7 @@ export function LanguageSelect({ setPredefinedLang }) {
             combobox.closeDropdown();
             setSearch(value || "");
           }}
-          placeholder="Find or type new name"
+          placeholder="Pick predefined or create new"
           rightSectionPointerEvents={value === null ? "none" : "all"}
         />
       </Combobox.Target>

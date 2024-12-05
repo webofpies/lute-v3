@@ -1,0 +1,26 @@
+.label {
+  color: var(--mantine-color-text);
+}
+
+.stat {
+  color: var(--mantine-color-dimmed);
+}
+
+.card {
+  cursor: pointer;
+  user-select: none;
+  padding: 0.7rem 1rem;
+}
+
+.card:hover:not(.active) {
+  background-color: var(--mantine-color-default-hover);
+}
+
+.active {
+  background-color: var(--mantine-color-blue-6);
+}
+
+.active .label,
+.active .stat {
+  color: white;
+}

@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
+import { nprogress } from "@mantine/nprogress";
 import {
   Button,
   Fieldset,
@@ -29,9 +30,9 @@ import { definedListQueryObj } from "../../queries/language";
 import classes from "./CreateBookForm.module.css";
 
 function CreateBookForm({ openDrawer }) {
-  const definedQuery = useQuery(definedListQueryObj);
+  const navigation = useNavigation();
+  const { data: defined } = useQuery(definedListQueryObj());
   const [disabled, setDisabled] = useState(true);
-  const [, setParams] = useSearchParams();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -40,14 +41,14 @@ function CreateBookForm({ openDrawer }) {
     },
   });
 
+  useEffect(() => {
+    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
+  });
+
   return (
     <form className={classes.container}>
       <Group align="flex-end" wrap="nowrap">
         <Select
-          onDropdownOpen={() =>
-            !(definedQuery.data && definedQuery.isLoading) &&
-            definedQuery.refetch()
-          }
           onOptionSubmit={() => setDisabled(false)}
           allowDeselect={false}
           required
@@ -57,16 +58,9 @@ function CreateBookForm({ openDrawer }) {
           searchable={true}
           withCheckIcon={false}
           leftSection={<IconLanguage />}
-          data={
-            definedQuery.data ? definedQuery.data.map((lang) => lang.name) : []
-          }
+          data={defined.map((lang) => lang.name)}
         />
-        <Button
-          variant="filled"
-          onClick={() => {
-            openDrawer();
-            setParams({ "new-book-lang": "true" });
-          }}>
+        <Button variant="filled" onClick={openDrawer}>
           New
         </Button>
       </Group>

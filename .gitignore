@@ -145,7 +145,3 @@ dmypy.json
 cython_debug/
 
 .DS_Store
-frontend/src/components/LanguageCard/LanguageCard.jsx
-frontend/src/components/LanguageCard/LanguageCard.module.css
-frontend/src/components/LanguageCards/LanguageCards.jsx
-frontend/src/components/LanguageCards/LanguageCards.module.css
