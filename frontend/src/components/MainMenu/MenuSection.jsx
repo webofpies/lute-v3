@@ -5,12 +5,14 @@ import classes from "./MainMenuBar.module.css";
 function MenuSection({ label, children }) {
   return (
     <Menu
+      // for active style selectors to work: keepMounted and not withinPortal
+      keepMounted
+      withinPortal={false}
       trigger="hover"
       offset={0}
       openDelay={20}
       closeDelay={20}
-      transitionProps={{ exitDuration: 0 }}
-      withinPortal>
+      transitionProps={{ exitDuration: 0 }}>
       <Menu.Target>
         <UnstyledButton
           className={classes.link}

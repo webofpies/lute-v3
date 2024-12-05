@@ -34,3 +34,9 @@
 .linkLabel {
   margin-right: 0.4rem;
 }
+
+.link[aria-current="page"],
+.link:has(+ div > a[aria-current="page"]) {
+  background-color: var(--mantine-color-blue-5);
+  color: white;
+}
