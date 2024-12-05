@@ -32,11 +32,11 @@ function MainMenuBar({ openVersionModal }) {
     <header className={classes.header}>
       <Container size="xl">
         <div className={classes.inner}>
-          <Group>
+          <Group wrap="nowrap">
             <HomeImageLink size={rem(54)} />
             <h1>{pathNames[pathname]}</h1>
           </Group>
-          <Group gap={5} visibleFrom="sm">
+          <Group gap={5} visibleFrom="sm" wrap="nowrap">
             {navLinks.map((item) =>
               Array.isArray(item.links) ? (
                 <MenuSection label={item.label} key={item.label}>
