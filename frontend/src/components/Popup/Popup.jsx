@@ -16,7 +16,7 @@ function Popup({ children, id }) {
       middlewares={{ flip: { fallbackPlacements: ["top", "right", "left"] } }}
       transitionProps={{
         duration: 150,
-        transition: "pop",
+        transition: "fade-up",
         enterDelay: 50,
         exitDelay: 0,
       }}
@@ -30,11 +30,13 @@ function Popup({ children, id }) {
       onMouseLeave={close}
       onContextMenu={close}>
       <Popover.Target>{children}</Popover.Target>
-      {popupData && (
-        <Popover.Dropdown style={{ pointerEvents: "none" }}>
-          <PopupData data={popupData} />
-        </Popover.Dropdown>
-      )}
+      <Popover.Dropdown
+        style={{
+          pointerEvents: "none",
+          visibility: popupData ? "visible" : "hidden",
+        }}>
+        <PopupData data={popupData} />
+      </Popover.Dropdown>
     </Popover>
   );
 }
