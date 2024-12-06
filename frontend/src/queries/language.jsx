@@ -33,17 +33,6 @@ function predefinedListQueryObj() {
   };
 }
 
-function definedListQueryObj() {
-  return {
-    queryKey: ["defined"],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/languages`);
-      return await response.json();
-    },
-    staleTime: Infinity,
-  };
-}
-
 const predefinedOptionsObj = (languageName) => {
   return {
     queryKey: ["predefinedOptions", languageName],
@@ -58,6 +47,16 @@ const predefinedOptionsObj = (languageName) => {
   };
 };
 
+function definedListQueryObj() {
+  return {
+    queryKey: ["defined"],
+    queryFn: async () => {
+      const response = await fetch(`http://localhost:5001/api/languages`);
+      return await response.json();
+    },
+  };
+}
+
 const definedOptionsObj = (languageName) => {
   return {
     queryKey: ["definedOptions", languageName],
@@ -67,7 +66,6 @@ const definedOptionsObj = (languageName) => {
       );
       return await response.json();
     },
-    staleTime: Infinity,
     enabled: languageName !== null,
   };
 };

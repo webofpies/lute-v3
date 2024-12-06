@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import {
   CloseButton,
   Combobox,
@@ -8,7 +9,6 @@ import {
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
-import { useSearchParams } from "react-router-dom";
 
 // https://mantine.dev/combobox/?e=SelectAsync
 let languages = [];
@@ -16,6 +16,9 @@ let allLanguages = [];
 
 export function LanguageSelect({ predefined }) {
   const [params, setParams] = useSearchParams();
+  const { pathname } = useLocation();
+  const definedLang = params.get("def");
+  const openedFromLanguages = pathname === "/languages";
 
   languages = [
     {
@@ -35,9 +38,8 @@ export function LanguageSelect({ predefined }) {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const definedLang = params.get("def");
-    definedLang && setSearch(definedLang);
-  }, [params]);
+    definedLang && openedFromLanguages && setSearch(definedLang);
+  }, [definedLang, openedFromLanguages]);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -80,7 +82,6 @@ export function LanguageSelect({ predefined }) {
       store={combobox}
       withinPortal={false}
       onOptionSubmit={(val) => {
-        // const val = v.replace("predefined", "").replace("existing", "");
         if (val === "$create") {
           // setData((current) => [...current, search]);
           setValue(search);

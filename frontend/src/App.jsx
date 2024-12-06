@@ -19,7 +19,7 @@ import { loader as languagesLoader } from "./queries/language";
 
 const queryClient = new QueryClient();
 
-const CreateBook = lazy(() => import("./pages/CreateBook"));
+const NewBook = lazy(() => import("./pages/NewBook"));
 const Languages = lazy(() => import("./pages/Languages"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         path: "/books/new",
         element: (
           <Suspense fallback={pageSpinner}>
-            <CreateBook />
+            <NewBook />
           </Suspense>
         ),
         loader: languagesLoader(queryClient),

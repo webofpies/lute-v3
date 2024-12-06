@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
-import { useNavigation } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigation, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import { nprogress } from "@mantine/nprogress";
 import {
+  ActionIcon,
   Button,
   Fieldset,
   FileInput,
   Group,
   NumberInput,
   rem,
-  Select,
   Stack,
   TagsInput,
+  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -21,18 +22,22 @@ import {
   IconBracketsContain,
   IconHeading,
   IconHeadphones,
-  IconLanguage,
   IconLink,
+  IconSquareRoundedPlusFilled,
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
-import { definedListQueryObj } from "../../queries/language";
-import classes from "./CreateBookForm.module.css";
+import LanguageCards from "../LanguageCards/LanguageCards";
+import { definedListQueryObj, definedOptionsObj } from "../../queries/language";
+import ImportURLInfo from "./ImportURLInfo";
+import classes from "./NewBookForm.module.css";
 
-function CreateBookForm({ openDrawer }) {
+function NewBookForm({ openDrawer }) {
   const navigation = useNavigation();
+  const [params] = useSearchParams();
+  const definedLang = params.get("def");
   const { data: defined } = useQuery(definedListQueryObj());
-  const [disabled, setDisabled] = useState(true);
+  const definedOptionsQuery = useQuery(definedOptionsObj(definedLang));
 
   const form = useForm({
     mode: "uncontrolled",
@@ -43,36 +48,34 @@ function CreateBookForm({ openDrawer }) {
 
   useEffect(() => {
     navigation.state === "loading" ? nprogress.start() : nprogress.complete();
-  });
+  }, [navigation.state]);
 
   return (
     <form className={classes.container}>
-      <Group align="flex-end" wrap="nowrap">
-        <Select
-          onOptionSubmit={() => setDisabled(false)}
-          allowDeselect={false}
-          required
-          withAsterisk
-          label="Language"
-          placeholder="Pick a language"
-          searchable={true}
-          withCheckIcon={false}
-          leftSection={<IconLanguage />}
-          data={defined.map((lang) => lang.name)}
-        />
-        <Button variant="filled" onClick={openDrawer}>
-          New
-        </Button>
+      <Group gap={5} wrap="nowrap">
+        <Text fw={500} fz={20}>
+          Language
+        </Text>
+        <ActionIcon variant="transparent" color="green.6" onClick={openDrawer}>
+          <IconSquareRoundedPlusFilled />
+        </ActionIcon>
       </Group>
+      <LanguageCards languages={defined} />
+      <Text fw={500} fz={20}>
+        Settings
+      </Text>
       <TextInput
-        disabled={disabled}
+        wrapperProps={{
+          dir: definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr",
+        }}
+        disabled={definedLang ? false : true}
         required
         withAsterisk
         label="Title"
         leftSection={<IconHeading />}
       />
       <Fieldset
-        disabled={disabled}
+        disabled={definedLang ? false : true}
         variant="filled"
         legend="Content"
         flex={1}
@@ -80,8 +83,11 @@ function CreateBookForm({ openDrawer }) {
         styles={{
           legend: { fontSize: rem(15) },
         }}>
-        <Stack wrap="nowrap" gap={rem(5)}>
+        <Stack wrap="nowrap" gap={5}>
           <Textarea
+            wrapperProps={{
+              dir: definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr",
+            }}
             label="Text"
             resize="vertical"
             autosize
@@ -105,8 +111,8 @@ function CreateBookForm({ openDrawer }) {
             <TextInput
               flex={1}
               label="Import from URL"
-              description="Grab all the headings and text from an HTML page. Likely will include unneeded stuff. You are able to edit the resulting text"
               leftSection={<IconWorldWww />}
+              rightSection={<ImportURLInfo />}
             />
             <Button variant="filled">Import</Button>
           </Group>
@@ -142,4 +148,4 @@ function CreateBookForm({ openDrawer }) {
   );
 }
 
-export default CreateBookForm;
+export default NewBookForm;

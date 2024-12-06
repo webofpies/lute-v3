@@ -96,10 +96,11 @@ function LanguageForm() {
         form.insertListItem("dictionaries", { ...dict, key: randomId() }, index)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [predefinedOptionsQuery.data, predefinedOptionsQuery.isSuccess]);
 
   useEffect(() => {
-    if (definedOptionsQuery.isSuccess) {
+    if (definedOptionsQuery.isSuccess && openedFromLanguages) {
       const { dictionaries, ...rest } = definedOptionsQuery.data;
       form.setValues(rest);
 
@@ -109,6 +110,7 @@ function LanguageForm() {
         form.insertListItem("dictionaries", { ...dict, key: randomId() }, index)
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [definedOptionsQuery.data, definedOptionsQuery.isSuccess]);
 
   return (

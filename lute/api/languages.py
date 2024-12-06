@@ -52,6 +52,7 @@ def get_languages_list():
 
     if lang_type == "predefined":
         service = LangService(db.session)
+        # !TODO this function gets all info for languages. but we need only the name here
         predefined = service.predefined_languages()
 
         return jsonify([language.name for language in predefined])

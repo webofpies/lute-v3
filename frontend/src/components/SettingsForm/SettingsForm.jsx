@@ -1,36 +1,29 @@
 import {
-  ActionIcon,
   Button,
   Checkbox,
   Fieldset,
   Group,
   NativeSelect,
   NumberInput,
-  Popover,
   rem,
   Stack,
   TextInput,
 } from "@mantine/core";
-import {
-  IconDatabase,
-  IconTorii,
-  IconNotes,
-  IconQuestionMark,
-} from "@tabler/icons-react";
+import { IconDatabase, IconTorii, IconNotes } from "@tabler/icons-react";
 import MeCabInfo from "./MeCabInfo";
 
 function SettingsForm() {
   const fieldsetFz = rem(20);
   return (
     <form>
-      <Stack gap={rem(10)}>
+      <Stack gap={10}>
         <Fieldset
           variant="filled"
           legend="Backup"
           styles={{
             legend: { fontSize: fieldsetFz, fontWeight: 500 },
           }}>
-          <Stack gap={rem(5)}>
+          <Stack gap={5}>
             <Checkbox label="Enabled" />
             <TextInput label="Directory" leftSection={<IconDatabase />} />
             <Checkbox label="Run automatically (daily)" />
@@ -44,7 +37,7 @@ function SettingsForm() {
           styles={{
             legend: { fontSize: fieldsetFz, fontWeight: 500 },
           }}>
-          <Stack gap={rem(5)} align="flex-start">
+          <Stack gap={5} align="flex-start">
             <Checkbox label="Open popup in new tab" />
             <Checkbox label="Stop audio on term form open" />
             <NumberInput
@@ -59,24 +52,13 @@ function SettingsForm() {
           styles={{
             legend: { fontSize: fieldsetFz, fontWeight: 500 },
           }}>
-          <Stack gap={rem(5)}>
-            <Group gap={rem(5)} align="flex-end" wrap="nowrap">
+          <Stack gap={5}>
+            <Group gap={5} align="flex-end" wrap="nowrap">
               <TextInput
                 flex={1}
                 label="MECAB_PATH environment variable"
                 leftSection={<IconTorii />}
-                rightSection={
-                  <Popover position="top" withArrow shadow="sm">
-                    <Popover.Target>
-                      <ActionIcon variant="transparent">
-                        <IconQuestionMark />
-                      </ActionIcon>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <MeCabInfo />
-                    </Popover.Dropdown>
-                  </Popover>
-                }
+                rightSection={<MeCabInfo />}
               />
               <Button>Test my MeCab configuration</Button>
             </Group>

@@ -1,10 +1,10 @@
 import { Drawer, ScrollAreaAutosize } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import CreateBookForm from "../components/CreateBookForm/CreateBookForm";
+import NewBookForm from "../components/NewBookForm/NewBookForm";
 import LanguageForm from "../components/LanguageForm/LanguageForm";
 import PageContainer from "../components/PageContainer/PageContainer";
 
-function CreateBook() {
+function NewBook() {
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <>
@@ -29,9 +29,9 @@ function CreateBook() {
           </ScrollAreaAutosize>
         </Drawer.Content>
       </Drawer.Root>
-      <CreateBookForm openDrawer={open} />
+      <NewBookForm openDrawer={open} />
     </>
   );
 }
 
-export default CreateBook;
+export default NewBook;
