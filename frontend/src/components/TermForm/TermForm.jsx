@@ -59,6 +59,13 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
         )}
         <div className={classes.flex}>
           <Textarea
+            onFocusCapture={(e) => {
+              const input = e.target;
+              input.setSelectionRange(input.value.length, input.value.length);
+            }}
+            autosize
+            spellCheck={false}
+            autoCapitalize="off"
             flex={1}
             wrapperProps={{ dir: dir }}
             ref={translationFieldRef}

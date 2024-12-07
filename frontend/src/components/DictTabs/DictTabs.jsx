@@ -16,7 +16,9 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
 
   function handleFocus() {
     setTimeout(() => {
-      translationFieldRef.current.focus();
+      const input = translationFieldRef.current;
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
     }, 0);
   }
 
@@ -62,7 +64,10 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
             onMouseEnter={() =>
               queryClient.prefetchQuery(sentencesFetchOptions(langId, term))
             }
-            onClick={() => setActiveTab("sentencesTab")}>
+            onClick={() => {
+              setActiveTab("sentencesTab");
+              handleFocus();
+            }}>
             <Text size="sm" style={{ overflow: "hidden" }}>
               Sentences
             </Text>
@@ -72,7 +77,10 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
             styles={{ tabLabel: { minWidth: 0 } }}
             id="imagesTab"
             value="imagesTab"
-            onClick={() => setActiveTab("imagesTab")}>
+            onClick={() => {
+              setActiveTab("imagesTab");
+              handleFocus();
+            }}>
             <IconPhoto size={rem(18)} />
           </Tabs.Tab>
         </div>
