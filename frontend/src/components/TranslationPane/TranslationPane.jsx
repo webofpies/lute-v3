@@ -1,16 +1,23 @@
 import { memo, useRef } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DictTabs from "../DictTabs/DictTabs";
 import TermForm from "../TermForm/TermForm";
 import classes from "../BookView/BookView.module.css";
 import { paneResizeStorage } from "../../misc/utils";
+import { termDataQuery } from "../../queries/term";
 
 function TranslationPane({ book, termData }) {
   const termPanelRef = useRef();
-  const { isSuccess, data, error } = useFetchTerm(termData);
   const translationFieldRef = useRef();
+
+  const key =
+    termData.type === "multi"
+      ? `${termData.data}/${termData.langID}`
+      : termData.data;
+
+  const { isSuccess, data, error } = useQuery(termDataQuery(key));
 
   if (error) return "An error has occurred: " + error.message;
 
@@ -61,23 +68,6 @@ function TranslationPane({ book, termData }) {
       )}
     </Stack>
   );
-}
-
-function useFetchTerm(termData) {
-  const key =
-    termData.type === "multi"
-      ? `${termData.data}/${termData.langID}`
-      : termData.data;
-
-  return useQuery({
-    queryKey: ["termData", key],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/terms/${key}`);
-      return await response.json();
-    },
-    refetchOnWindowFocus: false,
-    placeholderData: keepPreviousData,
-  });
 }
 
 export default memo(TranslationPane);

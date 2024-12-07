@@ -3,6 +3,7 @@ import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { QueryClient } from "@tanstack/react-query";
 import PopupData from "./PopupData";
+import { popupQuery } from "../../queries/term";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,9 @@ function Popup({ children, id }) {
       withArrow
       shadow="md"
       opened={opened}
-      onOpen={async () => setPopupData(await handleFetch(id))}
+      onOpen={async () =>
+        setPopupData(await queryClient.fetchQuery(popupQuery(id)))
+      }
       onMouseEnter={open}
       onMouseLeave={close}
       onContextMenu={close}>
@@ -39,25 +42,6 @@ function Popup({ children, id }) {
       </Popover.Dropdown>
     </Popover>
   );
-}
-
-async function handleFetch(id) {
-  try {
-    const data = await queryClient.fetchQuery({
-      queryKey: ["popupData", id],
-      queryFn: async () => {
-        const response = await fetch(
-          `http://localhost:5001/api/terms/${id}/popup`
-        );
-        return await response.json();
-      },
-      enabled: id !== null,
-      staleTime: Infinity,
-    });
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 export default memo(Popup);
