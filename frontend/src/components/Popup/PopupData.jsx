@@ -15,14 +15,11 @@ export default function PopupData({ data }) {
         {data.romanization && <em>{data.romanization}</em>}
 
         {data.images.map((img) => {
-          // /userimages/lang/term
-          // temporary hack
-          const res = img.split("/");
           return (
             <img
               key={img}
               className={classes.image}
-              src={`http://localhost:5001/api/image/${res[res.length - 2]}/${res[res.length - 1]}`}
+              src={`http://localhost:5001${img}`}
             />
           );
         })}

@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-inline: 1.3rem;
+  padding-top: 1rem;
+}
+
+.flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  flex-wrap: nowrap;
+}

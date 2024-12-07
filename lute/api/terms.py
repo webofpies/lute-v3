@@ -1,7 +1,6 @@
 "Term endpoints"
 
-import os
-from flask import Blueprint, jsonify, send_from_directory, current_app
+from flask import Blueprint, jsonify
 
 from lute.db import db
 from lute.read.service import Service as ReadService
@@ -93,15 +92,6 @@ def get_sentences(langid, text):
     ]
 
     return jsonify({"text": text, "variations": variations if refcount > 0 else []})
-
-
-@bp.route("/<int:langid>/<term>/image", methods=["GET"])
-def get_image(langid, term):
-    "Serve the image from the data/userimages directory."
-    datapath = current_app.config["DATAPATH"]
-    directory = os.path.join(datapath, "userimages", str(langid))
-    filename = term + ".jpeg"
-    return send_from_directory(directory, filename)
 
 
 def _term_to_dict(term):

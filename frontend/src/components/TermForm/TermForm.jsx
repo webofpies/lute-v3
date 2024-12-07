@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   useForm,
   // isNotEmpty, isEmail, isInRange, hasLength, matches
@@ -9,13 +10,12 @@ import {
   Textarea,
   TagsInput,
   Radio,
-  Image,
-  Grid,
-  Stack,
   CheckIcon,
   Checkbox,
+  rem,
 } from "@mantine/core";
-import { memo } from "react";
+import TermImage from "./TermImage";
+import classes from "./TermForm.module.css";
 
 function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
   const form = useForm({
@@ -37,7 +37,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
 
   return (
     <form>
-      <Stack justify="center" gap={5} pt="1rem" pl="1.3rem" pr="1.3rem">
+      <div className={classes.container}>
         <TextInput
           wrapperProps={{ dir: dir }}
           placeholder="Term"
@@ -57,39 +57,27 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             {...form.getInputProps("romanization")}
           />
         )}
-        <Grid
-          align="flex-start"
-          justify="center"
-          gutter={"0.5rem"}
-          styles={{ inner: { flexWrap: "nowrap" } }}>
-          <Grid.Col span={11} flex="1">
-            <Textarea
-              wrapperProps={{ dir: dir }}
-              ref={translationFieldRef}
-              autoFocus
-              resize="vertical"
-              placeholder="Translation"
-              key={form.key("translation")}
-              {...form.getInputProps("translation")}
-            />
-          </Grid.Col>
-          <Grid.Col span={1} miw="48px">
-            <Image
-              w="100%"
-              maw="50px"
-              styles={{
-                root: { aspectRatio: 1 },
-              }}
-              // src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-9.png"
-            />
-          </Grid.Col>
-        </Grid>
-        <Group gap="1.5rem" style={{ rowGap: "0.6rem" }}>
+        <div className={classes.flex}>
+          <Textarea
+            flex={1}
+            wrapperProps={{ dir: dir }}
+            ref={translationFieldRef}
+            autoFocus
+            resize="vertical"
+            placeholder="Translation"
+            key={form.key("translation")}
+            {...form.getInputProps("translation")}
+          />
+          {termData.currentImg && (
+            <TermImage src={`http://localhost:5001${termData.currentImg}`} />
+          )}
+        </div>
+        <Group gap="md" style={{ rowGap: rem(5) }}>
           <Radio.Group
             name="status"
             key={form.key("status")}
             {...form.getInputProps("status")}>
-            <Group justify="flex-start" gap="0.2rem">
+            <Group justify="flex-start" gap={3}>
               <Radio icon={CheckIcon} name="1" value="1" />
               <Radio icon={CheckIcon} name="2" value="2" />
               <Radio icon={CheckIcon} name="3" value="3" />
@@ -114,7 +102,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
           <Button>Delete</Button>
           <Button type="submit">Save</Button>
         </Group>
-      </Stack>
+      </div>
     </form>
   );
 }
