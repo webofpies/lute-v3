@@ -58,8 +58,6 @@ def book_info(bookid):
     lang_repo = LanguageRepository(db.session)
     term_dicts = lang_repo.all_dictionaries()[lang.id]["term"]
     sentence_dicts = lang_repo.all_dictionaries()[lang.id]["sentence"]
-    # show_highlights = bool(int(UserSetting.get_value("show_highlights")))
-    # term_dicts = lang.all_dictionaries()[lang.id]["term"]
 
     term_dicts = [
         _get_dict_info(dict, index, lang) for index, dict in enumerate(term_dicts)
@@ -75,8 +73,9 @@ def book_info(bookid):
         "pageCount": book.page_count,
         "currentPage": page_num,
         "languageId": lang.id,
-        "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
         "isRightToLeft": lang.right_to_left,
+        "showPronunciation": lang.show_romanization,
+        "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
         "audio": (
             {
                 "name": book.audio_filename,

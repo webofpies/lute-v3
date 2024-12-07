@@ -27,6 +27,8 @@ function TranslationPane({ book, termData }) {
               key={data.text}
               termData={data}
               translationFieldRef={translationFieldRef}
+              dir={book.isRightToLeft ? "rtl" : "ltr"}
+              showPronunciation={book.showPronunciation}
             />
           </Panel>
 

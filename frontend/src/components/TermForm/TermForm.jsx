@@ -17,7 +17,7 @@ import {
 } from "@mantine/core";
 import { memo } from "react";
 
-function TermForm({ termData, translationFieldRef }) {
+function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -39,6 +39,7 @@ function TermForm({ termData, translationFieldRef }) {
     <form>
       <Stack justify="center" gap={5} pt="1rem" pl="1.3rem" pr="1.3rem">
         <TextInput
+          wrapperProps={{ dir: dir }}
           placeholder="Term"
           withAsterisk
           key={form.key("text")}
@@ -49,6 +50,13 @@ function TermForm({ termData, translationFieldRef }) {
           key={form.key("parents")}
           {...form.getInputProps("parents")}
         />
+        {showPronunciation && (
+          <TextInput
+            placeholder="Pronunciation"
+            key={form.key("romanization")}
+            {...form.getInputProps("romanization")}
+          />
+        )}
         <Grid
           align="flex-start"
           justify="center"
@@ -56,6 +64,7 @@ function TermForm({ termData, translationFieldRef }) {
           styles={{ inner: { flexWrap: "nowrap" } }}>
           <Grid.Col span={11} flex="1">
             <Textarea
+              wrapperProps={{ dir: dir }}
               ref={translationFieldRef}
               autoFocus
               resize="vertical"
