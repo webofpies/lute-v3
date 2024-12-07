@@ -21,7 +21,7 @@ function Popup({ children, id }) {
         exitDelay: 0,
       }}
       floatingStrategy="fixed"
-      keepMounted={true}
+      keepMounted={false}
       withArrow
       shadow="md"
       opened={opened}
