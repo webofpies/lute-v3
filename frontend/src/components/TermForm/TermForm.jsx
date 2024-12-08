@@ -14,8 +14,54 @@ import {
   Checkbox,
   rem,
 } from "@mantine/core";
+import {
+  IconMinus,
+  IconNumber1,
+  IconNumber2,
+  IconNumber3,
+  IconNumber4,
+  IconNumber5,
+} from "@tabler/icons-react";
 import TermImage from "./TermImage";
 import classes from "./TermForm.module.css";
+
+const radios = [
+  {
+    value: "1",
+    icon: IconNumber1,
+    color: "status.1",
+  },
+  {
+    value: "2",
+    icon: IconNumber2,
+    color: "status.2",
+  },
+  {
+    value: "3",
+    icon: IconNumber3,
+    color: "status.3",
+  },
+  {
+    value: "4",
+    icon: IconNumber4,
+    color: "status.4",
+  },
+  {
+    value: "5",
+    icon: IconNumber5,
+    color: "status.5",
+  },
+  {
+    value: "99",
+    icon: CheckIcon,
+    color: "status.7",
+  },
+  {
+    value: "98",
+    icon: IconMinus,
+    color: "status.6",
+  },
+];
 
 function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
   const form = useForm({
@@ -85,58 +131,23 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             key={form.key("status")}
             {...form.getInputProps("status")}>
             <Group justify="flex-start" gap={3}>
-              <Radio
-                color="status.1"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="1"
-                value="1"
-              />
-              <Radio
-                color="status.2"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="2"
-                value="2"
-              />
-              <Radio
-                color="status.3"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="3"
-                value="3"
-              />
-              <Radio
-                color="status.4"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="4"
-                value="4"
-              />
-              <Radio
-                color="status.5"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="5"
-                value="5"
-              />
-              <Radio
-                color="status.6"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="98"
-                value="98"
-              />
-              <Radio
-                color="status.7"
-                iconColor="dark.4"
-                icon={CheckIcon}
-                name="99"
-                value="99"
-              />
+              {radios.map((radio) => (
+                <Radio
+                  size="md"
+                  iconColor="dark.4"
+                  key={radio.value}
+                  color={radio.color}
+                  icon={radio.icon}
+                  name={radio.value}
+                  value={radio.value}
+                  ml={radio.value === radios[radios.length - 1].value ? 10 : 0}
+                />
+              ))}
             </Group>
           </Radio.Group>
           <Checkbox
+            styles={{ label: { paddingInlineStart: rem(5) } }}
+            size="xs"
             label="Link to parent"
             key={form.key("syncStatus")}
             {...form.getInputProps("syncStatus", { type: "checkbox" })}
