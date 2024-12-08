@@ -13,6 +13,7 @@ import {
   CheckIcon,
   Checkbox,
   rem,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconMinus,
@@ -29,41 +30,36 @@ const radios = [
   {
     value: "1",
     icon: IconNumber1,
-    color: "status.1",
   },
   {
     value: "2",
     icon: IconNumber2,
-    color: "status.2",
   },
   {
     value: "3",
     icon: IconNumber3,
-    color: "status.3",
   },
   {
     value: "4",
     icon: IconNumber4,
-    color: "status.4",
   },
   {
     value: "5",
     icon: IconNumber5,
-    color: "status.5",
   },
   {
     value: "99",
     icon: CheckIcon,
-    color: "status.7",
   },
   {
     value: "98",
     icon: IconMinus,
-    color: "status.6",
   },
 ];
 
 function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
+  const theme = useMantineTheme();
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -136,7 +132,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
                   size="md"
                   iconColor="dark.4"
                   key={radio.value}
-                  color={radio.color}
+                  color={theme.lute.colors.status[radio.value]}
                   icon={radio.icon}
                   name={radio.value}
                   value={radio.value}

@@ -34,20 +34,42 @@ const pageSpinner = (
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
   bar: "calc(0% * var(--slider-size))",
-  colors: {
-    status: [
-      "#d5ffff",
-      "#f5b8a9",
-      "#f5cca9",
-      "#f5e1a9",
-      "#f5f3a9",
-      "#ddffdd",
-      "#ee8577",
-      "#72da88",
 
-      "#000000",
-      "#000000",
-    ],
+  lute: {
+    colors: {
+      status: {
+        0: "#d5ffff", // 0
+        1: "#f5b8a9", // 1
+        2: "#f5cca9", // 2
+        3: "#f5e1a9", // 3
+        4: "#f5f3a9", // 4
+        5: "#ddffdd", // 5
+        98: "#ee8577", // Ignored (98)
+        99: "#72da88", // Well known (99)
+      },
+      kwordmarked: "#f56767",
+      wordhover: "#228be6",
+      multiterm: "#ffe066",
+      flash: "#ff6868",
+    },
+  },
+});
+
+const cssVarsResolver = (theme) => ({
+  variables: {
+    "--lute-color-status-0": theme.lute.colors.status[0],
+    "--lute-color-status-1": theme.lute.colors.status[1],
+    "--lute-color-status-2": theme.lute.colors.status[2],
+    "--lute-color-status-3": theme.lute.colors.status[3],
+    "--lute-color-status-4": theme.lute.colors.status[4],
+    "--lute-color-status-5": theme.lute.colors.status[5],
+    "--lute-color-status-98": theme.lute.colors.status[98],
+    "--lute-color-status-99": theme.lute.colors.status[99],
+
+    "--lute-color-wordhover": theme.lute.colors.wordhover,
+    "--lute-color-kwordmarked": theme.lute.colors.kwordmarked,
+    "--lute-color-multiterm": theme.lute.colors.multiterm,
+    "--lute-color-flash": theme.lute.colors.flash,
   },
 });
 
@@ -112,7 +134,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <MantineProvider theme={theme}>
+      <MantineProvider theme={theme} cssVariablesResolver={cssVarsResolver}>
         <Notifications />
         <NavigationProgress />
         <UserSettingsProvider>

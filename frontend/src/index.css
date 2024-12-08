@@ -12,10 +12,6 @@ body,
   height: 100%;
 }
 
-body {
-  --text-highlight-color: #ff6868;
-}
-
 .thetext {
   line-height: 1;
   white-space: break-spaces;
@@ -54,7 +50,7 @@ body {
     background-color: #fff;
   }
   100% {
-    background-color: var(--text-highlight-color);
+    background-color: var(--lute-color-flash);
   }
 }
 
@@ -64,46 +60,46 @@ body {
 
 .highlight .status0,
 .wordhover.status0 {
-  background-color: var(--mantine-color-status-0);
+  background-color: var(--lute-color-status-0);
 }
 
 .highlight .status1,
 .wordhover.status1 {
-  background-color: var(--mantine-color-status-1);
+  background-color: var(--lute-color-status-1);
 }
 
 .highlight .status2,
 .wordhover.status2 {
-  background-color: var(--mantine-color-status-2);
+  background-color: var(--lute-color-status-2);
 }
 
 .highlight .status3,
 .wordhover.status3 {
-  background-color: var(--mantine-color-status-3);
+  background-color: var(--lute-color-status-3);
 }
 
 .highlight .status4,
 .wordhover.status4 {
-  background-color: var(--mantine-color-status-4);
+  background-color: var(--lute-color-status-4);
 }
 
 .highlight .status5,
 .wordhover.status5 {
-  background-color: var(--mantine-color-status-5);
+  background-color: var(--lute-color-status-5);
 }
 
-.wordhover {
-  text-decoration: underline 1px solid #228be6 !important;
+.textitem.wordhover {
+  text-decoration: underline 1px solid var(--lute-color-wordhover);
 }
 
-.kwordmarked {
-  text-decoration: underline 1px solid #f56767 !important;
+.textitem.kwordmarked {
+  text-decoration: underline 1px solid var(--lute-color-kwordmarked);
 }
 
 .textitem.newmultiterm {
-  background: #ffe066;
+  background: var(--lute-color-multiterm);
 }
 
 .textitem.flash-highlight {
-  background-color: var(--text-highlight-color);
+  background-color: var(--lute-color-flash);
 }
