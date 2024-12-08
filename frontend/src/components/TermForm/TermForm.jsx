@@ -85,13 +85,55 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             key={form.key("status")}
             {...form.getInputProps("status")}>
             <Group justify="flex-start" gap={3}>
-              <Radio icon={CheckIcon} name="1" value="1" />
-              <Radio icon={CheckIcon} name="2" value="2" />
-              <Radio icon={CheckIcon} name="3" value="3" />
-              <Radio icon={CheckIcon} name="4" value="4" />
-              <Radio icon={CheckIcon} name="5" value="5" />
-              <Radio icon={CheckIcon} name="98" value="98" />
-              <Radio icon={CheckIcon} name="99" value="99" />
+              <Radio
+                color="status.0"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="1"
+                value="1"
+              />
+              <Radio
+                color="status.1"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="2"
+                value="2"
+              />
+              <Radio
+                color="status.2"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="3"
+                value="3"
+              />
+              <Radio
+                color="status.3"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="4"
+                value="4"
+              />
+              <Radio
+                color="status.4"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="5"
+                value="5"
+              />
+              <Radio
+                color="status.5"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="98"
+                value="98"
+              />
+              <Radio
+                color="status.6"
+                iconColor="dark.4"
+                icon={CheckIcon}
+                name="99"
+                value="99"
+              />
             </Group>
           </Radio.Group>
           <Checkbox

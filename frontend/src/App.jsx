@@ -34,6 +34,21 @@ const pageSpinner = (
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
   bar: "calc(0% * var(--slider-size))",
+  colors: {
+    status: [
+      "#d5ffff",
+      "#f5b8a9",
+      "#f5cca9",
+      "#f5e1a9",
+      "#f5f3a9",
+      "#ddffdd",
+      "#ee8577",
+      "#72da88",
+
+      "#000000",
+      "#000000",
+    ],
+  },
 });
 
 const router = createBrowserRouter([

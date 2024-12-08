@@ -13,16 +13,6 @@ body,
 }
 
 body {
-  --status-0-color: #d5ffff;
-  --status-1-color: #f5b8a9;
-  --status-2-color: #f5cca9;
-  --status-3-color: #f5e1a9;
-  --status-4-color: #f5f3a9;
-  --status-5-color: #ddffdd;
-
-  --status-98-color: #ee8577;
-  --status-99-color: #72da88;
-
   --text-highlight-color: #ff6868;
 }
 
@@ -74,32 +64,32 @@ body {
 
 .highlight .status0,
 .wordhover.status0 {
-  background-color: var(--status-0-color);
+  background-color: var(--mantine-color-status-0);
 }
 
 .highlight .status1,
 .wordhover.status1 {
-  background-color: var(--status-1-color);
+  background-color: var(--mantine-color-status-1);
 }
 
 .highlight .status2,
 .wordhover.status2 {
-  background-color: var(--status-2-color);
+  background-color: var(--mantine-color-status-2);
 }
 
 .highlight .status3,
 .wordhover.status3 {
-  background-color: var(--status-3-color);
+  background-color: var(--mantine-color-status-3);
 }
 
 .highlight .status4,
 .wordhover.status4 {
-  background-color: var(--status-4-color);
+  background-color: var(--mantine-color-status-4);
 }
 
 .highlight .status5,
 .wordhover.status5 {
-  background-color: var(--status-5-color);
+  background-color: var(--mantine-color-status-5);
 }
 
 .wordhover {
