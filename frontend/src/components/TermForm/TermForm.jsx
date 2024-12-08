@@ -126,7 +126,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             name="status"
             key={form.key("status")}
             {...form.getInputProps("status")}>
-            <Group justify="flex-start" gap={3}>
+            <Group justify="flex-start" gap={2} wrap="nowrap">
               {radios.map((radio) => (
                 <Radio
                   size="md"
@@ -154,7 +154,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
           key={form.key("tags")}
           {...form.getInputProps("tags")}
         />
-        <Group justify="flex-end" mt="sm" gap="xs">
+        <Group justify="flex-end" mt="sm" gap="xs" wrap="nowrap">
           <Button>Delete</Button>
           <Button type="submit">Save</Button>
         </Group>
