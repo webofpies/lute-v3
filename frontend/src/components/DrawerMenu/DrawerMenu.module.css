@@ -1,6 +1,8 @@
 .drawer {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  height: 100%;
 }
 
 .header {
@@ -17,7 +19,7 @@
 }
 
 .linksInner {
-  padding-top: 4rem;
+  padding-top: 3rem;
   padding-bottom: var(--mantine-spacing-xl);
 }
 
@@ -25,7 +27,7 @@
   font-weight: 500;
   display: block;
   width: 100%;
-  padding: 0.3rem var(--mantine-spacing-md);
+  padding: 0.3rem 0.7rem;
   color: var(--mantine-color-text);
   font-size: var(--mantine-font-size-sm);
 }
