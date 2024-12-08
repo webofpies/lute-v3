@@ -86,49 +86,49 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             {...form.getInputProps("status")}>
             <Group justify="flex-start" gap={3}>
               <Radio
-                color="status.0"
+                color="status.1"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="1"
                 value="1"
               />
               <Radio
-                color="status.1"
+                color="status.2"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="2"
                 value="2"
               />
               <Radio
-                color="status.2"
+                color="status.3"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="3"
                 value="3"
               />
               <Radio
-                color="status.3"
+                color="status.4"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="4"
                 value="4"
               />
               <Radio
-                color="status.4"
+                color="status.5"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="5"
                 value="5"
               />
               <Radio
-                color="status.5"
+                color="status.6"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="98"
                 value="98"
               />
               <Radio
-                color="status.6"
+                color="status.7"
                 iconColor="dark.4"
                 icon={CheckIcon}
                 name="99"
