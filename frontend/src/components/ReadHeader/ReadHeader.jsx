@@ -33,22 +33,21 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
       radius={0}
       shadow="sm"
       styles={{ root: { position: "relative", zIndex: 2 } }}>
-      <Group
-        gap={rem(5)}
-        wrap="nowrap"
-        align="center"
-        className={classes.header}>
+      <Group gap={5} wrap="nowrap" align="center" className={classes.header}>
         <ActionIcon onClick={drawerOpen} size="md">
           <IconMenu2 />
         </ActionIcon>
 
-        <Center w={rem(48)} h={rem(48)} styles={{ root: { flexShrink: 0 } }}>
+        <Center
+          w={48}
+          h={48}
+          styles={{ root: { flexShrink: 0, marginLeft: rem(16) } }}>
           {isLoading ? <Loader size="sm" /> : <HomeImageLink size={rem(48)} />}
         </Center>
 
         <Divider orientation="vertical" />
 
-        <Stack gap="0.2rem">
+        <Stack gap={4}>
           <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
           <HighlightsSwitch checked={state.highlights} dispatch={dispatch} />
         </Stack>
@@ -56,21 +55,16 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
         <Divider orientation="vertical" />
 
         <Stack w="100%" gap={0}>
-          <Group justify="space-between" wrap="nowrap" fz="sm" gap={rem(4)}>
+          <div className={classes.titleFlex}>
             <ActionIcon
               onClick={onActivateEdit}
-              size={rem(24)}
+              size={24}
               p={0}
               variant="transparent"
               styles={{ root: { border: "none" } }}>
               <IconEdit size={rem(22)} />
             </ActionIcon>
-            <Group
-              justify="space-between"
-              wrap="nowrap"
-              flex={1}
-              miw={0}
-              gap={rem(5)}>
+            <div className={classes.titleFlex}>
               <Text
                 component={page === 1 ? "h2" : "h1"}
                 fw="normal"
@@ -80,13 +74,13 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
               </Text>
               {book.source && <BookSourceButton source={book.source} />}
               <PageCounter currentPage={page} pageCount={book.pageCount} />
-            </Group>
+            </div>
 
             <Group gap={0} wrap="nowrap">
               <PageActionsMenu />
               <MarkRestAsKnownButton />
             </Group>
-          </Group>
+          </div>
 
           <ReadSlider book={book} />
         </Stack>
