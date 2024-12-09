@@ -10,12 +10,12 @@ import {
   Textarea,
   TagsInput,
   Radio,
-  CheckIcon,
   Checkbox,
   rem,
   useMantineTheme,
 } from "@mantine/core";
 import {
+  IconCheck,
   IconMinus,
   IconNumber1,
   IconNumber2,
@@ -49,7 +49,7 @@ const radios = [
   },
   {
     value: "99",
-    icon: CheckIcon,
+    icon: IconCheck,
   },
   {
     value: "98",
@@ -129,6 +129,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             <Group justify="flex-start" gap={2} wrap="nowrap">
               {radios.map((radio) => (
                 <Radio
+                  style={{ "--radio-icon-size": rem(16) }}
                   size="md"
                   iconColor="dark.4"
                   key={radio.value}
