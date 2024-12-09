@@ -88,6 +88,9 @@ function NewBookForm({ openDrawer }) {
             wrapperProps={{
               dir: definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr",
             }}
+            spellCheck={false}
+            autoCapitalize="off"
+            autoCorrect="off"
             label="Text"
             resize="vertical"
             autosize

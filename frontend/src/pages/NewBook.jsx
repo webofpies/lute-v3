@@ -14,7 +14,8 @@ function NewBook() {
         opened={opened}
         onClose={close}
         position="bottom"
-        size="xl">
+        // TODO drag and drop issue with non 100% (temporary)
+        size="100%">
         <Drawer.Overlay />
         <Drawer.Content>
           <ScrollAreaAutosize mah="100%">

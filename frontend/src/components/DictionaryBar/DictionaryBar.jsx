@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   ActionIcon,
   Checkbox,
@@ -12,10 +13,19 @@ import {
   IconSquareRoundedMinusFilled,
 } from "@tabler/icons-react";
 
-function DictionaryBar({ form, index }) {
+function DictionaryBar({ form, index, dndProvided }) {
   return (
-    <Group gap="xs" wrap="nowrap" justify="space-between">
-      <ActionIcon variant="transparent" c="dark">
+    <Group
+      mb={5}
+      gap="xs"
+      wrap="nowrap"
+      justify="space-between"
+      ref={dndProvided.innerRef}
+      {...dndProvided.draggableProps}>
+      <ActionIcon
+        variant="transparent"
+        c="dark"
+        {...dndProvided.dragHandleProps}>
         <IconGripVertical />
       </ActionIcon>
 
@@ -35,7 +45,7 @@ function DictionaryBar({ form, index }) {
         size="xs"
         placeholder="Dictionary URL"
         rightSection={
-          form.getValues().dictionaries[index].url.length > 0 ? (
+          form.getValues().dictionaries[index]?.url.length > 0 ? (
             <Tooltip label="Test dictionary" openDelay={300}>
               <ActionIcon variant="transparent" size="sm">
                 <IconExternalLink />
@@ -91,4 +101,4 @@ function DictionaryBar({ form, index }) {
   );
 }
 
-export default DictionaryBar;
+export default memo(DictionaryBar);

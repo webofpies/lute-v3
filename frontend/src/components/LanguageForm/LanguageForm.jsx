@@ -4,6 +4,7 @@ import { useLocation, useNavigation, useSearchParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
 import { nprogress } from "@mantine/nprogress";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
   ActionIcon,
   Box,
@@ -15,13 +16,13 @@ import {
   rem,
   ScrollArea,
   Select,
-  Stack,
   Text,
   TextInput,
 } from "@mantine/core";
 import {
   IconAbc,
   IconAlt,
+  IconAnalyzeFilled,
   IconCut,
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
@@ -88,13 +89,7 @@ function LanguageForm() {
   useEffect(() => {
     if (predefinedOptionsQuery.isSuccess) {
       const { dictionaries, ...rest } = predefinedOptionsQuery.data;
-      form.setValues(rest);
-
-      form.setFieldValue("dictionaries", []);
-
-      dictionaries.forEach((dict, index) =>
-        form.insertListItem("dictionaries", { ...dict, key: randomId() }, index)
-      );
+      setFormValues(rest, dictionaries);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [predefinedOptionsQuery.data, predefinedOptionsQuery.isSuccess]);
@@ -102,13 +97,7 @@ function LanguageForm() {
   useEffect(() => {
     if (definedOptionsQuery.isSuccess && openedFromLanguages) {
       const { dictionaries, ...rest } = definedOptionsQuery.data;
-      form.setValues(rest);
-
-      form.setFieldValue("dictionaries", []);
-
-      dictionaries.forEach((dict, index) =>
-        form.insertListItem("dictionaries", { ...dict, key: randomId() }, index)
-      );
+      setFormValues(rest, dictionaries);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [definedOptionsQuery.data, definedOptionsQuery.isSuccess]);
@@ -126,15 +115,10 @@ function LanguageForm() {
       <Text fw={700} fz={rem(18)}>
         Settings
       </Text>
-      <LanguageSelect form={form} predefined={predefined} />
+      <LanguageSelect form={form} languages={predefined} />
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay
-          visible={
-            predefinedLang
-              ? predefinedOptionsQuery.isFetching ||
-                predefinedOptionsQuery.isPending
-              : false
-          }
+          visible={predefinedLang ? !predefinedOptionsQuery.isSuccess : false}
           zIndex={1000}
           overlayProps={{ radius: "sm", blur: 2 }}
         />
@@ -145,7 +129,7 @@ function LanguageForm() {
           styles={{
             legend: { fontSize: rem(15) },
           }}>
-          <Group align="flex-start" justify="flex-start" gap="xs" wrap="nowrap">
+          <div className={classes.flex}>
             <ActionIcon
               variant="transparent"
               color="green.6"
@@ -162,13 +146,31 @@ function LanguageForm() {
             </ActionIcon>
 
             <ScrollArea.Autosize mah={300} offsetScrollbars="y" flex={1}>
-              <Stack gap={rem(5)}>
-                {form.getValues().dictionaries.map((dict, index) => (
-                  <DictionaryBar key={dict.key} form={form} index={index} />
-                ))}
-              </Stack>
+              <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="dnd-list" direction="vertical">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {form.getValues().dictionaries.map((dict, index) => (
+                        <Draggable
+                          index={index}
+                          draggableId={dict.key}
+                          key={dict.key}>
+                          {(provided) => (
+                            <DictionaryBar
+                              form={form}
+                              index={index}
+                              dndProvided={provided}
+                            />
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </ScrollArea.Autosize>
-          </Group>
+          </div>
         </Fieldset>
         <Checkbox
           label="Show pronunciation field"
@@ -183,6 +185,7 @@ function LanguageForm() {
         <Select
           w="fit-content"
           label="Parse as"
+          leftSection={<IconAnalyzeFilled />}
           withCheckIcon={false}
           searchable={false}
           data={parsers}
@@ -228,6 +231,39 @@ function LanguageForm() {
       </Box>
     </form>
   );
+
+  function setFormValues(rest, dictionaries) {
+    form.setValues(rest);
+    // for defined, there shouldn't be a need for key. we can save the key when saving dicts
+    const dicts = dictionaries.map((dict) => ({ ...dict, key: randomId() }));
+    form.setFieldValue("dictionaries", dicts);
+  }
+
+  function onDragEnd(result) {
+    if (!result.destination) {
+      return;
+    }
+
+    if (result.destination.index === result.source.index) {
+      return;
+    }
+
+    const reordered = reorderList(
+      form.getValues().dictionaries,
+      result.source.index,
+      result.destination.index
+    );
+
+    form.setFieldValue("dictionaries", reordered);
+  }
+}
+
+function reorderList(list, startIndex, endIndex) {
+  const result = list;
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
 }
 
 export default LanguageForm;

@@ -1,80 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import {
   CloseButton,
   Combobox,
   InputBase,
-  rem,
   ScrollArea,
   useCombobox,
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
 
 // https://mantine.dev/combobox/?e=SelectAsync
-let languages = [];
-let allLanguages = [];
-
-export function LanguageSelect({ predefined }) {
+function LanguageSelect({ form, languages }) {
   const [params, setParams] = useSearchParams();
   const { pathname } = useLocation();
   const definedLang = params.get("def");
   const openedFromLanguages = pathname === "/languages";
-
-  languages = [
-    {
-      label: "Create from predefined",
-      options: predefined,
-      // id: "predefined",
-    },
-  ];
-
-  allLanguages = languages.reduce(
-    (acc, group) => [...acc, ...group.options],
-    []
-  );
-
-  // const [data, setData] = useState(allLanguages);
   const [value, setValue] = useState(null);
   const [search, setSearch] = useState("");
 
+  const shouldFilterOptions = languages.every((item) => item !== search);
+  const filteredOptions = shouldFilterOptions
+    ? languages.filter((item) =>
+        item.toLowerCase().includes(search.toLowerCase().trim())
+      )
+    : languages;
+
   useEffect(() => {
-    definedLang && openedFromLanguages && setSearch(definedLang);
+    if (definedLang && openedFromLanguages) {
+      setSearch(definedLang);
+      setValue(definedLang);
+    }
   }, [definedLang, openedFromLanguages]);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
-  });
-
-  const shouldFilterOptions = allLanguages.every((item) => item !== search);
-  const filteredGroups = languages.map((group) => {
-    const filteredOptions = shouldFilterOptions
-      ? group.options.filter((item) =>
-          item.toLowerCase().includes(search.toLowerCase().trim())
-        )
-      : group.options;
-
-    return { ...group, options: filteredOptions };
-  });
-
-  const matchedOptionsCount = filteredGroups.reduce(
-    (acc, group) => acc + group.options.length,
-    0
-  );
-
-  const groups = filteredGroups.map((group) => {
-    const options = group.options.map((item) => {
-      return (
-        <Combobox.Option value={item} key={item}>
-          {item}
-        </Combobox.Option>
-      );
-    });
-
-    return (
-      <Combobox.Group label={group.label} key={group.label}>
-        {options}
-      </Combobox.Group>
-    );
   });
 
   return (
@@ -83,7 +42,6 @@ export function LanguageSelect({ predefined }) {
       withinPortal={false}
       onOptionSubmit={(val) => {
         if (val === "$create") {
-          // setData((current) => [...current, search]);
           setValue(search);
         } else {
           setValue(val);
@@ -95,7 +53,7 @@ export function LanguageSelect({ predefined }) {
       }}>
       <Combobox.Target>
         <InputBase
-          mb={rem(10)}
+          mb={10}
           w="fit-content"
           label="Name"
           leftSection={<IconLanguage />}
@@ -107,6 +65,10 @@ export function LanguageSelect({ predefined }) {
                 onClick={() => {
                   setSearch("");
                   setValue(null);
+                  form.reset();
+                  params.delete("def");
+                  params.delete("predef");
+                  setParams(params);
                 }}
                 aria-label="Clear value"
               />
@@ -126,7 +88,7 @@ export function LanguageSelect({ predefined }) {
             combobox.closeDropdown();
             setSearch(value || "");
           }}
-          placeholder="Pick predefined or create new"
+          placeholder="Create new or from predefined"
           rightSectionPointerEvents={value === null ? "none" : "all"}
         />
       </Combobox.Target>
@@ -134,8 +96,12 @@ export function LanguageSelect({ predefined }) {
       <Combobox.Dropdown>
         <Combobox.Options>
           <ScrollArea.Autosize mah={400} type="scroll">
-            {groups}
-            {matchedOptionsCount === 0 && search.trim().length > 0 && (
+            {filteredOptions.map((item) => (
+              <Combobox.Option value={item} key={item}>
+                {item}
+              </Combobox.Option>
+            ))}
+            {filteredOptions.length === 0 && search.trim().length > 0 && (
               <Combobox.Option value="$create">
                 + Create {search}
               </Combobox.Option>
@@ -147,4 +113,4 @@ export function LanguageSelect({ predefined }) {
   );
 }
 
-export default LanguageSelect;
+export default memo(LanguageSelect);
