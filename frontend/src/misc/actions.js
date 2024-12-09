@@ -139,6 +139,13 @@ function handleSetFontSize(size, dispatch) {
   localStorage.setItem("Lute.fontSize", JSON.stringify(clamped));
 }
 
+function handleSetTextWidth(width, dispatch) {
+  const rounded = Number(width.toFixed(3));
+  const clamped = clamp(rounded, 30, 100);
+  dispatch({ type: "setTextWidth", payload: clamped });
+  localStorage.setItem("Lute.textWidth", JSON.stringify(clamped));
+}
+
 async function _copyUnit(textitem, unit) {
   let attr;
   let matched;
@@ -422,6 +429,7 @@ export {
   handleSetColumnCount,
   handleSetLineHeight,
   handleSetFontSize,
+  handleSetTextWidth,
   handleAddBookmark,
   handleTranslate,
   handleCopy,

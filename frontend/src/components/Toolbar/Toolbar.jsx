@@ -6,8 +6,8 @@ import {
   IconBaselineDensitySmall,
   IconColumns1,
   IconColumns2,
-  // IconLayoutSidebarLeftExpand,
-  // IconLayoutSidebarRightExpand,
+  IconLayoutSidebarLeftExpand,
+  IconLayoutSidebarRightExpand,
   IconTextDecrease,
   IconTextIncrease,
 } from "@tabler/icons-react";
@@ -15,6 +15,7 @@ import {
   handleSetColumnCount,
   handleSetLineHeight,
   handleSetFontSize,
+  handleSetTextWidth,
 } from "../../misc/actions";
 import classes from "./Toolbar.module.css";
 
@@ -22,11 +23,7 @@ function Toolbar({ state, dispatch }) {
   const [open, setOpen] = useState(false);
   const ref = useClickOutside(() => setOpen(false));
 
-  const toolbarButtons = getToolbarButtons(
-    state,
-    // onSetWidth,
-    dispatch
-  );
+  const toolbarButtons = getToolbarButtons(state, dispatch);
 
   return (
     <Paper
@@ -45,6 +42,9 @@ function Toolbar({ state, dispatch }) {
                 return (
                   <Tooltip key={button.label} label={button.label}>
                     <ActionIcon
+                      disabled={
+                        index === toolbarButtons.length - 1 && !state.focusMode
+                      }
                       size="1.4rem"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -105,18 +105,18 @@ function getToolbarButtons(state, dispatch) {
         action: () => handleSetColumnCount(2, dispatch),
       },
     ],
-    // [
-    //   {
-    //     label: "Decrease pane width",
-    //     icon: IconLayoutSidebarRightExpand,
-    //     action: "() => onSetWidth(width * 0.95)",
-    //   },
-    //   {
-    //     label: "Increase pane width",
-    //     icon: IconLayoutSidebarLeftExpand,
-    //     action: "() => onSetWidth(width * 1.05)",
-    //   },
-    // ],
+    [
+      {
+        label: "Decrease text width (focus mode)",
+        icon: IconLayoutSidebarRightExpand,
+        action: () => handleSetTextWidth(state.textWidth * 0.95, dispatch),
+      },
+      {
+        label: "Increase text width (focus mode)",
+        icon: IconLayoutSidebarLeftExpand,
+        action: () => handleSetTextWidth(state.textWidth * 1.05, dispatch),
+      },
+    ],
   ];
 }
 

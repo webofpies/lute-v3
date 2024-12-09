@@ -62,7 +62,7 @@ function ReadPane({
             "--lute-text-font-size": `${state.fontSize}rem`,
             "--lute-text-column-count": state.columnCount,
             "--lute-text-line-height": `${state.lineHeight}px`,
-            "width": `${state.focusMode ? 50 : 100}%`,
+            "width": `${state.focusMode ? state.textWidth : 100}%`,
             "marginInline": state.focusMode && "auto",
           }}>
           {editMode ? (

@@ -31,6 +31,8 @@ function reducer(state, action) {
       return { ...state, lineHeight: action.payload };
     case "setFontSize":
       return { ...state, fontSize: action.payload };
+    case "setTextWidth":
+      return { ...state, textWidth: action.payload };
     default:
       throw new Error();
   }
@@ -42,6 +44,7 @@ const initialState = {
   columnCount: 1,
   highlights: true,
   focusMode: false,
+  textWidth: 50,
 };
 
 function useInitialize(book) {
@@ -56,6 +59,7 @@ function useInitialize(book) {
     ),
     highlights: getFromLocalStorage("Lute.highlights", initialState.highlights),
     focusMode: getFromLocalStorage("Lute.focusMode", initialState.focusMode),
+    textWidth: getFromLocalStorage("Lute.textWidth", initialState.textWidth),
   });
 
   const navigation = useNavigation();
