@@ -12,9 +12,22 @@ body,
   height: 100%;
 }
 
+.textcontainer {
+  --lute-text-font-size: 1rem;
+  --lute-text-column-count: 1;
+  --lute-text-line-height: 1px; /*controls margin-bottom*/
+
+  padding: 2.3rem 3rem;
+  width: 100%;
+}
+
 .thetext {
-  line-height: 1;
+  column-count: var(--lute-text-column-count);
   white-space: break-spaces;
+}
+
+.textparagraph {
+  font-size: 0;
 }
 
 .textitem {
@@ -25,9 +38,9 @@ body,
   display: inline-block;
   padding-block: 0.1rem;
   line-height: 1;
-  margin-bottom: 1px;
-
-  font-size: inherit;
+  margin-bottom: var(--lute-text-line-height);
+  font-size: var(--lute-text-font-size);
+  background: transparent;
 
   transition: background 0.15s;
 }
@@ -52,10 +65,6 @@ body,
   100% {
     background-color: var(--lute-color-flash);
   }
-}
-
-.textitem {
-  background: transparent;
 }
 
 .highlight .status0,

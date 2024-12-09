@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { useNavigation, useParams } from "react-router-dom";
+import { useNavigation, useParams, useSearchParams } from "react-router-dom";
 import {
   ActionIcon,
   Center,
@@ -22,11 +22,24 @@ import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
 
-function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
+function ReadHeader({
+  onDrawerOpen,
+  book,
+  focusMode,
+  highlights,
+  dispatch,
+  onSetActiveTerm,
+}) {
   const params = useParams();
   const page = Number(params.page);
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
+  const [, setSearchParams] = useSearchParams();
+
+  function handleActivateEdit() {
+    onSetActiveTerm({ data: null });
+    setSearchParams({ edit: "true" });
+  }
 
   return (
     <Paper
@@ -34,7 +47,7 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
       shadow="sm"
       styles={{ root: { position: "relative", zIndex: 2 } }}>
       <Group gap={5} wrap="nowrap" align="center" className={classes.header}>
-        <ActionIcon onClick={drawerOpen} size="md">
+        <ActionIcon onClick={onDrawerOpen} size="md">
           <IconMenu2 />
         </ActionIcon>
 
@@ -48,8 +61,8 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
         <Divider orientation="vertical" />
 
         <Stack gap={4}>
-          <FocusSwitch checked={state.focusMode} dispatch={dispatch} />
-          <HighlightsSwitch checked={state.highlights} dispatch={dispatch} />
+          <FocusSwitch checked={focusMode} dispatch={dispatch} />
+          <HighlightsSwitch checked={highlights} dispatch={dispatch} />
         </Stack>
 
         <Divider orientation="vertical" />
@@ -57,7 +70,7 @@ function ReadHeader({ drawerOpen, book, state, dispatch, onActivateEdit }) {
         <Stack w="100%" gap={0}>
           <div className={classes.titleFlex}>
             <ActionIcon
-              onClick={onActivateEdit}
+              onClick={handleActivateEdit}
               size={24}
               p={0}
               variant="transparent"

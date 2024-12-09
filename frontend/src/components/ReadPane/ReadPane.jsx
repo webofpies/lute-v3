@@ -25,11 +25,6 @@ function ReadPane({
 
   const editMode = params.get("edit") === "true";
 
-  function handleActivateEdit() {
-    onSetActiveTerm({ data: null });
-    setParams({ edit: "true" });
-  }
-
   return (
     <>
       {!editMode && <ContextMenu forwardedRef={contextMenuAreaRef} />}
@@ -40,10 +35,11 @@ function ReadPane({
           <>
             <ReadHeader
               book={book}
-              drawerOpen={onDrawerOpen}
-              state={state}
+              onDrawerOpen={onDrawerOpen}
+              focusMode={state.focusMode}
+              highlights={state.highlights}
+              onSetActiveTerm={onSetActiveTerm}
               dispatch={dispatch}
-              onActivateEdit={handleActivateEdit}
             />
             {book.audio && <Player book={book} />}
             <Toolbar state={state} dispatch={dispatch} />
@@ -61,11 +57,13 @@ function ReadPane({
         }}>
         <div
           dir={book.isRightToLeft ? "rtl" : "ltr"}
-          className={`${classes.textContainer} `}
+          className={`textcontainer ${state.highlights ? "highlight" : ""}`}
           style={{
-            fontSize: `${state.fontSize}rem`,
-            width: `${state.focusMode ? 50 : 100}%`,
-            marginInline: state.focusMode && "auto",
+            "--lute-text-font-size": `${state.fontSize}rem`,
+            "--lute-text-column-count": state.columnCount,
+            "--lute-text-line-height": `${state.lineHeight}px`,
+            "width": `${state.focusMode ? 50 : 100}%`,
+            "marginInline": state.focusMode && "auto",
           }}>
           {editMode ? (
             <EditTheText text={page.text} />
@@ -74,14 +72,10 @@ function ReadPane({
               {Number(pageNum) === 1 && (
                 <Title className={classes.title}>{book.title}</Title>
               )}
-              <div
-                style={{ columnCount: state.columnCount }}
-                className={`thetext ${state.highlights && "highlight"}`}>
-                <TheText
-                  paragraphs={page.paragraphs}
-                  onSetActiveTerm={onSetActiveTerm}
-                />
-              </div>
+              <TheText
+                paragraphs={page.paragraphs}
+                onSetActiveTerm={onSetActiveTerm}
+              />
             </>
           )}
         </div>
