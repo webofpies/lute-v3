@@ -17,12 +17,12 @@ function BookView() {
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
 
-  const [state, dispatch] = useInitialize(book);
+  const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
+  const [state, dispatch] = useInitialize(book, setActiveTerm);
 
   const paneRightRef = useRef(null);
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
-  const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
 
   return (
     <>
