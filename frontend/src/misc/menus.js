@@ -5,65 +5,95 @@ import {
   IconSettings,
   IconDeviceFloppy,
   IconInfoCircle,
+  IconLanguage,
 } from "@tabler/icons-react";
 
-const navLinks = [
-  {
+const menu = {
+  home: {
     label: "Home",
+    action: "/",
     icon: IconHome,
-    links: "/",
   },
-  {
+
+  books: {
     label: "Books",
+    action: "/",
     icon: IconBooks,
 
-    links: [
-      { label: "New", link: "/books/new" },
-      { label: "Archived", link: "/books/archived" },
-    ],
+    new: {
+      label: "New",
+      action: "/books/new",
+    },
+    archived: {
+      label: "Archived",
+      action: "/books/archived",
+    },
   },
-  {
+
+  languages: {
     label: "Languages",
-    icon: IconSettings,
-    links: "/languages",
+    action: "/languages",
+    icon: IconLanguage,
   },
-  {
+
+  terms: {
     label: "Terms",
+    action: "/terms",
     icon: IconBracketsContain,
-    links: "/terms",
   },
-  {
+
+  settings: {
     label: "Settings",
+    action: "/",
     icon: IconSettings,
 
-    links: [
-      { label: "Settings", link: "/settings" },
-      { label: "Keyboard shortcuts", link: "/settings/shortcuts" },
-    ],
+    general: {
+      label: "General",
+      action: "/settings",
+    },
+    shortcuts: {
+      label: "Keyboard shortcuts",
+      action: "/settings/shortcuts",
+    },
   },
-  {
+
+  backup: {
     label: "Backup",
+    action: "/",
     icon: IconDeviceFloppy,
 
-    links: [
-      { label: "Backups", link: "/backup/index" },
-      { label: "Create backup", link: "/backup/backup?type=manual" },
-    ],
+    backups: {
+      label: "Backups",
+      action: "/backup/index",
+    },
+    new: {
+      label: "Create backup",
+      action: "/backup/backup?type=manual",
+    },
   },
-  {
+
+  about: {
     label: "About",
+    action: "/",
     icon: IconInfoCircle,
 
-    links: [
-      { label: "Software info", link: "/about" },
-      { label: "Statistics", link: "/stats" },
-      {
-        label: "Documentation",
-        link: "https://luteorg.github.io/lute-manual/",
-      },
-      { label: "Discord", link: "https://discord.gg/CzFUQP5m8u" },
-    ],
+    info: {
+      label: "Software info",
+      action: "/",
+    },
+    stats: {
+      label: "Usage statistics",
+      action: "/stats",
+    },
+    docs: {
+      label: "Documentation",
+      action: "https://luteorg.github.io/lute-manual/",
+    },
+    discord: {
+      label: "Discord",
+      action: "https://discord.gg/CzFUQP5m8u",
+    },
   },
-];
+};
 
-export { navLinks };
+export { menu };

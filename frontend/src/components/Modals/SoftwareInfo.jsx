@@ -1,7 +1,7 @@
 import { Box, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
-function About() {
+function SoftwareInfo() {
   const { isPending, isFetching, error, data, isSuccess } = useQuery({
     queryKey: ["version"],
     queryFn: async () => {
@@ -15,7 +15,7 @@ function About() {
 
   return (
     <>
-      <Text component="p" size="lg">
+      <Text component="p" size="md">
         <b>LUTE</b>: Learning Using Texts v3
       </Text>
 
@@ -56,4 +56,4 @@ function About() {
   );
 }
 
-export default About;
+export default SoftwareInfo;

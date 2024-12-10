@@ -54,6 +54,10 @@
   font-size: var(--mantine-font-size-sm);
   color: var(--mantine-color-gray-7);
   border-left: 1px solid var(--mantine-color-gray-3);
+  /* for button to take full width */
+  width: -webkit-fill-available;
+  width: -moz-available;
+  width: stretch;
 }
 
 .link:hover {

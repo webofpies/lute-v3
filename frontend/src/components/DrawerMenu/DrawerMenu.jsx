@@ -1,10 +1,9 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Divider, Drawer, Group, Image, ScrollArea, Text } from "@mantine/core";
-import DrawerLinks from "./DrawerLinks";
 import DrawerFooter from "./DrawerFooter";
+import DrawerLinks from "./DrawerLinks";
 import classes from "./DrawerMenu.module.css";
-import { navLinks } from "../../misc/menus";
 
 function DrawerMenu({ opened, close }) {
   return (
@@ -34,13 +33,7 @@ function DrawerMenu({ opened, close }) {
 
         <Drawer.Body p={0} className={classes.drawer}>
           <ScrollArea className={classes.scroll}>
-            <nav className={classes.linksInner}>
-              <ul>
-                {navLinks.map((item) => (
-                  <DrawerLinks {...item} key={item.label} />
-                ))}
-              </ul>
-            </nav>
+            <DrawerLinks />
           </ScrollArea>
 
           <Divider />
