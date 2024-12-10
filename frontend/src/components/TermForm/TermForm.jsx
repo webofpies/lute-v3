@@ -13,39 +13,38 @@ import {
   Checkbox,
   rem,
   useMantineTheme,
+  Text,
 } from "@mantine/core";
-import {
-  IconCheck,
-  IconMinus,
-  IconNumber1,
-  IconNumber2,
-  IconNumber3,
-  IconNumber4,
-  IconNumber5,
-} from "@tabler/icons-react";
+import { IconCheck, IconMinus } from "@tabler/icons-react";
 import TermImage from "./TermImage";
 import classes from "./TermForm.module.css";
+
+const radioIcon = (label, props) => (
+  <Text {...props} lh={1} ta="center">
+    {label}
+  </Text>
+);
 
 const radios = [
   {
     value: "1",
-    icon: IconNumber1,
+    icon: (props) => radioIcon(1, props),
   },
   {
     value: "2",
-    icon: IconNumber2,
+    icon: (props) => radioIcon(2, props),
   },
   {
     value: "3",
-    icon: IconNumber3,
+    icon: (props) => radioIcon(3, props),
   },
   {
     value: "4",
-    icon: IconNumber4,
+    icon: (props) => radioIcon(4, props),
   },
   {
     value: "5",
-    icon: IconNumber5,
+    icon: (props) => radioIcon(5, props),
   },
   {
     value: "99",
@@ -121,7 +120,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
             <TermImage src={`http://localhost:5001${termData.currentImg}`} />
           )}
         </div>
-        <Group gap="md" style={{ rowGap: rem(5) }}>
+        <Group gap="md" style={{ rowGap: rem(7) }}>
           <Radio.Group
             name="status"
             key={form.key("status")}
