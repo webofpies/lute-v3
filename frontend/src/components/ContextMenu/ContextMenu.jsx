@@ -1,8 +1,12 @@
 import { Fragment, memo, useEffect, useRef, useState } from "react";
-import { Affix, Menu } from "@mantine/core";
+import { Affix, Divider, Menu } from "@mantine/core";
 import { useClickOutside } from "@mantine/hooks";
 import { addFlash, removeFlash } from "../../misc/utils";
-import { handleCopy, handleTranslate } from "../../misc/actions";
+import {
+  handleCopy,
+  handleTranslate,
+  handleBookmarkSentence,
+} from "../../misc/actions";
 import {
   IconClick,
   IconAlignLeft,
@@ -10,6 +14,7 @@ import {
   IconClipboardCheck,
   IconClipboardText,
   IconClipboardTypography,
+  IconBookmarkPlus,
 } from "@tabler/icons-react";
 
 function ContextMenu({ forwardedRef }) {
@@ -64,17 +69,29 @@ function ContextMenu({ forwardedRef }) {
           ? { left: coords?.clientX, top: coords?.clientY }
           : undefined
       }>
-      <Menu shadow="md" width={200} opened={validCoords} keepMounted>
+      <Menu
+        shadow="md"
+        width={200}
+        opened={validCoords}
+        keepMounted
+        offset={{ mainAxis: 8, crossAxis: 100 }}>
         <div ref={menuRef}>
           <Menu.Target>
             <div />
           </Menu.Target>
           <Menu.Dropdown>
             {getItems().map((section) => {
+              const items = section.items ? section.items : [section];
               return (
                 <Fragment key={section.label}>
-                  <Menu.Label>{section.label}</Menu.Label>
-                  {section.items.map((item) => {
+                  {section.items ? (
+                    <Menu.Label>{section.label}</Menu.Label>
+                  ) : (
+                    <Menu.Label>
+                      <Divider />
+                    </Menu.Label>
+                  )}
+                  {items.map((item) => {
                     const Icon = item.icon;
                     return (
                       <Menu.Item
@@ -142,6 +159,11 @@ function getItems() {
           action: (textitem) => handleCopy(textitem, "page"),
         },
       ],
+    },
+    {
+      label: "Bookmark sentence",
+      icon: IconBookmarkPlus,
+      action: (textitem) => handleBookmarkSentence(textitem),
     },
   ];
 }

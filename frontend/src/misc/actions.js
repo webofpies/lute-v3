@@ -179,6 +179,32 @@ async function handleCopy(textitem, unit) {
   setTimeout(() => removeFlash(), 1000);
 }
 
+function handleBookmarkSentence(textitem) {
+  const sentenceId = textitem.dataset.sentenceId;
+  const matched = getMatchedTextItems(textitem, "sentence-id");
+  addFlash(matched);
+  setTimeout(() => removeFlash(), 1000);
+
+  console.log(`POST sentence id: ${sentenceId} to db`);
+  // pagenum: [sentenceId, sentenceId, sentenceId]
+  // {
+  //   2: [2, 6, 8, 12, 23],
+  //   9: [2, 6, 8, 12, 23],
+  //   24: [2, 6, 8, 12, 23],
+  //   86: [2, 6, 8, 12, 23],
+  // }
+}
+
+function handleShowBookmark(sentenceId) {
+  const textitem = document.querySelector(
+    `[data-sentence-id="${sentenceId}"].sentencestart`
+  );
+  textitem.scrollIntoView({ behavior: "smooth" });
+  const matched = getMatchedTextItems(textitem, "sentence-id");
+  setTimeout(() => addFlash(matched), 300);
+  setTimeout(() => removeFlash(), 1000);
+}
+
 /** Move to the next/prev candidate determined by the selector.
  * direction is 1 if moving "right", -1 if moving "left" -
  * note that these switch depending on if the language is right-to-left! */
@@ -433,6 +459,8 @@ export {
   handleAddBookmark,
   handleTranslate,
   handleCopy,
+  handleBookmarkSentence,
+  handleShowBookmark,
   moveCursor,
   updateStatusForMarked,
   incrementStatusForMarked,
