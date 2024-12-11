@@ -8,8 +8,25 @@ from lute import __version__
 from lute.db import db
 
 from lute.models.setting import UserSetting
+from lute.models.repositories import UserSettingRepository
 
 bp = Blueprint("api", __name__, url_prefix="/api")
+
+
+@bp.route("/backup", methods=["GET"])
+def backup():
+    """
+    backup settings
+    """
+    us_repo = UserSettingRepository(db.session)
+    bs = us_repo.get_backup_settings()
+
+    return {
+        "enabled": bs.backup_enabled,
+        "directory": bs.backup_dir,
+        "lastDate": bs.last_backup_display_date,
+        "timeSince": bs.time_since_last_backup,
+    }
 
 
 @bp.route("/shortcuts", methods=["GET", "POST"])

@@ -7,6 +7,7 @@ import {
   rem,
   UnstyledButton,
   Center,
+  Divider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
@@ -15,9 +16,11 @@ import { menu } from "../../misc/menus";
 import classes from "./MainMenuBar.module.css";
 import { IconChevronDown } from "@tabler/icons-react";
 
-function MainMenuBar() {
+function MainMenuBar({ backupData }) {
   const [opened, { toggle }] = useDisclosure(false);
   const { pathname } = useLocation();
+
+  const createBackupMenu = backupData?.enabled && backupData?.directory != "";
 
   const pathNames = {
     "/": "Lute",
@@ -78,14 +81,29 @@ function MainMenuBar() {
               </Menu.Item>
             </MenuSection>
 
-            <MenuSection label={menu.backup.label}>
-              <Menu.Item component={NavLink} to={menu.backup.backups.action}>
-                {menu.backup.backups.label}
-              </Menu.Item>
-              <Menu.Item component={NavLink} to={menu.backup.new.action}>
-                {menu.backup.new.label}
-              </Menu.Item>
-            </MenuSection>
+            {createBackupMenu && (
+              <MenuSection label={menu.backup.label}>
+                {backupData.lastDate && (
+                  <>
+                    <div className={classes.backup}>
+                      {backupData.timeSince && (
+                        <p>{`Last backup was ${backupData.timeSince}`}</p>
+                      )}
+                      <p>{backupData.lastDate}</p>
+                    </div>
+                    <Menu.Label>
+                      <Divider />
+                    </Menu.Label>
+                  </>
+                )}
+                <Menu.Item component={NavLink} to={menu.backup.backups.action}>
+                  {menu.backup.backups.label}
+                </Menu.Item>
+                <Menu.Item component={NavLink} to={menu.backup.new.action}>
+                  {menu.backup.new.label}
+                </Menu.Item>
+              </MenuSection>
+            )}
 
             <MenuSection label={menu.about.label}>
               <Menu.Item onClick={openSoftwareInfoModal}>

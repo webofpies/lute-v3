@@ -45,3 +45,12 @@
   background-color: var(--mantine-color-blue-5);
   color: white;
 }
+
+.backup {
+  padding-inline: 0.6rem;
+  padding-block: 0.3rem;
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
