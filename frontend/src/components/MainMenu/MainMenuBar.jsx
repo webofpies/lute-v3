@@ -53,14 +53,9 @@ function MainMenuBar({ backupData }) {
               {menu.home.label}
             </NavLink>
 
-            <MenuSection label={menu.books.label}>
-              <Menu.Item component={NavLink} to={menu.books.new.action}>
-                {menu.books.new.label}
-              </Menu.Item>
-              <Menu.Item component={NavLink} to={menu.books.archived.action}>
-                {menu.books.archived.label}
-              </Menu.Item>
-            </MenuSection>
+            <NavLink to={menu.book.action} className={classes.link}>
+              {menu.book.label}
+            </NavLink>
 
             <NavLink to={menu.languages.action} className={classes.link}>
               {menu.languages.label}

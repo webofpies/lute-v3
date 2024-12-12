@@ -15,19 +15,10 @@ const menu = {
     icon: IconHome,
   },
 
-  books: {
-    label: "Books",
-    action: "/",
+  book: {
+    label: "New Book",
     icon: IconBooks,
-
-    new: {
-      label: "New",
-      action: "/books/new",
-    },
-    archived: {
-      label: "Archived",
-      action: "/books/archived",
-    },
+    action: "/books/new",
   },
 
   languages: {

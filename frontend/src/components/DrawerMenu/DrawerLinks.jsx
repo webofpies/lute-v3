@@ -24,7 +24,12 @@ function DrawerLinks() {
           <Section label={menu.home.label} icon={menu.home.icon} />
         </UnstyledButton>
 
-        <CollapsingMenu section={menu.books}>{booksLinks}</CollapsingMenu>
+        <UnstyledButton
+          component={Link}
+          to={menu.book.action}
+          className={classes.control}>
+          <Section label={menu.book.label} icon={menu.book.icon} />
+        </UnstyledButton>
 
         <UnstyledButton
           component={Link}
@@ -49,17 +54,6 @@ function DrawerLinks() {
     </nav>
   );
 }
-
-const booksLinks = (
-  <>
-    <Link className={classes.link} to={menu.books.new.action}>
-      {menu.books.new.label}
-    </Link>
-    <Link className={classes.link} to={menu.books.archived.action}>
-      {menu.books.archived.label}
-    </Link>
-  </>
-);
 
 const settingsLinks = (
   <>
