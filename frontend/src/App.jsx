@@ -19,6 +19,7 @@ import SoftwareInfo from "./components/Modals/SoftwareInfo";
 import { UserSettingsProvider } from "./context/UserSettingsContext";
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
+import { loader as settingsLoader } from "./queries/settings";
 
 const queryClient = new QueryClient();
 
@@ -115,6 +116,7 @@ const router = createBrowserRouter([
             <Settings />
           </Suspense>
         ),
+        loader: settingsLoader(queryClient),
       },
       {
         path: "/stats",

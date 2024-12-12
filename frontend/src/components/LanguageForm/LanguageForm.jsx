@@ -127,7 +127,7 @@ function LanguageForm() {
           variant="filled"
           legend="Dictionaries"
           styles={{
-            legend: { fontSize: rem(15) },
+            legend: { fontWeight: 500 },
           }}>
           <div className={classes.flex}>
             <ActionIcon

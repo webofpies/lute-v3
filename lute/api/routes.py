@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify, current_app
 from lute import __version__
 from lute.db import db
 
+from lute.settings.current import current_settings
 from lute.models.setting import UserSetting
 from lute.models.repositories import UserSettingRepository
 
@@ -27,6 +28,15 @@ def backup():
         "lastDate": bs.last_backup_display_date,
         "timeSince": bs.time_since_last_backup,
     }
+
+
+@bp.route("/settings", methods=["GET"])
+def user_settings():
+    """
+    settings
+    """
+
+    return jsonify(current_settings)
 
 
 @bp.route("/shortcuts", methods=["GET", "POST"])

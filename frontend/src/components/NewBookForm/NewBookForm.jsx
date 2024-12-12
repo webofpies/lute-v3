@@ -10,7 +10,6 @@ import {
   FileInput,
   Group,
   NumberInput,
-  rem,
   Stack,
   TagsInput,
   Text,
@@ -81,7 +80,7 @@ function NewBookForm({ openDrawer }) {
         flex={1}
         className={classes.content}
         styles={{
-          legend: { fontSize: rem(15) },
+          legend: { fontWeight: 500 },
         }}>
         <Stack wrap="nowrap" gap={5}>
           <Textarea
