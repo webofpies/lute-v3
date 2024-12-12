@@ -20,6 +20,7 @@ import { UserSettingsProvider } from "./context/UserSettingsContext";
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
+import Error from "./components/Error/Error";
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <Error />,
     children: [
       { index: true, element: <Homepage /> },
       {
