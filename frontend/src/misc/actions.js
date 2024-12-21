@@ -1,3 +1,4 @@
+import { isLightColor } from "@mantine/core";
 import {
   getTextItemsText,
   getMatchedTextItems,
@@ -176,14 +177,14 @@ async function _copyUnit(textitem, unit) {
 async function handleCopy(textitem, unit) {
   const res = await _copyUnit(textitem, unit);
   addFlash(res);
-  setTimeout(() => removeFlash(), 1000);
+  removeFlash();
 }
 
 function handleBookmarkSentence(textitem) {
   const sentenceId = textitem.dataset.sentenceId;
   const matched = getMatchedTextItems(textitem, "sentence-id");
   addFlash(matched);
-  setTimeout(() => removeFlash(), 1000);
+  removeFlash();
 
   console.log(`POST sentence id: ${sentenceId} to db`);
   // pagenum: [sentenceId, sentenceId, sentenceId]
@@ -202,7 +203,7 @@ function handleShowBookmark(sentenceId) {
   textitem.scrollIntoView({ behavior: "smooth" });
   const matched = getMatchedTextItems(textitem, "sentence-id");
   setTimeout(() => addFlash(matched), 300);
-  setTimeout(() => removeFlash(), 1000);
+  removeFlash();
 }
 
 /** Move to the next/prev candidate determined by the selector.
@@ -448,6 +449,34 @@ function _updateTermForm(el, new_status) {
   }
 }
 
+function setTextColor(id, color, root) {
+  root.style.setProperty(
+    `--lute-text-color-${id}`,
+    isLightColor(color)
+      ? "var(--mantine-color-black)"
+      : "var(--mantine-color-dark-0)"
+  );
+}
+
+function applyLuteHighlights(colors, scheme) {
+  const root = document.querySelector(
+    `:root[data-mantine-color-scheme="${scheme}"]`
+  );
+
+  Object.keys(colors).forEach((value) => {
+    root.style.setProperty(
+      `--lute-color-highlight-${value}`,
+      colors[value][scheme]
+    );
+
+    document.querySelectorAll(`.${value}`).forEach((textitem) => {
+      textitem.dataset.highlightType = colors[value].type;
+    });
+
+    setTextColor(value, colors[value][scheme], root);
+  });
+}
+
 export {
   handleToggleHighlights,
   handleSetHighlights,
@@ -466,4 +495,6 @@ export {
   incrementStatusForMarked,
   goToNextTheme,
   handleToggleFocusMode,
+  applyLuteHighlights,
+  setTextColor,
 };

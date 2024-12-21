@@ -12,7 +12,6 @@ import {
   Radio,
   Checkbox,
   rem,
-  useMantineTheme,
   Text,
 } from "@mantine/core";
 import { IconCheck, IconMinus } from "@tabler/icons-react";
@@ -57,8 +56,6 @@ const radios = [
 ];
 
 function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
-  const theme = useMantineTheme();
-
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -132,7 +129,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
                   size="md"
                   iconColor="dark.4"
                   key={radio.value}
-                  color={theme.lute.colors.status[radio.value]}
+                  color={`var(--lute-color-highlight-status${radio.value})`}
                   icon={radio.icon}
                   name={radio.value}
                   value={radio.value}

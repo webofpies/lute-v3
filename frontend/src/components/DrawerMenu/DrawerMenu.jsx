@@ -1,11 +1,26 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Divider, Drawer, Group, Image, ScrollArea, Text } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
+import {
+  ActionIcon,
+  Center,
+  Divider,
+  Drawer,
+  Group,
+  Image,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
+import { IconPalette } from "@tabler/icons-react";
 import DrawerFooter from "./DrawerFooter";
 import DrawerLinks from "./DrawerLinks";
+import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
+import { settingsQuery } from "../../queries/settings";
 import classes from "./DrawerMenu.module.css";
 
-function DrawerMenu({ opened, close }) {
+function DrawerMenu({ opened, close, onOpenThemeForm }) {
+  const { data: settings, isSuccess } = useQuery(settingsQuery());
+
   return (
     <Drawer.Root
       classNames={{ content: classes.drawer }}
@@ -32,6 +47,28 @@ function DrawerMenu({ opened, close }) {
         <Divider />
 
         <Drawer.Body p={0} className={classes.drawer}>
+          {isSuccess && (
+            <Center p={10}>
+              <Group gap={5}>
+                <SchemeToggleButton
+                  colors={settings.highlights}
+                  onCloseDrawer={close}
+                />
+                <ActionIcon
+                  onClick={() => {
+                    onOpenThemeForm(true);
+                    close();
+                  }}
+                  size="lg"
+                  variant="default">
+                  <IconPalette size="90%" />
+                </ActionIcon>
+              </Group>
+            </Center>
+          )}
+
+          <Divider />
+
           <ScrollArea className={classes.scroll}>
             <DrawerLinks />
           </ScrollArea>

@@ -36,7 +36,31 @@ def user_settings():
     settings
     """
 
-    return jsonify(current_settings)
+    # temporary mock data
+    highlights = {
+        "highlights": {
+            "status": {
+                "status0": {"light": "#d0ebff", "dark": "#5cacf3", "type": "bg"},
+                "status1": {"light": "#ffd8a8", "dark": "#e68f79", "type": "bg"},
+                "status2": {"light": "#8ce99a", "dark": "#efa96d", "type": "text"},
+                "status3": {"light": "#b2f2bb", "dark": "#f3cd64", "type": "text"},
+                "status4": {"light": "#d3f9d8", "dark": "#fcac67", "type": "solid"},
+                "status5": {"light": "#ebfbee", "dark": "#7ae07a", "type": "dashed"},
+                "status98": {"light": "#ee8577", "dark": "#ee8577", "type": "none"},
+                "status99": {"light": "#51cf66", "dark": "#51cf66", "type": "none"},
+            },
+            "general": {
+                "kwordmarked": {"light": "#228be6", "dark": "#228be6", "type": "solid"},
+                "wordhover": {"light": "#f56767", "dark": "#f56767", "type": "solid"},
+                "multiterm": {"light": "#ffe066", "dark": "#ffe066", "type": "bg"},
+                "flash": {"light": "#ff6868", "dark": "#ff6868", "type": "bg"},
+            },
+        }
+    }
+
+    settings = current_settings | highlights
+
+    return jsonify(settings)
 
 
 @bp.route("/shortcuts", methods=["GET", "POST"])

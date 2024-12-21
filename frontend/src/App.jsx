@@ -10,13 +10,13 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/nprogress/styles.css";
 import "./index.css";
+import "./highlight.css";
 
 import Layout from "./pages/Layout";
 import Homepage from "./pages/Homepage";
 import BookView from "./components/BookView/BookView";
 import SoftwareInfo from "./components/Modals/SoftwareInfo";
 
-import { UserSettingsProvider } from "./context/UserSettingsContext";
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
@@ -39,43 +39,6 @@ const pageSpinner = (
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
   bar: "calc(0% * var(--slider-size))",
-
-  lute: {
-    colors: {
-      status: {
-        0: "#d5ffff", // 0
-        1: "#f5b8a9", // 1
-        2: "#f5cca9", // 2
-        3: "#f5e1a9", // 3
-        4: "#f5f3a9", // 4
-        5: "#ddffdd", // 5
-        98: "#ee8577", // Ignored (98)
-        99: "#72da88", // Well known (99)
-      },
-      kwordmarked: "#f56767",
-      wordhover: "#228be6",
-      multiterm: "#ffe066",
-      flash: "#ff6868",
-    },
-  },
-});
-
-const cssVarsResolver = (theme) => ({
-  variables: {
-    "--lute-color-status-0": theme.lute.colors.status[0],
-    "--lute-color-status-1": theme.lute.colors.status[1],
-    "--lute-color-status-2": theme.lute.colors.status[2],
-    "--lute-color-status-3": theme.lute.colors.status[3],
-    "--lute-color-status-4": theme.lute.colors.status[4],
-    "--lute-color-status-5": theme.lute.colors.status[5],
-    "--lute-color-status-98": theme.lute.colors.status[98],
-    "--lute-color-status-99": theme.lute.colors.status[99],
-
-    "--lute-color-wordhover": theme.lute.colors.wordhover,
-    "--lute-color-kwordmarked": theme.lute.colors.kwordmarked,
-    "--lute-color-multiterm": theme.lute.colors.multiterm,
-    "--lute-color-flash": theme.lute.colors.flash,
-  },
 });
 
 const router = createBrowserRouter([
@@ -83,6 +46,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     errorElement: <Error />,
+    loader: settingsLoader(queryClient),
     children: [
       { index: true, element: <Homepage /> },
       {
@@ -104,14 +68,6 @@ const router = createBrowserRouter([
         loader: languagesLoader(queryClient),
       },
       {
-        path: "/settings/shortcuts",
-        element: (
-          <Suspense fallback={pageSpinner}>
-            <Shortcuts />
-          </Suspense>
-        ),
-      },
-      {
         path: "/settings/",
         element: (
           <Suspense fallback={pageSpinner}>
@@ -119,6 +75,14 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         loader: settingsLoader(queryClient),
+      },
+      {
+        path: "/settings/shortcuts",
+        element: (
+          <Suspense fallback={pageSpinner}>
+            <Shortcuts />
+          </Suspense>
+        ),
       },
       {
         path: "/stats",
@@ -141,14 +105,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <MantineProvider theme={theme} cssVariablesResolver={cssVarsResolver}>
+      <MantineProvider theme={theme}>
         <Notifications />
         <NavigationProgress />
-        <UserSettingsProvider>
-          <ModalsProvider modals={{ about: SoftwareInfo }}>
-            <RouterProvider router={router} />
-          </ModalsProvider>
-        </UserSettingsProvider>
+        <ModalsProvider modals={{ about: SoftwareInfo }}>
+          <RouterProvider router={router} />
+        </ModalsProvider>
       </MantineProvider>
     </QueryClientProvider>
   );

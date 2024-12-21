@@ -1,6 +1,7 @@
 // lute\templates\read\page_content.html
 import { memo, useEffect } from "react";
-import { Text } from "@mantine/core";
+import { useQuery } from "@tanstack/react-query";
+import { Text, useComputedColorScheme } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconClipboardCheck } from "@tabler/icons-react";
 import TextItem from "./TextItem";
@@ -13,11 +14,20 @@ import {
   handleMouseOver,
   handleMouseUp,
 } from "../../lute";
+import { applyLuteHighlights } from "../../misc/actions";
+import { settingsQuery } from "../../queries/settings";
 
 function TheText({ paragraphs, onSetActiveTerm }) {
+  const { data: settings, isSuccess } = useQuery(settingsQuery());
+  const colorScheme = useComputedColorScheme();
+
   useEffect(() => {
     startHoverMode();
-  });
+    if (isSuccess) {
+      applyLuteHighlights(settings.highlights.status, colorScheme);
+      applyLuteHighlights(settings.highlights.general, colorScheme);
+    }
+  }, [colorScheme, settings.highlights, isSuccess]);
 
   function handleSetTerm(termData) {
     // do nothing with the form

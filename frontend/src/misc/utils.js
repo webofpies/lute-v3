@@ -141,10 +141,12 @@ function addFlash(elements) {
   });
 }
 
-function removeFlash() {
-  Array.from(document.querySelectorAll(".flash")).forEach((item) =>
-    item.classList.remove("flash")
-  );
+function removeFlash(removeAfter = 1000) {
+  setTimeout(() => {
+    Array.from(document.querySelectorAll(".flash")).forEach((item) =>
+      item.classList.remove("flash")
+    );
+  }, removeAfter);
 }
 
 function removeAllContainingClass(className) {

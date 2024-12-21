@@ -1,24 +1,17 @@
-import {
-  Center,
-  Loader,
-  Progress,
-  Tooltip,
-  useMantineTheme,
-} from "@mantine/core";
+import { Center, Loader, Progress, Tooltip } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 
-const barTitles = {
+const labels = {
   0: "Unknown",
-  1: 1,
-  2: 2,
-  3: 3,
-  4: 4,
-  5: 5,
+  1: "1",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
   99: "Well Known or Ignored",
 };
 
 function StatsBar({ book }) {
-  const theme = useMantineTheme();
   const { isFetching, error, data } = useQuery({
     queryKey: ["bookStats", book.id],
     queryFn: async () => {
@@ -68,13 +61,13 @@ function StatsBar({ book }) {
       }}>
       {data ? (
         Object.entries(data).map(([status, [count, percent]], index) => {
-          const msg = `${barTitles[status]}: ${percent}% (${count} words)`;
+          const msg = `${labels[status]}: ${percent}% (${count} words)`;
           return (
             percent >= 1 && (
               <Tooltip key={index} label={msg}>
                 <Progress.Section
                   value={percent}
-                  color={theme.lute.colors.status[status]}
+                  color={`var(--lute-color-highlight-status${status}`}
                 />
               </Tooltip>
             )

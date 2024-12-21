@@ -8,6 +8,7 @@ const TextItem = forwardRef(function TextItem(props, ref) {
     <span
       ref={ref}
       {...restProps}
+      data-highlight-type={data.isWord ? "bg" : "none"}
       id={data.id}
       className={`${data.classes} ${data.isWord ? data.statusClass : ""}`}
       data-lang-id={data.langId}

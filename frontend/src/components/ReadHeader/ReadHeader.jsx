@@ -43,6 +43,7 @@ function ReadHeader({
 
   return (
     <Paper
+      classNames={{ root: "readpage" }}
       radius={0}
       shadow="sm"
       styles={{ root: { position: "relative", zIndex: 2 } }}>

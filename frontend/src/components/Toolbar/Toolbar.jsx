@@ -32,6 +32,7 @@ function Toolbar({ state, dispatch }) {
       withBorder
       style={{ translate: open ? "0 100%" : "0 5px" }}
       className={classes.toolbar}
+      classNames={{ root: "readpage" }}
       onClick={() => setOpen((v) => !v)}>
       <Group wrap="no-wrap" gap={5} align="center" justify="center">
         {toolbarButtons.map((buttonGrp, index) => (

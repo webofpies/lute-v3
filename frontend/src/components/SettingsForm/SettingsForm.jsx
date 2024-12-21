@@ -23,12 +23,14 @@ function SettingsForm() {
   const { data: settings } = useQuery(settingsQuery());
 
   const form = useForm({
-    // mode: "uncontrolled",
-    initialValues: { ...settings },
+    mode: "controlled",
+    initialValues: {
+      ...settings,
+    },
     enhanceGetInputProps: ({ form, field }) => {
       const enabledField = "backup_enabled";
       if (field.includes("backup") && field !== enabledField) {
-        return { disabled: !form.values[enabledField] };
+        return { disabled: !form.getValues()[enabledField] };
       }
     },
   });
@@ -59,7 +61,6 @@ function SettingsForm() {
               key={form.key("backup_dir")}
               {...form.getInputProps("backup_dir")}
             />
-
             <Checkbox
               label="Run automatically (daily)"
               key={form.key("backup_auto")}
@@ -141,6 +142,10 @@ function SettingsForm() {
           </Stack>
         </Fieldset>
       </Stack>
+      <Group justify="flex-end" mt="sm" gap="xs">
+        <Button type="submit">Save</Button>
+        <Button>Cancel</Button>
+      </Group>
     </form>
   );
 }

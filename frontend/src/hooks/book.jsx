@@ -1,9 +1,10 @@
-import { useContext, useEffect, useReducer } from "react";
+import { useEffect, useReducer } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigation, useSearchParams } from "react-router-dom";
 import { nprogress } from "@mantine/nprogress";
-import { UserSettingsContext } from "../context/UserSettingsContext";
 import { getFromLocalStorage, getPressedKeysAsString } from "../misc/utils";
 import { startHoverMode } from "../lute";
+import { settingsQuery } from "../queries/settings";
 import {
   // handleAddBookmark,
   handleCopy,
@@ -47,8 +48,8 @@ const initialState = {
   textWidth: 50,
 };
 
-function useInitialize(book, setActiveTerm) {
-  const { settings } = useContext(UserSettingsContext);
+function useInitialize(book, setActiveTerm, setOpenThemeForm) {
+  const { data: settings, isSuccess } = useQuery(settingsQuery());
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [state, dispatch] = useReducer(reducer, {
@@ -82,6 +83,7 @@ function useInitialize(book, setActiveTerm) {
       // if (document.querySelectorAll(".word").length === 0) {
       //   return; // Nothing to do.
       // }
+      if (!isSuccess) return;
 
       let selected;
 
@@ -95,6 +97,7 @@ function useInitialize(book, setActiveTerm) {
           setSearchParams(searchParams);
           startHoverMode();
           setActiveTerm({ data: null });
+          setOpenThemeForm(false);
         },
 
         [settings.hotkey_PrevWord]: () => moveCursor(".word", prev),
@@ -134,7 +137,7 @@ function useInitialize(book, setActiveTerm) {
           setSearchParams({ edit: "true" });
         },
 
-        [settings.hotkey_NextTheme]: "",
+        [settings.hotkey_NextTheme]: () => setOpenThemeForm((v) => !v),
         [settings.hotkey_ToggleHighlight]: () =>
           handleToggleHighlights(dispatch),
         [settings.hotkey_ToggleFocus]: () => handleToggleFocusMode(dispatch),
@@ -156,7 +159,7 @@ function useInitialize(book, setActiveTerm) {
       document.removeEventListener("keydown", setupKeydownEvents);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [settings, isSuccess]);
 
   return [state, dispatch];
 }

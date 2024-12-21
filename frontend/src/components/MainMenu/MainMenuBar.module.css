@@ -1,21 +1,18 @@
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 3rem;
+  gap: 2rem;
+
   height: 3.5rem;
   margin-bottom: 3rem;
   background-color: var(--mantine-color-body);
-  border-bottom: 1px solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  border-bottom: 1px solid var(--mantine-color-gray-3);
 }
 
 .heading {
   text-wrap: nowrap;
-}
-
-.inner {
-  height: 3.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
 }
 
 .link {
@@ -24,16 +21,13 @@
   padding: 0.5rem 0.75rem;
   border-radius: var(--mantine-radius-sm);
   text-decoration: none;
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
+  color: var(--mantine-color-gray-7);
   font-size: var(--mantine-font-size-sm);
   font-weight: 500;
 }
 
 .link:hover {
-  background-color: light-dark(
-    var(--mantine-color-gray-0),
-    var(--mantine-color-dark-6)
-  );
+  background-color: var(--mantine-color-gray-0);
 }
 
 .linkLabel {
@@ -53,4 +47,16 @@
   display: flex;
   flex-direction: column;
   gap: 5px;
+}
+
+[data-mantine-color-scheme="dark"] .header {
+  border-bottom-color: var(--mantine-color-dark-4);
+}
+
+[data-mantine-color-scheme="dark"] .link {
+  color: var(--mantine-color-dark-0);
+}
+
+[data-mantine-color-scheme="dark"] .link:hover {
+  background-color: var(--mantine-color-dark-6);
 }

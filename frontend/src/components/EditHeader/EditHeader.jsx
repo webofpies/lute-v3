@@ -26,9 +26,11 @@ function EditHeader({ book, page, onSetEdit }) {
 
   return (
     <Paper
-      withBorder
+      withBorder={false}
       radius={0}
-      style={{ borderInline: "none", padding: "1rem 2rem" }}>
+      shadow="sm"
+      style={{ padding: "1rem 2rem" }}
+      classNames={{ root: "readpage" }}>
       <Group justify="space-between" wrap="nowrap" mb={rem(10)}>
         <span>
           Editing:{" "}
