@@ -1,8 +1,6 @@
-import { useEffect } from "react";
-import { useNavigation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
-import { nprogress } from "@mantine/nprogress";
 import {
   ActionIcon,
   Button,
@@ -32,7 +30,6 @@ import ImportURLInfo from "./ImportURLInfo";
 import classes from "./NewBookForm.module.css";
 
 function NewBookForm({ openDrawer }) {
-  const navigation = useNavigation();
   const [params] = useSearchParams();
   const definedLang = params.get("def");
   const { data: defined } = useQuery(definedListQueryObj());
@@ -44,10 +41,6 @@ function NewBookForm({ openDrawer }) {
       wordsPerPage: 250,
     },
   });
-
-  useEffect(() => {
-    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
-  }, [navigation.state]);
 
   return (
     <form className={classes.container}>

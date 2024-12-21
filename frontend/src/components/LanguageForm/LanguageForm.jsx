@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useNavigation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { randomId } from "@mantine/hooks";
-import { nprogress } from "@mantine/nprogress";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
   ActionIcon,
@@ -40,7 +39,6 @@ import classes from "./LanguageForm.module.css";
 
 function LanguageForm() {
   const { pathname } = useLocation();
-  const navigation = useNavigation();
   const [params] = useSearchParams();
   const openedFromLanguages = pathname === "/languages";
   const predefinedLang = params.get("predef");
@@ -80,10 +78,6 @@ function LanguageForm() {
         },
       ],
     },
-  });
-
-  useEffect(() => {
-    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
   });
 
   useEffect(() => {

@@ -67,7 +67,7 @@ function useInitialize(book, setActiveTerm, setOpenThemeForm) {
   const navigation = useNavigation();
   useEffect(() => {
     navigation.state === "loading" ? nprogress.start() : nprogress.complete();
-  });
+  }, [navigation.state]);
 
   useEffect(() => {
     const title = document.title;

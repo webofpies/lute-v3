@@ -1,8 +1,5 @@
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigation } from "react-router-dom";
 import { useForm } from "@mantine/form";
-import { nprogress } from "@mantine/nprogress";
 import {
   Button,
   Checkbox,
@@ -19,7 +16,6 @@ import MeCabInfo from "./MeCabInfo";
 import { settingsQuery } from "../../queries/settings";
 
 function SettingsForm() {
-  const navigation = useNavigation();
   const { data: settings } = useQuery(settingsQuery());
 
   const form = useForm({
@@ -33,10 +29,6 @@ function SettingsForm() {
         return { disabled: !form.getValues()[enabledField] };
       }
     },
-  });
-
-  useEffect(() => {
-    navigation.state === "loading" ? nprogress.start() : nprogress.complete();
   });
 
   const fieldsetFz = rem(17);

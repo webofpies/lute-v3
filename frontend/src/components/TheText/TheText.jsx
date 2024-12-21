@@ -27,7 +27,7 @@ function TheText({ paragraphs, onSetActiveTerm }) {
       applyLuteHighlights(settings.highlights.status, colorScheme);
       applyLuteHighlights(settings.highlights.general, colorScheme);
     }
-  }, [colorScheme, settings.highlights, isSuccess]);
+  }, [colorScheme, settings?.highlights, isSuccess]);
 
   function handleSetTerm(termData) {
     // do nothing with the form
