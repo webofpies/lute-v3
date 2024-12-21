@@ -18,16 +18,14 @@ import { applyLuteHighlights } from "../../misc/actions";
 import { settingsQuery } from "../../queries/settings";
 
 function TheText({ paragraphs, onSetActiveTerm }) {
-  const { data: settings, isSuccess } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery());
   const colorScheme = useComputedColorScheme();
 
   useEffect(() => {
     startHoverMode();
-    if (isSuccess) {
-      applyLuteHighlights(settings.highlights.status, colorScheme);
-      applyLuteHighlights(settings.highlights.general, colorScheme);
-    }
-  }, [colorScheme, settings?.highlights, isSuccess]);
+    applyLuteHighlights(settings.highlights.status, colorScheme);
+    applyLuteHighlights(settings.highlights.general, colorScheme);
+  }, [colorScheme, settings.highlights]);
 
   function handleSetTerm(termData) {
     // do nothing with the form

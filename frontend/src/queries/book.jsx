@@ -1,3 +1,5 @@
+import { settingsQuery } from "./settings";
+
 function loader(queryClient) {
   return async ({ params }) => {
     const bq = bookQuery(params.id);
@@ -12,7 +14,13 @@ function loader(queryClient) {
       queryClient.getQueryData(pq.queryKey) ??
       (await queryClient.fetchQuery(pq));
 
-    return { bookData, pageData };
+    const settingsQ = settingsQuery();
+
+    const settingsData =
+      queryClient.getQueryData(settingsQ.queryKey) ??
+      (await queryClient.fetchQuery(settingsQ));
+
+    return { bookData, pageData, settingsData };
   };
 }
 

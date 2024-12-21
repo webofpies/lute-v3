@@ -19,7 +19,7 @@ import { settingsQuery } from "../../queries/settings";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerMenu({ opened, close, onOpenThemeForm }) {
-  const { data: settings, isSuccess } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery());
 
   return (
     <Drawer.Root
@@ -47,25 +47,23 @@ function DrawerMenu({ opened, close, onOpenThemeForm }) {
         <Divider />
 
         <Drawer.Body p={0} className={classes.drawer}>
-          {isSuccess && (
-            <Center p={10}>
-              <Group gap={5}>
-                <SchemeToggleButton
-                  colors={settings.highlights}
-                  onCloseDrawer={close}
-                />
-                <ActionIcon
-                  onClick={() => {
-                    onOpenThemeForm(true);
-                    close();
-                  }}
-                  size="lg"
-                  variant="default">
-                  <IconPalette size="90%" />
-                </ActionIcon>
-              </Group>
-            </Center>
-          )}
+          <Center p={10}>
+            <Group gap={5}>
+              <SchemeToggleButton
+                colors={settings.highlights}
+                onCloseDrawer={close}
+              />
+              <ActionIcon
+                onClick={() => {
+                  onOpenThemeForm(true);
+                  close();
+                }}
+                size="lg"
+                variant="default">
+                <IconPalette size="90%" />
+              </ActionIcon>
+            </Group>
+          </Center>
 
           <Divider />
 

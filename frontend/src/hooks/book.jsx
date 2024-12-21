@@ -49,7 +49,7 @@ const initialState = {
 };
 
 function useInitialize(book, setActiveTerm, setOpenThemeForm) {
-  const { data: settings, isSuccess } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery());
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [state, dispatch] = useReducer(reducer, {
@@ -83,7 +83,6 @@ function useInitialize(book, setActiveTerm, setOpenThemeForm) {
       // if (document.querySelectorAll(".word").length === 0) {
       //   return; // Nothing to do.
       // }
-      if (!isSuccess) return;
 
       let selected;
 
@@ -159,7 +158,7 @@ function useInitialize(book, setActiveTerm, setOpenThemeForm) {
       document.removeEventListener("keydown", setupKeydownEvents);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings, isSuccess]);
+  }, [settings]);
 
   return [state, dispatch];
 }
