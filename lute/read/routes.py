@@ -198,7 +198,7 @@ def term_form(langid, text):
         term,
         repo,
         db.session,
-        "/read/frameform.html",
+        "/read/term_edit_form.html",
         render_template("/read/updated.html", term_text=term.text),
         embedded_in_reading_frame=True,
     )
@@ -218,9 +218,21 @@ def edit_term_form(term_id):
         term,
         repo,
         db.session,
-        "/read/frameform.html",
+        "/read/term_edit_form.html",
         render_template("/read/updated.html", term_text=term.text),
         embedded_in_reading_frame=True,
+    )
+
+
+@bp.route("/term_bulk_edit_form", methods=["GET"])
+def term_bulk_edit_form():
+    """
+    show_bulk_form
+    """
+    repo = Repository(db.session)
+    return render_template(
+        "read/term_bulk_edit_form.html",
+        tags=repo.get_term_tags(),
     )
 
 

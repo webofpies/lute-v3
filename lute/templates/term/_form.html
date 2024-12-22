@@ -1,4 +1,11 @@
+{# This form is "included" into other .html files. #}
+
 <script type="text/javascript" src="{{ url_for('static', filename='js/dict-tabs.js') }}" charset="utf-8"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/lute-hotkey-utils.js') }}" charset="utf-8"></script>
+<script type="text/javascript">
+  const LUTE_USER_SETTINGS = {{ user_settings | safe }}
+</script>
+
 
 {% if duplicated_term %}
 {#
@@ -168,9 +175,7 @@
       const frm = $('#term-form');
       const formData = frm.serialize();
       $.post(frm.attr('action'), formData, function(response) {
-        if (in_reading_frame) {
-          window.parent.postMessage({ event: "LuteTermFormPosted" }, "*");
-        }
+        window.parent.postMessage({ event: "LuteTermFormPosted" }, "*");
         window.location.href = url;
       });
     });
@@ -312,8 +317,8 @@
 
     // "Save" shortcut
     $(document).keydown(function(event) {
-      console.log(event);
-      if (event.ctrlKey && event.key === "Enter") {
+      const s = get_pressed_keys_as_string(event);
+      if (s == LUTE_USER_SETTINGS.hotkey_SaveTerm) {
         $("#btnsubmit").click();
       }
     });
@@ -324,7 +329,7 @@
     // so the left-and-right arrows don't work within the reading pane.
     // The reading pane arrows are more important than the focus being set, IMO.
     // Perhaps this can be changed later to set the focus if the form is opened
-    // from the term listing (i.e. move this to templates/term/formframes.html).
+    // from the term listing (i.e. move this to templates/term/form.html).
     const langId = $("#language_id")
     const text = $("#text")
     const translation = $("#translation")
@@ -359,7 +364,6 @@
       }
     });
 
-    const dictContainer = parent.document.querySelector(".dictcontainer");
     var parentslist = document.getElementById('parentslist');
     parents_tagify = setup_parent_tagify(parentslist);
     var termtagslist = document.getElementById('termtagslist');

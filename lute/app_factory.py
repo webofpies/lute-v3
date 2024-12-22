@@ -28,7 +28,7 @@ from lute.db.setup.main import setup_db
 from lute.db.management import add_default_user_settings
 from lute.db.data_cleanup import clean_data
 from lute.backup.service import Service as BackupService
-import lute.db.demo
+from lute.db.demo import Service as DemoService
 import lute.utils.formutils
 
 from lute.parse.registry import init_parser_plugins, supported_parsers
@@ -132,7 +132,8 @@ def _add_base_routes(app, app_config):
 
     @app.route("/")
     def index():
-        is_production = not lute.db.demo.contains_demo_data(db.session)
+        demosvc = DemoService(db.session)
+        is_production = not demosvc.contains_demo_data()
         us_repo = UserSettingRepository(db.session)
         bkp_settings = us_repo.get_backup_settings()
 
@@ -157,13 +158,14 @@ def _add_base_routes(app, app_config):
             and warning_msg != ""
         )
 
+        demosvc = DemoService(db.session)
         response = make_response(
             render_template(
                 "index.html",
                 hide_homelink=True,
                 dbname=app_config.dbname,
                 datapath=app_config.datapath,
-                tutorial_book_id=lute.db.demo.tutorial_book_id(db.session),
+                tutorial_book_id=demosvc.tutorial_book_id(),
                 have_books=have_books,
                 have_languages=have_languages,
                 language_choices=language_choices,
@@ -185,8 +187,9 @@ def _add_base_routes(app, app_config):
 
     @app.route("/wipe_database")
     def wipe_db():
-        if lute.db.demo.contains_demo_data(db.session):
-            lute.db.demo.delete_demo_data(db.session)
+        demosvc = DemoService(db.session)
+        if demosvc.contains_demo_data():
+            demosvc.delete_demo_data()
             msg = """
             The database has been wiped clean.  Have fun! <br /><br />
             <i>(Lute has automatically enabled backups --
@@ -197,8 +200,9 @@ def _add_base_routes(app, app_config):
 
     @app.route("/remove_demo_flag")
     def remove_demo():
-        if lute.db.demo.contains_demo_data(db.session):
-            lute.db.demo.remove_flag(db.session)
+        demosvc = DemoService(db.session)
+        if demosvc.contains_demo_data():
+            demosvc.remove_flag()
             msg = """
             Demo mode deactivated. Have fun! <br /><br />
             <i>(Lute has automatically enabled backups --
@@ -319,8 +323,6 @@ def _create_app(app_config, extra_config):
         db.create_all()
         add_default_user_settings(db.session, app_config.default_user_backup_path)
         refresh_global_settings(db.session)
-        # TODO valid parsers: do parser check, mark valid as active, invalid as inactive.
-        clean_data(db.session)
     app.db = db
 
     _add_base_routes(app, app_config)
@@ -413,3 +415,28 @@ def create_app(
     _init_parser_plugins(app_config.plugin_datapath, outfunc)
 
     return app
+
+
+def data_initialization(session, output_func=None):
+    """
+    Any extra data setup.
+
+    TODO: rework data initialization.  The DB setup can be handled
+    outside of the application context, as IMO it's clearer to manage
+    the data separately from the thing that uses the data.  This
+    requires moving from flask-sqlalchemy to plain sqlalchemy.
+    """
+
+    def _null_print(s):  # pylint: disable=unused-argument
+        pass
+
+    outfunc = output_func or _null_print
+
+    demosvc = DemoService(session)
+    if demosvc.should_load_demo_data():
+        outfunc("Loading demo data.")
+        demosvc.load_demo_data()
+
+    # TODO valid parsers: do parser check, mark valid as active, invalid as inactive.
+
+    clean_data(session, outfunc)
