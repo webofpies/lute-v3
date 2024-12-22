@@ -21,6 +21,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: var(--mantine-radius-sm);
   text-decoration: none;
+  text-wrap: nowrap;
   color: var(--mantine-color-gray-7);
   font-size: var(--mantine-font-size-sm);
   font-weight: 500;
@@ -53,10 +54,14 @@
   border-bottom-color: var(--mantine-color-dark-4);
 }
 
-[data-mantine-color-scheme="dark"] .link {
+[data-mantine-color-scheme="dark"]
+  .link:not([aria-current="page"]):not(:has(+ div > a[aria-current="page"])) {
   color: var(--mantine-color-dark-0);
 }
 
-[data-mantine-color-scheme="dark"] .link:hover {
+[data-mantine-color-scheme="dark"]
+  .link:not([aria-current="page"]):not(
+    :has(+ div > a[aria-current="page"])
+  ):hover {
   background-color: var(--mantine-color-dark-6);
 }

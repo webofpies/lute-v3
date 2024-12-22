@@ -2,14 +2,4 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 2rem;
-  padding-top: 0;
-  width: 75%;
-  margin-inline: auto;
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
 }

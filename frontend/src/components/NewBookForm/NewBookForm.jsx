@@ -10,7 +10,6 @@ import {
   NumberInput,
   Stack,
   TagsInput,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -25,15 +24,16 @@ import {
   IconWorldWww,
 } from "@tabler/icons-react";
 import LanguageCards from "../LanguageCards/LanguageCards";
-import { definedListQueryObj, definedOptionsObj } from "../../queries/language";
+import { definedOptionsObj } from "../../queries/language";
 import ImportURLInfo from "./ImportURLInfo";
 import classes from "./NewBookForm.module.css";
 
 function NewBookForm({ openDrawer }) {
   const [params] = useSearchParams();
   const definedLang = params.get("def");
-  const { data: defined } = useQuery(definedListQueryObj());
   const definedOptionsQuery = useQuery(definedOptionsObj(definedLang));
+
+  const dir = definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr";
 
   const form = useForm({
     mode: "uncontrolled",
@@ -42,24 +42,27 @@ function NewBookForm({ openDrawer }) {
     },
   });
 
+  const cardsRadioLabel = (
+    <Group wrap="nowrap" gap={5}>
+      Language
+      <ActionIcon
+        variant="transparent"
+        color="green.6"
+        onClick={openDrawer}
+        size="sm">
+        <IconSquareRoundedPlusFilled />
+      </ActionIcon>
+    </Group>
+  );
+
   return (
     <form className={classes.container}>
-      <Group gap={5} wrap="nowrap">
-        <Text fw={500} fz={20}>
-          Language
-        </Text>
-        <ActionIcon variant="transparent" color="green.6" onClick={openDrawer}>
-          <IconSquareRoundedPlusFilled />
-        </ActionIcon>
-      </Group>
-      <LanguageCards languages={defined} />
-      <Text fw={500} fz={20}>
-        Settings
-      </Text>
+      <LanguageCards
+        label={cardsRadioLabel}
+        description="Choose language for your book or create new"
+      />
       <TextInput
-        wrapperProps={{
-          dir: definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr",
-        }}
+        wrapperProps={{ dir: dir }}
         disabled={definedLang ? false : true}
         required
         withAsterisk
@@ -71,15 +74,12 @@ function NewBookForm({ openDrawer }) {
         variant="filled"
         legend="Content"
         flex={1}
-        className={classes.content}
         styles={{
           legend: { fontWeight: 500 },
         }}>
         <Stack wrap="nowrap" gap={5}>
           <Textarea
-            wrapperProps={{
-              dir: definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr",
-            }}
+            wrapperProps={{ dir: dir }}
             spellCheck={false}
             autoCapitalize="off"
             autoCorrect="off"

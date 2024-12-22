@@ -12,10 +12,8 @@ import {
   Fieldset,
   Group,
   LoadingOverlay,
-  rem,
   ScrollArea,
   Select,
-  Text,
   TextInput,
 } from "@mantine/core";
 import {
@@ -26,7 +24,6 @@ import {
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
 import {
-  definedListQueryObj,
   parsersQueryObj,
   predefinedListQueryObj,
   predefinedOptionsObj,
@@ -46,7 +43,6 @@ function LanguageForm() {
   const predefinedOptionsQuery = useQuery(predefinedOptionsObj(predefinedLang));
   const definedOptionsQuery = useQuery(definedOptionsObj(definedLang));
 
-  const { data: defined } = useQuery(definedListQueryObj());
   const { data: predefined } = useQuery(predefinedListQueryObj());
   const { data: parsers } = useQuery(parsersQueryObj());
 
@@ -99,16 +95,11 @@ function LanguageForm() {
   return (
     <form>
       {openedFromLanguages && (
-        <>
-          <Text fw={700} fz={rem(22)} mb={rem(10)}>
-            My languages
-          </Text>
-          <LanguageCards languages={defined} />
-        </>
+        <LanguageCards
+          label="My languages"
+          description="Edit existing language"
+        />
       )}
-      <Text fw={700} fz={rem(18)}>
-        Settings
-      </Text>
       <LanguageSelect form={form} languages={predefined} />
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay

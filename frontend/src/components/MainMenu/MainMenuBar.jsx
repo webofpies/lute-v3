@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   Menu,
   Group,
@@ -18,33 +18,13 @@ import classes from "./MainMenuBar.module.css";
 
 function MainMenuBar({ backupData, settings }) {
   const [opened, { toggle }] = useDisclosure(false);
-  const { pathname } = useLocation();
-
   const createBackupMenu = backupData?.enabled && backupData?.directory != "";
-
-  const pathNames = {
-    "/": "Lute",
-    "/books/new": "New Book",
-    "/books/archived": "Archive",
-
-    "/terms": "Terms",
-    "/terms/import": "Import Terms",
-    "/terms/tags": "Term Tags",
-
-    "/languages": "Languages",
-    "/settings": "Settings",
-    "/settings/shortcuts": "Shortcuts",
-
-    "/backup/index": "Backups",
-
-    "/stats": "Statistics",
-  };
 
   return (
     <header className={classes.header}>
       <Group wrap="nowrap">
         <HomeImageLink size={rem(54)} />
-        <h1 className={classes.heading}>{pathNames[pathname]}</h1>
+        <h1 className={classes.heading}>Lute</h1>
       </Group>
       <Group component="nav" gap={5} visibleFrom="sm" wrap="nowrap" ml="auto">
         <NavLink to={menu.home.action} className={classes.link}>

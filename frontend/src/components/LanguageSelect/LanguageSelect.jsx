@@ -25,6 +25,50 @@ function LanguageSelect({ form, languages }) {
       )
     : languages;
 
+  function handleClearField() {
+    setSearch("");
+    setValue(null);
+    form.reset();
+    params.delete("def");
+    params.delete("predef");
+    setParams(params);
+  }
+
+  function handleChange(e) {
+    combobox.openDropdown();
+    combobox.updateSelectedOptionIndex();
+    setSearch(e.currentTarget.value);
+  }
+
+  function handleOnBlur() {
+    combobox.closeDropdown();
+    setSearch(value || "");
+  }
+
+  function handleOptionSubmit(val) {
+    if (val === "$create") {
+      setValue(search);
+    } else {
+      setValue(val);
+      setSearch(val);
+      setParams({ predef: val });
+    }
+
+    combobox.closeDropdown();
+  }
+
+  const inputRightSection =
+    value !== null ? (
+      <CloseButton
+        size="sm"
+        onMouseDown={(event) => event.preventDefault()}
+        onClick={handleClearField}
+        aria-label="Clear value"
+      />
+    ) : (
+      <Combobox.Chevron />
+    );
+
   useEffect(() => {
     if (definedLang && openedFromLanguages) {
       setSearch(definedLang);
@@ -40,56 +84,22 @@ function LanguageSelect({ form, languages }) {
     <Combobox
       store={combobox}
       withinPortal={false}
-      onOptionSubmit={(val) => {
-        if (val === "$create") {
-          setValue(search);
-        } else {
-          setValue(val);
-          setSearch(val);
-          setParams({ predef: val });
-        }
-
-        combobox.closeDropdown();
-      }}>
+      onOptionSubmit={handleOptionSubmit}>
       <Combobox.Target>
         <InputBase
           mb={10}
           w="fit-content"
           label="Name"
+          description="Create new or from predefined"
+          placeholder="e.g. Arabic"
           leftSection={<IconLanguage />}
-          rightSection={
-            value !== null ? (
-              <CloseButton
-                size="sm"
-                onMouseDown={(event) => event.preventDefault()}
-                onClick={() => {
-                  setSearch("");
-                  setValue(null);
-                  form.reset();
-                  params.delete("def");
-                  params.delete("predef");
-                  setParams(params);
-                }}
-                aria-label="Clear value"
-              />
-            ) : (
-              <Combobox.Chevron />
-            )
-          }
+          rightSection={inputRightSection}
+          rightSectionPointerEvents={value === null ? "none" : "all"}
           value={search}
-          onChange={(event) => {
-            combobox.openDropdown();
-            combobox.updateSelectedOptionIndex();
-            setSearch(event.currentTarget.value);
-          }}
+          onChange={handleChange}
           onClick={() => combobox.openDropdown()}
           onFocus={() => combobox.openDropdown()}
-          onBlur={() => {
-            combobox.closeDropdown();
-            setSearch(value || "");
-          }}
-          placeholder="Create new or from predefined"
-          rightSectionPointerEvents={value === null ? "none" : "all"}
+          onBlur={handleOnBlur}
         />
       </Combobox.Target>
 
