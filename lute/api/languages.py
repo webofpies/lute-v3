@@ -53,7 +53,7 @@ def get_languages_list():
     if lang_type == "predefined":
         service = LangService(db.session)
         # !TODO this function gets all info for languages. but we need only the name here
-        predefined = service.predefined_languages()
+        predefined = service.supported_predefined_languages()
 
         return jsonify([language.name for language in predefined])
 
@@ -68,7 +68,7 @@ def new_language(langname=None):
     language = LanguageModel()
     if langname is not None:
         service = LangService(db.session)
-        predefined = service.predefined_languages()
+        predefined = service.supported_predefined_languages()
         candidates = [lang for lang in predefined if lang.name == langname]
         if len(candidates) == 1:
             language = candidates[0]
