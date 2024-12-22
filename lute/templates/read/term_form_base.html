@@ -19,18 +19,10 @@
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/tagify/tagify.min.js') }}" charset="utf-8"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/tagify/tagify.polyfills.min.js') }}" charset="utf-8"></script>
 
-    <script type="text/javascript">
-      var temp_tags = '{{ tags | tojson }}';
-      var TAGS = Array.from(JSON.parse(temp_tags));
-    </script>
-
   </head>
 
   <body>
-    {% if term.flash_message %}
-    <p class='small-flash-notice'>{{ term.flash_message }}</p>
-    {% endif %}
-    {% include 'term/_form.html' %}
+    {% block include_term_form %}{% endblock %}
   </body>
 
 </html>
