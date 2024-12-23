@@ -94,6 +94,36 @@ def get_sentences(langid, text):
     return jsonify({"text": text, "variations": variations if refcount > 0 else []})
 
 
+@bp.route("/<int:langid>/<text>", methods=["GET"])
+def get_term_suggestions(text, langid):
+    "term suggestions for parent data"
+
+    if text.strip() == "" or langid == 0:
+        return []
+
+    repo = Repository(db.session)
+    matches = repo.find_matches(langid, text)
+
+    def _make_entry(t):
+        return {
+            "id": t.id,
+            "text": t.text,
+            "translation": t.translation,
+            "status": t.status,
+        }
+
+    result = [_make_entry(t) for t in matches]
+    return jsonify(result)
+
+
+@bp.route("/tags", methods=["GET"])
+def get_tag_suggestions():
+    "tag suggestions"
+
+    repo = Repository(db.session)
+    return jsonify(repo.get_term_tags())
+
+
 def _term_to_dict(term):
     if term.status == 0:
         term.status = 1

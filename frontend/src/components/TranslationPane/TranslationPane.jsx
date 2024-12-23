@@ -8,7 +8,7 @@ import classes from "../BookView/BookView.module.css";
 import { paneResizeStorage } from "../../misc/utils";
 import { termDataQuery } from "../../queries/term";
 
-function TranslationPane({ book, termData }) {
+function TranslationPane({ book, termData, onSetActiveTerm }) {
   const termPanelRef = useRef();
   const translationFieldRef = useRef();
 
@@ -33,9 +33,9 @@ function TranslationPane({ book, termData }) {
             <TermForm
               key={data.text}
               termData={data}
+              book={book}
               translationFieldRef={translationFieldRef}
-              dir={book.isRightToLeft ? "rtl" : "ltr"}
-              showPronunciation={book.showPronunciation}
+              onSetActiveTerm={onSetActiveTerm}
             />
           </Panel>
 

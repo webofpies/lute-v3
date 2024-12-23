@@ -1,8 +1,6 @@
 import { memo } from "react";
-import {
-  useForm,
-  // isNotEmpty, isEmail, isInRange, hasLength, matches
-} from "@mantine/form";
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "@mantine/form";
 import {
   Button,
   Group,
@@ -15,7 +13,9 @@ import {
   Text,
 } from "@mantine/core";
 import { IconCheck, IconMinus } from "@tabler/icons-react";
+import TagsField from "../TagsField/TagsField";
 import TermImage from "./TermImage";
+import { tagSuggestionsQuery } from "../../queries/term";
 import classes from "./TermForm.module.css";
 
 const radioIcon = (label, props) => (
@@ -55,13 +55,27 @@ const radios = [
   },
 ];
 
-function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
+function TermForm({ termData, translationFieldRef, book, onSetActiveTerm }) {
+  const { data: tags } = useQuery(tagSuggestionsQuery());
+  const dir = book.isRightToLeft ? "rtl" : "ltr";
+
   const form = useForm({
-    mode: "uncontrolled",
     initialValues: {
       ...termData,
       status: String(termData.status),
-      syncStatus: String(termData.syncStatus),
+    },
+    enhanceGetInputProps: ({ form, field }) => {
+      if (field === "syncStatus") {
+        const parentsCount = form.getValues().parents.length;
+
+        if (!parentsCount || parentsCount > 1)
+          return {
+            disabled: true,
+            checked: false,
+          };
+
+        return { disabled: false, checked: form.getValues().syncStatus };
+      }
     },
 
     // validate: {
@@ -83,12 +97,14 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
           key={form.key("text")}
           {...form.getInputProps("text")}
         />
-        <TagsInput
-          placeholder="Parents"
-          key={form.key("parents")}
-          {...form.getInputProps("parents")}
+        <TagsField
+          form={form}
+          tags={termData.parents}
+          activeTermText={termData.originalText}
+          onSetActiveTerm={onSetActiveTerm}
+          book={book}
         />
-        {showPronunciation && (
+        {book.showPronunciation && (
           <TextInput
             placeholder="Pronunciation"
             key={form.key("romanization")}
@@ -101,6 +117,7 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
               const input = e.target;
               input.setSelectionRange(input.value.length, input.value.length);
             }}
+            minRows={2}
             autosize
             spellCheck={false}
             autoCapitalize="off"
@@ -147,9 +164,12 @@ function TermForm({ termData, translationFieldRef, dir, showPronunciation }) {
           />
         </Group>
         <TagsInput
+          clearable
+          data={tags || []}
           placeholder="Tags"
-          key={form.key("tags")}
-          {...form.getInputProps("tags")}
+          maxDropdownHeight={200}
+          key={form.key("termTags")}
+          {...form.getInputProps("termTags")}
         />
         <Group justify="flex-end" mt="sm" gap="xs" wrap="nowrap">
           <Button>Delete</Button>

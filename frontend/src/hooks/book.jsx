@@ -80,9 +80,7 @@ function useInitialize(book, setActiveTerm, setOpenThemeForm) {
 
   useEffect(() => {
     function setupKeydownEvents(e) {
-      // if (document.querySelectorAll(".word").length === 0) {
-      //   return; // Nothing to do.
-      // }
+      if (e.target.matches("input, textarea")) return;
 
       let selected;
 

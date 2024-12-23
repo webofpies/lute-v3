@@ -80,7 +80,11 @@ function BookView() {
               collapsible={true}
               minSize={5}>
               {activeTerm.data && !openThemeForm && (
-                <TranslationPane book={book} termData={activeTerm} />
+                <TranslationPane
+                  book={book}
+                  termData={activeTerm}
+                  onSetActiveTerm={setActiveTerm}
+                />
               )}
               {openThemeForm && !editMode && (
                 <Group justify="center" align="center" h="100%" p={10}>

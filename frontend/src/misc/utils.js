@@ -180,6 +180,31 @@ function getCleanTermString(term) {
   return searchTerm;
 }
 
+function _createSuggestionString(suggestion) {
+  const txt = decodeURIComponent(suggestion.text);
+  let t = suggestion.translation ?? "";
+
+  if (t == "") return txt;
+
+  const maxLen = 70;
+  t = t.replaceAll("\n", "; ").replaceAll("\r", "");
+  if (t.length > maxLen) {
+    t = t.substring(0, maxLen) + "...";
+  }
+
+  return `${txt} (${t})`;
+}
+
+function buildSuggestionsList(currentTermText, suggestions) {
+  return suggestions
+    .map((suggestion) => ({
+      value: suggestion.text,
+      suggestion: _createSuggestionString(suggestion),
+      status: suggestion.status,
+    }))
+    .filter((item) => item.value != currentTermText);
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -194,4 +219,5 @@ export {
   removeAllContainingClass,
   convertSecsToDisplayString,
   getLookupURL,
+  buildSuggestionsList,
 };
