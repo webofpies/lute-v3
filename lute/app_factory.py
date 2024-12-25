@@ -22,6 +22,8 @@ from flask import (
 from sqlalchemy.event import listens_for
 from sqlalchemy.pool import Pool
 
+from flask_cors import CORS
+
 from lute.config.app_config import AppConfig
 from lute.db import db
 from lute.db.setup.main import setup_db
@@ -130,52 +132,56 @@ def _add_base_routes(app, app_config):
         }
         return ret
 
+    # @app.route("/")
+    # def index():
+    #     demosvc = DemoService(db.session)
+    #     is_production = not demosvc.contains_demo_data()
+    #     us_repo = UserSettingRepository(db.session)
+    #     bkp_settings = us_repo.get_backup_settings()
+
+    #     have_books = len(db.session.query(Book).all()) > 0
+    #     have_languages = len(db.session.query(Language).all()) > 0
+    #     language_choices = lute.utils.formutils.language_choices(
+    #         db.session, "(all languages)"
+    #     )
+    #     current_language_id = lute.utils.formutils.valid_current_language_id(db.session)
+
+    #     bs = BackupService(db.session)
+    #     should_run_auto_backup = bs.should_run_auto_backup(bkp_settings)
+    #     # Only back up if we have books, otherwise the backup is
+    #     # kicked off when the user empties the demo database.
+    #     if is_production and have_books and should_run_auto_backup:
+    #         return redirect("/backup/backup", 302)
+
+    #     warning_msg = bs.backup_warning(bkp_settings)
+    #     backup_show_warning = (
+    #         bkp_settings.backup_warn
+    #         and bkp_settings.backup_enabled
+    #         and warning_msg != ""
+    #     )
+
+    #     demosvc = DemoService(db.session)
+    #     response = make_response(
+    #         render_template(
+    #             "index.html",
+    #             hide_homelink=True,
+    #             dbname=app_config.dbname,
+    #             datapath=app_config.datapath,
+    #             tutorial_book_id=demosvc.tutorial_book_id(),
+    #             have_books=have_books,
+    #             have_languages=have_languages,
+    #             language_choices=language_choices,
+    #             current_language_id=current_language_id,
+    #             is_production_data=is_production,
+    #             backup_show_warning=backup_show_warning,
+    #             backup_warning_msg=warning_msg,
+    #         )
+    #     )
+    #     return response
+
     @app.route("/")
-    def index():
-        demosvc = DemoService(db.session)
-        is_production = not demosvc.contains_demo_data()
-        us_repo = UserSettingRepository(db.session)
-        bkp_settings = us_repo.get_backup_settings()
-
-        have_books = len(db.session.query(Book).all()) > 0
-        have_languages = len(db.session.query(Language).all()) > 0
-        language_choices = lute.utils.formutils.language_choices(
-            db.session, "(all languages)"
-        )
-        current_language_id = lute.utils.formutils.valid_current_language_id(db.session)
-
-        bs = BackupService(db.session)
-        should_run_auto_backup = bs.should_run_auto_backup(bkp_settings)
-        # Only back up if we have books, otherwise the backup is
-        # kicked off when the user empties the demo database.
-        if is_production and have_books and should_run_auto_backup:
-            return redirect("/backup/backup", 302)
-
-        warning_msg = bs.backup_warning(bkp_settings)
-        backup_show_warning = (
-            bkp_settings.backup_warn
-            and bkp_settings.backup_enabled
-            and warning_msg != ""
-        )
-
-        demosvc = DemoService(db.session)
-        response = make_response(
-            render_template(
-                "index.html",
-                hide_homelink=True,
-                dbname=app_config.dbname,
-                datapath=app_config.datapath,
-                tutorial_book_id=demosvc.tutorial_book_id(),
-                have_books=have_books,
-                have_languages=have_languages,
-                language_choices=language_choices,
-                current_language_id=current_language_id,
-                is_production_data=is_production,
-                backup_show_warning=backup_show_warning,
-                backup_warning_msg=warning_msg,
-            )
-        )
-        return response
+    def home():
+        return send_from_directory(app.static_folder, "index.html")
 
     @app.route("/refresh_all_stats")
     def refresh_all_stats():
@@ -289,7 +295,13 @@ def _create_app(app_config, extra_config):
     and init the SqlAlchemy db.
     """
 
-    app = Flask(__name__, instance_path=app_config.datapath)
+    app = Flask(
+        __name__,
+        instance_path=app_config.datapath,
+        static_folder="../frontend/dist",
+        static_url_path="/",
+    )
+    CORS(app)
 
     config = {
         "SECRET_KEY": "some_secret",
