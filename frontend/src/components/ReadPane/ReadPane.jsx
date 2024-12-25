@@ -18,6 +18,7 @@ function ReadPane({
   dispatch,
   onSetActiveTerm,
   onDrawerOpen,
+  isRtl,
 }) {
   const { page: pageNum } = useParams();
   const [params, setParams] = useSearchParams();
@@ -56,7 +57,7 @@ function ReadPane({
           onSetActiveTerm(res);
         }}>
         <div
-          dir={book.isRightToLeft ? "rtl" : "ltr"}
+          dir={isRtl ? "rtl" : "ltr"}
           className={`textcontainer ${state.highlights ? "highlight" : ""}`}
           style={{
             "--lute-text-font-size": `${state.fontSize}rem`,

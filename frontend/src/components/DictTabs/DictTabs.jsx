@@ -10,7 +10,7 @@ import classes from "./DictTabs.module.css";
 import { sentencesFetchOptions } from "../../queries/sentences";
 import { getLookupURL } from "../../misc/utils";
 
-function DictTabs({ dicts, langId, term, translationFieldRef }) {
+function DictTabs({ language, term, translationFieldRef = {} }) {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("0");
 
@@ -24,6 +24,7 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
 
   return (
     <Tabs
+      dir="ltr"
       value={activeTab}
       classNames={{ root: classes.tabs }}
       styles={{
@@ -35,9 +36,9 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
           style={{
             display: "grid",
             alignItems: "center",
-            gridTemplateColumns: `repeat(${dicts.length}, minmax(3rem, 8rem))`,
+            gridTemplateColumns: `repeat(${language.dictionaries.term.length}, minmax(3rem, 8rem))`,
           }}>
-          {dicts.map((dict, index) => (
+          {language.dictionaries.term.map((dict, index) => (
             <Tooltip
               key={dict.label}
               label={dict.label}
@@ -62,7 +63,9 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
             id="sentencesTab"
             value="sentencesTab"
             onMouseEnter={() =>
-              queryClient.prefetchQuery(sentencesFetchOptions(langId, term))
+              queryClient.prefetchQuery(
+                sentencesFetchOptions(language.id, term)
+              )
             }
             onClick={() => {
               setActiveTab("sentencesTab");
@@ -86,7 +89,7 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
         </div>
       </Tabs.List>
 
-      {dicts.map((dict, index) => {
+      {language.dictionaries.term.map((dict, index) => {
         return (
           !dict.isExternal && (
             <Tabs.Panel
@@ -109,7 +112,7 @@ function DictTabs({ dicts, langId, term, translationFieldRef }) {
         key="sentencesTab">
         {activeTab === "sentencesTab" && (
           <Sentences
-            sentencesFetchOptions={sentencesFetchOptions(langId, term)}
+            sentencesFetchOptions={sentencesFetchOptions(language.id, term)}
           />
         )}
       </Tabs.Panel>

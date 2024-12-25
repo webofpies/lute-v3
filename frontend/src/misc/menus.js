@@ -31,6 +31,19 @@ const menu = {
     label: "Terms",
     action: "/terms",
     icon: IconBracketsContain,
+
+    all: {
+      label: "All Terms",
+      action: "/terms",
+    },
+    new: {
+      label: "Create New",
+      action: "/terms/new",
+    },
+    tags: {
+      label: "Tags",
+      action: "/terms/tags",
+    },
   },
 
   settings: {

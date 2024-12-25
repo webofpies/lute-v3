@@ -16,11 +16,12 @@ import Layout from "./pages/Layout";
 import Homepage from "./pages/Homepage";
 import BookView from "./components/BookView/BookView";
 import SoftwareInfo from "./components/Modals/SoftwareInfo";
+import Error from "./components/Error/Error";
+import NewTerm from "./pages/NewTerm";
 
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
-import Error from "./components/Error/Error";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,15 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={pageSpinner}>
             <Languages />
+          </Suspense>
+        ),
+        loader: languagesLoader(queryClient),
+      },
+      {
+        path: "/terms/new",
+        element: (
+          <Suspense fallback={pageSpinner}>
+            <NewTerm />
           </Suspense>
         ),
         loader: languagesLoader(queryClient),

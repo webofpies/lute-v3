@@ -15,7 +15,13 @@ import { buildSuggestionsList } from "../../misc/utils";
 
 const MAX_SUGGESTION_COUNT = 15;
 
-function TagsField({ form, tags, book, activeTermText, onSetActiveTerm }) {
+function TagsField({
+  form,
+  tags,
+  languageId,
+  activeTermText,
+  onSetActiveTerm,
+}) {
   const {
     handleKeydown,
     handleInputChange,
@@ -29,7 +35,13 @@ function TagsField({ form, tags, book, activeTermText, onSetActiveTerm }) {
     values,
     options,
     suggestions,
-  } = useInitializeTagsField(form, book, tags, onSetActiveTerm, activeTermText);
+  } = useInitializeTagsField(
+    form,
+    languageId,
+    tags,
+    onSetActiveTerm,
+    activeTermText
+  );
 
   return (
     <Combobox
@@ -91,7 +103,7 @@ function TagsField({ form, tags, book, activeTermText, onSetActiveTerm }) {
 
 function useInitializeTagsField(
   form,
-  book,
+  languageId,
   tags,
   onSetActiveTerm,
   activeTermText
@@ -101,7 +113,7 @@ function useInitializeTagsField(
   const [values, setValues] = useState(tags);
 
   const { data, isFetching } = useQuery(
-    termSuggestionsQuery(search, book.languageId)
+    termSuggestionsQuery(search, languageId)
   );
 
   if (data) {
@@ -169,10 +181,10 @@ function useInitializeTagsField(
   }
 
   function handleTagClick(item) {
-    book.languageId &&
+    languageId &&
       onSetActiveTerm({
         data: item,
-        langID: book.languageId,
+        langID: languageId,
         type: "multi",
       });
   }

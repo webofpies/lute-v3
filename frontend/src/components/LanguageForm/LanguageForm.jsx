@@ -38,10 +38,15 @@ function LanguageForm() {
   const { pathname } = useLocation();
   const [params] = useSearchParams();
   const openedFromLanguages = pathname === "/languages";
-  const predefinedLang = params.get("predef");
-  const definedLang = params.get("def");
-  const predefinedOptionsQuery = useQuery(predefinedOptionsObj(predefinedLang));
-  const definedOptionsQuery = useQuery(definedOptionsObj(definedLang));
+  const lang = params.get("name");
+  const langId = params.get("id");
+  const predefinedSelected = langId === "0";
+  const predefinedOptionsQuery = useQuery(
+    predefinedOptionsObj(lang, predefinedSelected)
+  );
+  const definedOptionsQuery = useQuery(
+    definedOptionsObj(lang, !predefinedSelected)
+  );
 
   const { data: predefined } = useQuery(predefinedListQueryObj());
   const { data: parsers } = useQuery(parsersQueryObj());
@@ -103,7 +108,9 @@ function LanguageForm() {
       <LanguageSelect form={form} languages={predefined} />
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay
-          visible={predefinedLang ? !predefinedOptionsQuery.isSuccess : false}
+          visible={
+            predefinedSelected ? !predefinedOptionsQuery.isSuccess : false
+          }
           zIndex={1000}
           overlayProps={{ radius: "sm", blur: 2 }}
         />

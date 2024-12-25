@@ -3,8 +3,8 @@ import classes from "./LanguageCard.module.css";
 
 export function LanguageCard({ data }) {
   return (
-    <Stack>
-      <Text fz="md" className={classes.label} lh={1} fw={500}>
+    <Stack gap="xs">
+      <Text fz="sm" className={classes.label} lh={1} fw={500}>
         {data.name}
       </Text>
       <Group wrap="nowrap">

@@ -8,7 +8,15 @@ import classes from "../LanguageCard/LanguageCard.module.css";
 function LanguageCards({ label, description }) {
   const { data: languages } = useQuery(definedListQueryObj());
   const [params, setParams] = useSearchParams();
-  const lang = params.get("def");
+  const name = params.get("name");
+
+  function handleLanguageChange(language) {
+    const obj = JSON.parse(language);
+    if (obj.name === name) {
+      return;
+    }
+    setParams({ name: obj.name, id: obj.id });
+  }
 
   return (
     <Radio.Group
@@ -16,8 +24,8 @@ function LanguageCards({ label, description }) {
       label={label}
       description={description}
       name="langs"
-      value={lang ? lang : null}
-      onChange={(language) => setParams({ def: language })}>
+      value={JSON.stringify({ name: name, id: params.get("id") })}
+      onChange={handleLanguageChange}>
       <ScrollArea type="scroll" offsetScrollbars="x">
         <Group gap={2} wrap="nowrap">
           {languages
@@ -25,7 +33,7 @@ function LanguageCards({ label, description }) {
             .map((data) => (
               <Radio.Card
                 key={data.id}
-                value={data.name}
+                value={JSON.stringify({ name: data.name, id: String(data.id) })}
                 className={classes.card}>
                 <Group wrap="nowrap" align="flex-start" gap={8}>
                   <Radio.Indicator size="xs" />

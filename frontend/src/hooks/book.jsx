@@ -48,7 +48,7 @@ const initialState = {
   textWidth: 50,
 };
 
-function useInitialize(book, setActiveTerm, setOpenThemeForm) {
+function useInitialize(book, language, setActiveTerm, setOpenThemeForm) {
   const { data: settings } = useQuery(settingsQuery());
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -84,7 +84,7 @@ function useInitialize(book, setActiveTerm, setOpenThemeForm) {
 
       let selected;
 
-      const next = book.isRightToLeft ? -1 : 1;
+      const next = language.isRightToLeft ? -1 : 1;
       const prev = -1 * next;
 
       // Map of shortcuts to lambdas:

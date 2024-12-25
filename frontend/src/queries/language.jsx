@@ -20,6 +20,19 @@ function loader(queryClient) {
   };
 }
 
+function languageInfoQuery(langId) {
+  return {
+    queryKey: ["languageInfo", langId],
+    queryFn: async () => {
+      const response = await fetch(
+        `http://localhost:5001/api/languages/${langId}`
+      );
+      return await response.json();
+    },
+    enabled: langId !== null,
+  };
+}
+
 function predefinedListQueryObj() {
   return {
     queryKey: ["predefined"],
@@ -33,7 +46,7 @@ function predefinedListQueryObj() {
   };
 }
 
-const predefinedOptionsObj = (languageName) => {
+const predefinedOptionsObj = (languageName, enabled) => {
   return {
     queryKey: ["predefinedOptions", languageName],
     queryFn: async () => {
@@ -43,7 +56,7 @@ const predefinedOptionsObj = (languageName) => {
       return await response.json();
     },
     staleTime: Infinity,
-    enabled: languageName !== null,
+    enabled: languageName !== null && enabled,
   };
 };
 
@@ -57,7 +70,7 @@ function definedListQueryObj() {
   };
 }
 
-const definedOptionsObj = (languageName) => {
+const definedOptionsObj = (languageName, enabled) => {
   return {
     queryKey: ["definedOptions", languageName],
     queryFn: async () => {
@@ -66,7 +79,7 @@ const definedOptionsObj = (languageName) => {
       );
       return await response.json();
     },
-    enabled: languageName !== null,
+    enabled: languageName !== null && enabled,
   };
 };
 
@@ -85,6 +98,7 @@ function parsersQueryObj() {
 
 export {
   loader,
+  languageInfoQuery,
   definedListQueryObj,
   definedOptionsObj,
   predefinedListQueryObj,

@@ -39,9 +39,17 @@ function MainMenuBar({ backupData, settings }) {
           {menu.languages.label}
         </NavLink>
 
-        <NavLink to={menu.terms.action} className={classes.link}>
-          {menu.terms.label}
-        </NavLink>
+        <MenuSection label={menu.terms.label}>
+          <Menu.Item component={NavLink} to={menu.terms.all.action}>
+            {menu.terms.all.label}
+          </Menu.Item>
+          <Menu.Item component={NavLink} to={menu.terms.new.action}>
+            {menu.terms.new.label}
+          </Menu.Item>
+          <Menu.Item component={NavLink} to={menu.terms.tags.action}>
+            {menu.terms.tags.label}
+          </Menu.Item>
+        </MenuSection>
 
         <MenuSection label={menu.settings.label}>
           <Menu.Item component={NavLink} to={menu.settings.general.action}>

@@ -2,6 +2,7 @@
 Languages endpoints
 """
 
+from urllib.parse import urlparse, quote
 from flask import Blueprint, jsonify, request
 
 from sqlalchemy import text as SQLText
@@ -10,6 +11,8 @@ from lute.parse.registry import supported_parsers
 from lute.db import db
 from lute.models.language import Language as LanguageModel
 from lute.language.service import Service as LangService
+from lute.models.repositories import LanguageRepository
+
 
 bp = Blueprint("api_languages", __name__, url_prefix="/api/languages")
 
@@ -96,3 +99,50 @@ def get_existing_language(langname):
 @bp.route("/parsers", methods=["GET"])
 def get_parsers():
     return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
+
+
+@bp.route("/<int:langid>", methods=["GET"])
+def language_info(langid):
+    "language info from langid"
+
+    language = db.session.get(LanguageModel, langid)
+    lang_repo = LanguageRepository(db.session)
+    term_dicts = lang_repo.all_dictionaries()[langid]["term"]
+    sentence_dicts = lang_repo.all_dictionaries()[langid]["sentence"]
+
+    term_dicts = [
+        _get_dict_info(dict, index, langid) for index, dict in enumerate(term_dicts)
+    ]
+    sentence_dicts = [
+        _get_dict_info(dict, index, langid) for index, dict in enumerate(sentence_dicts)
+    ]
+
+    return jsonify(
+        {
+            "id": langid,
+            "isRightToLeft": language.right_to_left,
+            "showPronunciation": language.show_romanization,
+            "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
+        }
+    )
+
+
+def _get_dict_info(dictURL, dictID, langid):
+    url = dictURL.replace("*", "")
+    # label = url if len(url) <= 10 else f"{url[:10]}..."
+    hostname = urlparse(url).hostname
+    label = hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
+
+    if "www.bing.com" in url:
+        bing_hash = url.replace("https://www.bing.com/images/search?", "")
+        url = "http://localhost:5001/bing/search/{}/###/{}".format(
+            langid, quote(bing_hash, safe="()*!.'")
+        )
+
+    return {
+        "id": dictID,
+        "url": url,
+        "label": label,
+        "isExternal": dictURL[0] == "*",
+        "hostname": hostname,
+    }

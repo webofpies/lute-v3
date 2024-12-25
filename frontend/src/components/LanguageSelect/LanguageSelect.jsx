@@ -9,12 +9,10 @@ import {
 } from "@mantine/core";
 import { IconLanguage } from "@tabler/icons-react";
 
-// https://mantine.dev/combobox/?e=SelectAsync
 function LanguageSelect({ form, languages }) {
   const [params, setParams] = useSearchParams();
   const { pathname } = useLocation();
-  const definedLang = params.get("def");
-  const openedFromLanguages = pathname === "/languages";
+
   const [value, setValue] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -25,12 +23,16 @@ function LanguageSelect({ form, languages }) {
       )
     : languages;
 
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+
   function handleClearField() {
     setSearch("");
     setValue(null);
     form.reset();
-    params.delete("def");
-    params.delete("predef");
+    params.delete("name");
+    params.delete("id");
     setParams(params);
   }
 
@@ -51,7 +53,7 @@ function LanguageSelect({ form, languages }) {
     } else {
       setValue(val);
       setSearch(val);
-      setParams({ predef: val });
+      setParams({ name: val, id: 0 });
     }
 
     combobox.closeDropdown();
@@ -70,15 +72,14 @@ function LanguageSelect({ form, languages }) {
     );
 
   useEffect(() => {
-    if (definedLang && openedFromLanguages) {
-      setSearch(definedLang);
-      setValue(definedLang);
-    }
-  }, [definedLang, openedFromLanguages]);
+    const lang = params.get("name");
+    const openedFromLanguages = pathname === "/languages";
 
-  const combobox = useCombobox({
-    onDropdownClose: () => combobox.resetSelectedOption(),
-  });
+    if (lang && openedFromLanguages) {
+      setSearch(lang);
+      setValue(lang);
+    }
+  }, [params, pathname]);
 
   return (
     <Combobox

@@ -9,6 +9,7 @@ function termDataQuery(key) {
     },
     refetchOnWindowFocus: false,
     placeholderData: keepPreviousData,
+    enabled: key !== null,
   };
 }
 

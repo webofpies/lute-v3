@@ -1,13 +1,12 @@
 "Book endpoints"
 
 import os
-from urllib.parse import urlparse, quote
 
 from flask import Blueprint, jsonify, send_file, current_app
 
 from lute.db import db
 from lute.models.book import Text, Book as BookModel
-from lute.models.repositories import BookRepository, LanguageRepository
+from lute.models.repositories import BookRepository
 from lute.read.service import Service as ReadService
 from lute.read.render.service import Service as RenderService
 from lute.book.stats import Service as StatsService
@@ -54,28 +53,13 @@ def book_info(bookid):
         text = db.session.get(Text, book.current_tx_id)
         page_num = text.order
 
-    lang = book.language
-    lang_repo = LanguageRepository(db.session)
-    term_dicts = lang_repo.all_dictionaries()[lang.id]["term"]
-    sentence_dicts = lang_repo.all_dictionaries()[lang.id]["sentence"]
-
-    term_dicts = [
-        _get_dict_info(dict, index, lang) for index, dict in enumerate(term_dicts)
-    ]
-    sentence_dicts = [
-        _get_dict_info(dict, index, lang) for index, dict in enumerate(sentence_dicts)
-    ]
-
     book_dict = {
         "id": book.id,
         "title": book.title,
         "source": book.source_uri,
         "pageCount": book.page_count,
         "currentPage": page_num,
-        "languageId": lang.id,
-        "isRightToLeft": lang.right_to_left,
-        "showPronunciation": lang.show_romanization,
-        "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
+        "languageId": book.language.id,
         "audio": (
             {
                 "name": book.audio_filename,
@@ -169,24 +153,3 @@ def _find_book(bookid):
     "Find book from db."
     br = BookRepository(db.session)
     return br.find(bookid)
-
-
-def _get_dict_info(dictURL, dictID, lang):
-    url = dictURL.replace("*", "")
-    # label = url if len(url) <= 10 else f"{url[:10]}..."
-    hostname = urlparse(url).hostname
-    label = hostname.split("www.")[-1] if hostname.startswith("www.") else hostname
-
-    if "www.bing.com" in url:
-        bing_hash = url.replace("https://www.bing.com/images/search?", "")
-        url = "http://localhost:5001/bing/search/{}/###/{}".format(
-            lang.id, quote(bing_hash, safe="()*!.'")
-        )
-
-    return {
-        "id": dictID,
-        "url": url,
-        "label": label,
-        "isExternal": dictURL[0] == "*",
-        "hostname": hostname,
-    }

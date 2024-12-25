@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useForm } from "@mantine/form";
 import {
   Button,
   Group,
@@ -55,37 +54,15 @@ const radios = [
   },
 ];
 
-function TermForm({ termData, translationFieldRef, book, onSetActiveTerm }) {
+function TermForm({
+  form,
+  language = { id: 0, isRightToLeft: false, showPronunciation: true },
+  translationFieldRef = {},
+  onSetActiveTerm = null,
+  loadDictsButton = null,
+}) {
   const { data: tags } = useQuery(tagSuggestionsQuery());
-  const dir = book.isRightToLeft ? "rtl" : "ltr";
-
-  const form = useForm({
-    initialValues: {
-      ...termData,
-      status: String(termData.status),
-    },
-    enhanceGetInputProps: ({ form, field }) => {
-      if (field === "syncStatus") {
-        const parentsCount = form.getValues().parents.length;
-
-        if (!parentsCount || parentsCount > 1)
-          return {
-            disabled: true,
-            checked: false,
-          };
-
-        return { disabled: false, checked: form.getValues().syncStatus };
-      }
-    },
-
-    // validate: {
-    //   name: hasLength({ min: 2, max: 10 }, "Name must be 2-10 characters long"),
-    //   job: isNotEmpty("Enter your current job"),
-    //   email: isEmail("Invalid email"),
-    //   favoriteColor: matches(/^#([0-9a-f]{3}){1,2}$/, "Enter a valid hex color"),
-    //   age: isInRange({ min: 18, max: 99 }, "You must be 18-99 years old to register"),
-    // },
-  });
+  const dir = language.isRightToLeft ? "rtl" : "ltr";
 
   return (
     <form>
@@ -94,17 +71,18 @@ function TermForm({ termData, translationFieldRef, book, onSetActiveTerm }) {
           wrapperProps={{ dir: dir }}
           placeholder="Term"
           withAsterisk
+          rightSection={loadDictsButton}
           key={form.key("text")}
           {...form.getInputProps("text")}
         />
         <TagsField
           form={form}
-          tags={termData.parents}
-          activeTermText={termData.originalText}
+          tags={form.getValues().parents}
+          activeTermText={form.getValues().originalText}
           onSetActiveTerm={onSetActiveTerm}
-          book={book}
+          languageId={language.id}
         />
-        {book.showPronunciation && (
+        {language.showPronunciation && (
           <TextInput
             placeholder="Pronunciation"
             key={form.key("romanization")}
@@ -130,11 +108,13 @@ function TermForm({ termData, translationFieldRef, book, onSetActiveTerm }) {
             key={form.key("translation")}
             {...form.getInputProps("translation")}
           />
-          {termData.currentImg && (
-            <TermImage src={`http://localhost:5001${termData.currentImg}`} />
+          {form.getValues().currentImg && (
+            <TermImage
+              src={`http://localhost:5001${form.getValues().currentImg}`}
+            />
           )}
         </div>
-        <Group gap="md" style={{ rowGap: rem(7) }}>
+        <Group dir="ltr" gap="md" style={{ rowGap: rem(7) }}>
           <Radio.Group
             name="status"
             key={form.key("status")}
