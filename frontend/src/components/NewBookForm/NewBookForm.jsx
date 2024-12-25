@@ -30,8 +30,10 @@ import classes from "./NewBookForm.module.css";
 
 function NewBookForm({ openDrawer }) {
   const [params] = useSearchParams();
-  const definedLang = params.get("def");
-  const definedOptionsQuery = useQuery(definedOptionsObj(definedLang));
+  const lang = params.get("name");
+  const langId = params.get("id");
+  const definedLang = lang && langId !== "0";
+  const definedOptionsQuery = useQuery(definedOptionsObj(lang));
 
   const dir = definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr";
 
