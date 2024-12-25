@@ -14,7 +14,11 @@ function TranslationPane({ term, language, onSetActiveTerm }) {
   const form = useTermForm(term);
 
   useEffect(() => {
-    form.setValues({ ...term, status: String(term.status) });
+    form.setValues({
+      ...term,
+      status: String(term.status),
+      translation: term.translation ?? undefined,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [term]);
 

@@ -43,6 +43,9 @@ function BookView() {
   const [drawerOpened, { open: drawerOpen, close: drawerClose }] =
     useDisclosure(false);
 
+  const showTranslationPane = activeTerm.data && term && !openThemeForm;
+  const showThemeForm = openThemeForm && !editMode;
+
   return (
     <>
       <DrawerMenu
@@ -90,14 +93,14 @@ function BookView() {
               order={2}
               collapsible={true}
               minSize={5}>
-              {activeTerm.data && !openThemeForm && (
+              {showTranslationPane && (
                 <TranslationPane
                   term={term}
                   language={language}
                   onSetActiveTerm={setActiveTerm}
                 />
               )}
-              {openThemeForm && !editMode && (
+              {showThemeForm && (
                 <Group justify="center" align="center" h="100%" p={10}>
                   <ThemeForm />
                 </Group>
