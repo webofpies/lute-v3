@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { rem, Tabs, Text, Tooltip } from "@mantine/core";
+import { Tabs, Text, Tooltip } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
 import Iframe from "./Iframe";
 import Sentences from "../Sentences/Sentences";
@@ -84,7 +84,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
               setActiveTab("imagesTab");
               handleFocus();
             }}>
-            <IconPhoto size={rem(18)} />
+            <IconPhoto size={24} />
           </Tabs.Tab>
         </div>
       </Tabs.List>
