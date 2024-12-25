@@ -12,7 +12,7 @@ function DictTabExternal({ dict, term, innerRef }) {
       variant="default"
       fw="normal"
       leftSection={<DictFavicon hostname={dict.hostname} />}
-      rightSection={<IconExternalLink size={rem(14)} stroke={1.6} />}
+      rightSection={<IconExternalLink size={16} stroke={1.6} />}
       onClick={() => handleExternal(getLookupURL(dict.url, term))}>
       {dict.label}
     </Button>
