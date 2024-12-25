@@ -90,7 +90,7 @@ function BookView() {
               order={2}
               collapsible={true}
               minSize={5}>
-              {term && !openThemeForm && (
+              {activeTerm.data && !openThemeForm && (
                 <TranslationPane
                   term={term}
                   language={language}
