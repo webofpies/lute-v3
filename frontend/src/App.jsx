@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Center, createTheme, Loader, MantineProvider } from "@mantine/core";
+import { createTheme, MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { NavigationProgress } from "@mantine/nprogress";
@@ -14,14 +14,14 @@ import "./highlight.css";
 
 import Layout from "./pages/Layout";
 import Homepage from "./pages/Homepage";
-import BookView from "./components/BookView/BookView";
 import SoftwareInfo from "./components/Modals/SoftwareInfo";
 import Error from "./components/Error/Error";
-import NewTerm from "./pages/NewTerm";
+import PageSpinner from "./components/PageSpinner/PageSpinner";
 
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
+import { loader as termsLoader } from "./queries/term";
 
 const queryClient = new QueryClient();
 
@@ -30,12 +30,8 @@ const Languages = lazy(() => import("./pages/Languages"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
 const Settings = lazy(() => import("./pages/Settings"));
-
-const pageSpinner = (
-  <Center>
-    <Loader />
-  </Center>
-);
+const NewTerm = lazy(() => import("./pages/NewTerm"));
+const BookView = lazy(() => import("./components/BookView/BookView"));
 
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
@@ -53,7 +49,7 @@ const router = createBrowserRouter([
       {
         path: "/books/new",
         element: (
-          <Suspense fallback={pageSpinner}>
+          <Suspense fallback={<PageSpinner />}>
             <NewBook />
           </Suspense>
         ),
@@ -62,7 +58,7 @@ const router = createBrowserRouter([
       {
         path: "/languages",
         element: (
-          <Suspense fallback={pageSpinner}>
+          <Suspense fallback={<PageSpinner />}>
             <Languages />
           </Suspense>
         ),
@@ -71,16 +67,16 @@ const router = createBrowserRouter([
       {
         path: "/terms/new",
         element: (
-          <Suspense fallback={pageSpinner}>
+          <Suspense fallback={<PageSpinner />}>
             <NewTerm />
           </Suspense>
         ),
-        loader: languagesLoader(queryClient),
+        loader: termsLoader(queryClient),
       },
       {
         path: "/settings/",
         element: (
-          <Suspense fallback={pageSpinner}>
+          <Suspense fallback={<PageSpinner />}>
             <Settings />
           </Suspense>
         ),
@@ -89,7 +85,7 @@ const router = createBrowserRouter([
       {
         path: "/settings/shortcuts",
         element: (
-          <Suspense fallback={pageSpinner}>
+          <Suspense fallback={<PageSpinner />}>
             <Shortcuts />
           </Suspense>
         ),
@@ -97,7 +93,7 @@ const router = createBrowserRouter([
       {
         path: "/stats",
         element: (
-          <Suspense fallback={pageSpinner}>
+          <Suspense fallback={<PageSpinner />}>
             <Statistics />
           </Suspense>
         ),
@@ -106,7 +102,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/books/:id/pages/:page",
-    element: <BookView />,
+    element: (
+      <Suspense fallback={<PageSpinner />}>
+        <BookView />
+      </Suspense>
+    ),
     loader: bookLoader(queryClient),
   },
 ]);

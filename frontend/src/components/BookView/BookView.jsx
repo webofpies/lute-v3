@@ -1,19 +1,20 @@
-import { useRef, useState } from "react";
+import { lazy, Suspense, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useSearchParams } from "react-router-dom";
-import { Group } from "@mantine/core";
+import { Group, Loader } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ReadPane from "../ReadPane/ReadPane";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import DrawerMenu from "../DrawerMenu/DrawerMenu";
-import ThemeForm from "../ThemeForm/ThemeForm";
 import { useInitialize } from "../../hooks/book";
 import { bookQuery, pageQuery } from "../../queries/book";
 import { paneResizeStorage } from "../../misc/utils";
 import { languageInfoQuery } from "../../queries/language";
 import { termDataQuery } from "../../queries/term";
 import classes from "./BookView.module.css";
+
+const ThemeForm = lazy(() => import("../ThemeForm/ThemeForm"));
 
 function BookView() {
   const { id, page: pageNum } = useParams();
@@ -102,7 +103,9 @@ function BookView() {
               )}
               {showThemeForm && (
                 <Group justify="center" align="center" h="100%" p={10}>
-                  <ThemeForm />
+                  <Suspense fallback={<Loader />}>
+                    <ThemeForm />
+                  </Suspense>
                 </Group>
               )}
             </Panel>

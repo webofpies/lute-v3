@@ -1,4 +1,17 @@
 import { keepPreviousData } from "@tanstack/react-query";
+import { definedListQueryObj } from "./language";
+
+function loader(queryClient) {
+  return async () => {
+    const defList = definedListQueryObj();
+
+    const defListData =
+      queryClient.getQueryData(defList.queryKey) ??
+      (await queryClient.fetchQuery(defList));
+
+    return { defListData };
+  };
+}
 
 function termDataQuery(key) {
   return {
@@ -50,4 +63,10 @@ function tagSuggestionsQuery() {
   };
 }
 
-export { termDataQuery, popupQuery, termSuggestionsQuery, tagSuggestionsQuery };
+export {
+  termDataQuery,
+  popupQuery,
+  termSuggestionsQuery,
+  tagSuggestionsQuery,
+  loader,
+};

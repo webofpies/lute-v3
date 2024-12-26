@@ -1,6 +1,6 @@
-import { Center, Loader } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import DataTablePaginated from "../DataTable/DataTablePaginated";
+import PageSpinner from "../PageSpinner/PageSpinner";
 
 const NUM_OF_ITEMS_PER_PAGE = 8;
 
@@ -19,9 +19,7 @@ export default function BookTable() {
   return (
     <>
       {isFetching || isPending ? (
-        <Center>
-          <Loader size="xl" />
-        </Center>
+        <PageSpinner />
       ) : (
         <>
           <DataTablePaginated data={data} numItems={NUM_OF_ITEMS_PER_PAGE} />
