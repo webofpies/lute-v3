@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigation, useSearchParams } from "react-router-dom";
 import { nprogress } from "@mantine/nprogress";
 import { getFromLocalStorage, getPressedKeysAsString } from "../misc/utils";
-import { startHoverMode } from "../lute";
+import { resetFocusActiveSentence, startHoverMode } from "../lute";
 import { settingsQuery } from "../queries/settings";
 import {
   // handleAddBookmark,
@@ -94,6 +94,7 @@ function useInitialize(book, language, setActiveTerm, setOpenThemeForm) {
           setSearchParams(searchParams);
           startHoverMode();
           setActiveTerm({ data: null });
+          resetFocusActiveSentence();
           setOpenThemeForm(false);
         },
 
@@ -131,10 +132,15 @@ function useInitialize(book, language, setActiveTerm, setOpenThemeForm) {
         // [settings.hotkey_Bookmark]: () => handleAddBookmark(book),
         [settings.hotkey_EditPage]: () => {
           setActiveTerm({ data: null });
+          resetFocusActiveSentence();
           setSearchParams({ edit: "true" });
         },
 
-        [settings.hotkey_NextTheme]: () => setOpenThemeForm((v) => !v),
+        [settings.hotkey_NextTheme]: () => {
+          setOpenThemeForm((v) => !v);
+          setActiveTerm({ data: null });
+          resetFocusActiveSentence();
+        },
         [settings.hotkey_ToggleHighlight]: () =>
           handleToggleHighlights(dispatch),
         [settings.hotkey_ToggleFocus]: () => handleToggleFocusMode(dispatch),

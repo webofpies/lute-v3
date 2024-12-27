@@ -21,6 +21,7 @@ import MarkRestAsKnownButton from "./MarkAsKnownButton";
 import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
+import { resetFocusActiveSentence } from "../../lute";
 
 function ReadHeader({
   onDrawerOpen,
@@ -38,6 +39,7 @@ function ReadHeader({
 
   function handleActivateEdit() {
     onSetActiveTerm({ data: null });
+    resetFocusActiveSentence();
     setSearchParams({ edit: "true" });
   }
 

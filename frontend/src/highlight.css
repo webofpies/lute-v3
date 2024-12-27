@@ -38,26 +38,26 @@
   --lute-color-text-status: var(--lute-text-color-status99);
 }
 
-.highlight [data-highlight-type="bg"],
+.highlight:not(.term-active) [data-highlight-type="bg"],
 [data-highlight-type="bg"].wordhover {
   background-color: var(--lute-color-highlight-status);
   color: var(--lute-color-text-status);
 }
 
-.highlight [data-highlight-type="text"],
+.highlight:not(.term-active) [data-highlight-type="text"],
 [data-highlight-type="text"].wordhover {
   color: var(--lute-color-highlight-status);
   background-color: transparent;
 }
 
-.highlight [data-highlight-type="dashed"],
+.highlight:not(.term-active) [data-highlight-type="dashed"],
 [data-highlight-type="dashed"].wordhover {
   text-decoration: 2px underline dashed var(--lute-color-highlight-status);
   text-underline-offset: 2px;
   background-color: transparent;
 }
 
-.highlight [data-highlight-type="solid"],
+.highlight:not(.term-active) [data-highlight-type="solid"],
 [data-highlight-type="solid"].wordhover {
   text-decoration: 2px underline solid var(--lute-color-highlight-status);
   text-underline-offset: 2px;
@@ -73,8 +73,8 @@
   text-decoration: underline 2px solid var(--lute-color-highlight-kwordmarked);
   text-underline-offset: 2px;
 }
-
-.textitem.newmultiterm {
+/* data property for equal specificity with above styles */
+.textitem.newmultiterm[data-highlight-type] {
   background: var(--lute-color-highlight-multiterm);
   border-radius: 0;
   color: var(--lute-text-color-multiterm);

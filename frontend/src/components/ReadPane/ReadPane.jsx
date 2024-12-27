@@ -6,7 +6,7 @@ import Player from "../Player/Player";
 import Toolbar from "../Toolbar/Toolbar";
 import TheText from "../TheText/TheText";
 import classes from "../BookView/BookView.module.css";
-import { handleClickOutside } from "../../lute";
+import { handleClickOutside, resetFocusActiveSentence } from "../../lute";
 import EditTheText from "../EditTheText/EditTheText";
 import EditHeader from "../EditHeader/EditHeader";
 import ContextMenu from "../ContextMenu/ContextMenu";
@@ -16,6 +16,7 @@ function ReadPane({
   page,
   state,
   dispatch,
+  activeTerm,
   onSetActiveTerm,
   onDrawerOpen,
   isRtl,
@@ -25,6 +26,18 @@ function ReadPane({
   const contextMenuAreaRef = useRef(null);
 
   const editMode = params.get("edit") === "true";
+
+  const textContainerClass = `textcontainer
+                              ${state.highlights ? "highlight" : ""}
+                              ${activeTerm.data ? "term-active" : ""}`;
+
+  const textContainerStyle = {
+    "--lute-text-font-size": `${state.fontSize}rem`,
+    "--lute-text-column-count": state.columnCount,
+    "--lute-text-line-height": `${state.lineHeight}px`,
+    "width": `${state.focusMode ? state.textWidth : 100}%`,
+    "marginInline": state.focusMode && "auto",
+  };
 
   return (
     <>
@@ -55,17 +68,12 @@ function ReadPane({
           const res = handleClickOutside(e);
           if (!res) return;
           onSetActiveTerm(res);
+          resetFocusActiveSentence();
         }}>
         <div
           dir={isRtl ? "rtl" : "ltr"}
-          className={`textcontainer ${state.highlights ? "highlight" : ""}`}
-          style={{
-            "--lute-text-font-size": `${state.fontSize}rem`,
-            "--lute-text-column-count": state.columnCount,
-            "--lute-text-line-height": `${state.lineHeight}px`,
-            "width": `${state.focusMode ? state.textWidth : 100}%`,
-            "marginInline": state.focusMode && "auto",
-          }}>
+          className={textContainerClass.replace(/\s+/g, " ")}
+          style={textContainerStyle}>
           {editMode ? (
             <EditTheText text={page.text} />
           ) : (

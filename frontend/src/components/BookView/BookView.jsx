@@ -71,6 +71,7 @@ function BookView() {
             isRtl={language.isRightToLeft}
             state={state}
             dispatch={dispatch}
+            activeTerm={activeTerm}
             onSetActiveTerm={setActiveTerm}
             onDrawerOpen={drawerOpen}
           />

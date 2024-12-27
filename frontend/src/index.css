@@ -94,6 +94,10 @@ body,
   border-radius: 2px;
 }
 
+.ghosted {
+  opacity: 0.2;
+}
+
 @keyframes flash-animation {
   0% {
     /* background-color: #fff; */

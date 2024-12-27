@@ -13,6 +13,8 @@ import {
   handleMouseDown,
   handleMouseOver,
   handleMouseUp,
+  focusActiveSentence,
+  resetFocusActiveSentence,
 } from "../../lute";
 import { applyLuteHighlights } from "../../misc/actions";
 import { settingsQuery } from "../../queries/settings";
@@ -31,6 +33,10 @@ function TheText({ paragraphs, onSetActiveTerm }) {
     // do nothing with the form
     if (!termData || termData.type === "copy") return;
     onSetActiveTerm(termData);
+
+    termData.data
+      ? focusActiveSentence(termData.textitems)
+      : resetFocusActiveSentence();
   }
 
   return (

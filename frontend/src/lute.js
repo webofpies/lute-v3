@@ -69,6 +69,7 @@ function handleMouseUp(e) {
     data: selectedMultiTerm.text,
     langID: selectedMultiTerm.langID,
     type: "multi",
+    textitems: selected,
   };
 }
 
@@ -107,6 +108,7 @@ function singleWordClicked(e) {
     return {
       data: parseInt(e.target.dataset.wid),
       type: "single",
+      textitems: [e.target],
     };
   }
 
@@ -146,6 +148,29 @@ function getSelectedInRange(startEl, endEl) {
   return selected;
 }
 
+function focusActiveSentence(textitems) {
+  // make all textitems ghosted, then remove it from active sentence
+  Array.from(document.querySelectorAll(".textitem")).forEach((t) =>
+    t.classList.add("ghosted")
+  );
+
+  const first = Number(textitems[0].dataset.sentenceId);
+  const last = Number(textitems.at(-1).dataset.sentenceId);
+
+  Array.from({ length: last - first + 1 }, (_, index) => first + index).forEach(
+    (id) =>
+      document
+        .querySelectorAll(`[data-sentence-id="${id}"]`)
+        .forEach((t) => t.classList.remove("ghosted"))
+  );
+}
+
+function resetFocusActiveSentence() {
+  Array.from(document.querySelectorAll(".textitem")).forEach((t) =>
+    t.classList.remove("ghosted")
+  );
+}
+
 export {
   startHoverMode,
   handleMouseDown,
@@ -153,4 +178,6 @@ export {
   handleMouseUp,
   hoverOut,
   handleClickOutside,
+  focusActiveSentence,
+  resetFocusActiveSentence,
 };
