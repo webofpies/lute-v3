@@ -18,14 +18,14 @@ import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
 import { settingsQuery } from "../../queries/settings";
 import classes from "./DrawerMenu.module.css";
 
-function DrawerMenu({ opened, close, onOpenThemeForm }) {
+function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
   const { data: settings } = useQuery(settingsQuery());
 
   return (
     <Drawer.Root
       classNames={{ content: classes.drawer }}
-      opened={opened}
-      onClose={close}
+      opened={drawerOpen}
+      onClose={onClose}
       size="250"
       transitionProps={{
         duration: 100,
@@ -51,12 +51,12 @@ function DrawerMenu({ opened, close, onOpenThemeForm }) {
             <Group gap={5}>
               <SchemeToggleButton
                 colors={settings.highlights}
-                onCloseDrawer={close}
+                onCloseDrawer={onClose}
               />
               <ActionIcon
                 onClick={() => {
-                  onOpenThemeForm(true);
-                  close();
+                  onThemeFormOpen((v) => !v);
+                  onClose();
                 }}
                 size="lg"
                 variant="default">

@@ -48,7 +48,7 @@ const initialState = {
   textWidth: 50,
 };
 
-function useInitialize(book, language, setActiveTerm, setOpenThemeForm) {
+function useInitialize(book, language, setActiveTerm, onOpenThemeForm) {
   const { data: settings } = useQuery(settingsQuery());
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -95,7 +95,7 @@ function useInitialize(book, language, setActiveTerm, setOpenThemeForm) {
           startHoverMode();
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
-          setOpenThemeForm(false);
+          onOpenThemeForm(false);
         },
 
         [settings.hotkey_PrevWord]: () => moveCursor(".word", prev),
@@ -137,7 +137,7 @@ function useInitialize(book, language, setActiveTerm, setOpenThemeForm) {
         },
 
         [settings.hotkey_NextTheme]: () => {
-          setOpenThemeForm((v) => !v);
+          onOpenThemeForm((v) => !v);
           setActiveTerm({ data: null });
           resetFocusActiveSentence();
         },

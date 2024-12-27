@@ -31,7 +31,7 @@ const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
 const Settings = lazy(() => import("./pages/Settings"));
 const NewTerm = lazy(() => import("./pages/NewTerm"));
-const BookView = lazy(() => import("./components/BookView/BookView"));
+const Book = lazy(() => import("./pages/Book"));
 
 const theme = createTheme({
   fontFamily: "Rubik, sans-serif",
@@ -104,7 +104,7 @@ const router = createBrowserRouter([
     path: "/books/:id/pages/:page",
     element: (
       <Suspense fallback={<PageSpinner />}>
-        <BookView />
+        <Book />
       </Suspense>
     ),
     loader: bookLoader(queryClient),
