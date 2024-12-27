@@ -259,7 +259,9 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
         self.visit("/")
         self.browser.find_by_css("#menu_terms").mouse_over()
         self.browser.find_by_id("term_index").first.click()
-        css = "#termtable tbody tr"
+
+        # clear any filters!
+        self.browser.find_by_id("showHideFilters").first.click()
 
         # The last column of the table is the "date added", but that's
         # a hassle to check, so ignore it.
@@ -271,8 +273,10 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
                 return ret
             return "; ".join(rowtext[:-1]).strip()
 
+        css = "#termtable tbody tr"
         rows = list(self.browser.find_by_css(css))
-        return "\n".join([_to_string(row) for row in rows])
+        rowstring = [_to_string(row) for row in rows]
+        return "\n".join(rowstring)
 
     ################################3
     # Reading/rendering
@@ -335,6 +339,36 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
         ac = ac.key_up(Keys.SHIFT)
         ac.perform()
 
+    def shift_drag(self, fromword, toword):
+        "Shift-drag over words."
+        # https://stackoverflow.com/questions/27775759/
+        #   send-keys-control-click-in-selenium-with-python-bindings
+        # pylint: disable=protected-access
+        [fromel, toel] = [
+            self._get_element_for_word(w)._element for w in [fromword, toword]
+        ]
+        actions = ActionChains(self.browser.driver)
+        actions.key_down(Keys.SHIFT)
+        actions.click_and_hold(fromel)
+        actions.move_to_element(toel)
+        actions.key_up(Keys.SHIFT)
+        actions.release()
+        actions.perform()
+
+    def drag(self, fromword, toword):
+        "drag over words."
+        # https://stackoverflow.com/questions/27775759/
+        #   send-keys-control-click-in-selenium-with-python-bindings
+        # pylint: disable=protected-access
+        [fromel, toel] = [
+            self._get_element_for_word(w)._element for w in [fromword, toword]
+        ]
+        actions = ActionChains(self.browser.driver)
+        actions.click_and_hold(fromel)
+        actions.move_to_element(toel)
+        actions.release()
+        actions.perform()
+
     def fill_reading_bulk_edit_form(self, updates=None):
         """
         Click a word in the reading frame, fill in the term form iframe.
@@ -362,9 +396,25 @@ class LuteTestClient:  # pylint: disable=too-many-public-methods
 
     def press_hotkey(self, hotkey):
         "Send a hotkey."
+        key_to_code_map = {
+            "escape": "Escape",
+            "1": "Digit1",
+            "2": "Digit2",
+            "3": "Digit3",
+            "4": "Digit4",
+            "5": "Digit5",
+            "arrowdown": "ArrowDown",
+            "arrowup": "ArrowUp",
+            "h": "KeyH",
+            "i": "KeyI",
+            "m": "KeyM",
+            "w": "KeyW",
+        }
+        if hotkey not in key_to_code_map:
+            raise RuntimeError(f"Missing {hotkey} in acceptance test map")
         event_parts = [
             "type: 'keydown'",
-            f"key: '{hotkey.lower()}'",
+            f"code: '{key_to_code_map[hotkey]}'",
         ]
         if hotkey in ["C", "T"]:
             event_parts.append("shiftKey: true")

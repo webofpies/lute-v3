@@ -5,6 +5,8 @@ Book mapping checks.
 from datetime import datetime
 import pytest
 from lute.models.book import Book, BookTag, TextBookmark, BookStats
+from lute.read.service import Service
+from lute.book.stats import Service as BookStatsService
 from lute.db import db
 from tests.dbasserts import assert_sql_result, assert_record_count_equals
 
@@ -51,14 +53,28 @@ def test_delete_book(empty_db, simple_book):
     db.session.add(b)
     db.session.commit()
 
+    service = Service(db.session)
+    service.mark_page_read(b.id, 1, False)
+    service.mark_page_read(b.id, 1, True)
+
+    bss = BookStatsService(db.session)
+    bss.refresh_stats()
+
+    check_tables = ["books", "bookstats", "texts", "sentences", "booktags"]
+    for t in check_tables:
+        assert_record_count_equals(t, 1, f"{t} created")
+
     db.session.delete(b)
     db.session.commit()
 
-    for t in ["books", "texts", "sentences", "booktags"]:
+    for t in check_tables:
         assert_record_count_equals(t, 0, f"{t} deleted")
 
     sql = "select * from tags2"
     assert_sql_result(sql, ["1; hola; "], "tags2 remain")
+
+    sql = "select WrTxID, WrWordCount from wordsread"
+    assert_sql_result(sql, ["None; 2", "None; 2"], "words read remains.")
 
 
 def test_save_and_delete_created_book(english):
