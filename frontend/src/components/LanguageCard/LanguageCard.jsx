@@ -4,7 +4,7 @@ import classes from "./LanguageCard.module.css";
 export function LanguageCard({ data }) {
   return (
     <Stack gap="xs">
-      <Text fz="sm" className={classes.label} lh={1} fw={500}>
+      <Text fz="sm" className={classes.label} lh={1.2} fw={500} lineClamp={1}>
         {data.name}
       </Text>
       <Group wrap="nowrap">

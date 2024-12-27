@@ -27,7 +27,7 @@ function LanguageCards({ label, description }) {
       value={JSON.stringify({ name: name, id: params.get("id") })}
       onChange={handleLanguageChange}>
       <ScrollArea type="scroll" offsetScrollbars="x">
-        <Group gap={2} wrap="nowrap">
+        <Group gap={2} wrap="nowrap" align="stretch">
           {languages
             .toSorted((a, b) => a.name.localeCompare(b.name))
             .map((data) => (
