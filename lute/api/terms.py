@@ -45,9 +45,8 @@ def popup_content(termid):
 
     return jsonify(
         {
-            "term": d["term"].text,
-            "translation": d["term"].translation,
-            "romanization": d["term"].romanization,
+            "term": {"text": d["term"].text, "romanization": d["term"].romanization},
+            "translation": d["term_translation"],
             "tags": d["term_tags"],
             "images": d["term_images"],
             "parentData": d["parentdata"],

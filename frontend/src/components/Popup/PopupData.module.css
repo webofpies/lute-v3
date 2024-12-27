@@ -3,21 +3,23 @@
   font-size: 0.95rem;
 }
 
+.section {
+  margin-top: 1rem;
+}
+
 .term {
   font-weight: 700;
 }
 
 .translation {
+  margin-top: 0.3rem;
   white-space: break-spaces;
 }
 
 .image {
+  display: block;
   max-width: 150px;
   max-height: 150px;
   width: auto;
   height: auto;
-}
-
-.td {
-  vertical-align: top;
 }

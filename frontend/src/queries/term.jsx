@@ -36,7 +36,6 @@ function popupQuery(id) {
       return await response.json();
     },
     enabled: id !== null,
-    staleTime: Infinity,
   };
 }
 

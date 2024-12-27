@@ -1,6 +1,6 @@
 // lute\templates\read\termpopup.html
 
-import { Pill, PillGroup } from "@mantine/core";
+import { Group, Pill, PillGroup, Tooltip } from "@mantine/core";
 import PopupDataSection from "./PopupDataSection";
 import classes from "./PopupData.module.css";
 
@@ -8,58 +8,40 @@ export default function PopupData({ data }) {
   return (
     data && (
       <div className={classes.container}>
-        <p className={classes.term}>
-          {data.term} {data.parentTerms && `(${data.parentTerms})`}
-        </p>
-
-        {data.romanization && <em>{data.romanization}</em>}
-
-        {data.images.map((img) => {
-          return (
+        <Group gap={5} wrap="nowrap">
+          <span className={classes.term}>
+            {data.term.text} {data.parentTerms && `(${data.parentTerms})`}
+          </span>
+          {data.tags.length > 0 && (
+            <PillGroup gap={4}>
+              {data.tags.map((tag) => (
+                <Pill key={tag}>{tag}</Pill>
+              ))}
+            </PillGroup>
+          )}
+        </Group>
+        {data.term.romanization && <em>{data.term.romanization}</em>}
+        {Object.entries(data.images).map(([img, tooltip]) => (
+          <Tooltip key={img} label={tooltip}>
             <img
-              key={img}
               className={classes.image}
               src={`http://localhost:5001${img}`}
             />
-          );
-        })}
-
+          </Tooltip>
+        ))}
         {data.translation && (
           <p className={classes.translation}>{data.translation}</p>
         )}
 
-        {data.tags && (
-          <PillGroup>
-            {data.tags.map((tag) => (
-              <Pill key={tag}>{tag}</Pill>
-            ))}
-          </PillGroup>
-        )}
-
         {data.parentData.length > 0 && (
-          <table>
-            {data.componentData.length > 0 && (
-              <thead>
-                <tr>
-                  <td>Parents</td>
-                </tr>
-              </thead>
-            )}
-            <PopupDataSection data={data.parentData} />
-          </table>
+          <PopupDataSection data={data.parentData} />
         )}
 
         {data.componentData.length > 0 && (
-          <table>
-            {data.parentData.length > 0 && (
-              <thead>
-                <tr>
-                  <td>Components</td>
-                </tr>
-              </thead>
-            )}
+          <>
+            <p>Components</p>
             <PopupDataSection data={data.componentData} />
-          </table>
+          </>
         )}
       </div>
     )
