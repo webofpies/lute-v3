@@ -9,6 +9,7 @@ import { NavigationProgress } from "@mantine/nprogress";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/nprogress/styles.css";
+import "mantine-react-table/styles.css";
 import "./index.css";
 import "./highlight.css";
 
@@ -18,6 +19,7 @@ import SoftwareInfo from "./components/Modals/SoftwareInfo";
 import Error from "./components/Error/Error";
 import PageSpinner from "./components/PageSpinner/PageSpinner";
 
+import { loader as homeLoader } from "./queries/home";
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
@@ -43,7 +45,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     errorElement: <Error />,
-    loader: settingsLoader(queryClient),
+    loader: homeLoader(queryClient),
     children: [
       { index: true, element: <Homepage /> },
       {

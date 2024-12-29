@@ -1,5 +1,6 @@
-import { Center, Loader, Progress, Tooltip } from "@mantine/core";
-import { useQuery } from "@tanstack/react-query";
+import { memo } from "react";
+import { Progress, Tooltip } from "@mantine/core";
+import classes from "./StatsBar.module.css";
 
 const labels = {
   0: "Unknown",
@@ -11,68 +12,25 @@ const labels = {
   99: "Well Known or Ignored",
 };
 
-function StatsBar({ book }) {
-  const { isFetching, error, data } = useQuery({
-    queryKey: ["bookStats", book.id],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/books/${book.id}/stats`
-      );
-      const data = await response.json();
-
-      const statCounts = { ...data };
-      statCounts["99"] = statCounts["98"] + statCounts["99"];
-      delete statCounts["98"];
-
-      const totalCount = Object.values(statCounts).reduce(
-        (acc, val) => acc + val,
-        0
-      );
-      if (totalCount === 0) {
-        return null;
-      }
-
-      const statusPct = {};
-      Object.entries(statCounts).forEach(([key, value]) => {
-        let pct = (value * 100.0) / totalCount;
-        statusPct[key] = [value, parseInt(pct.toFixed(0))];
-      });
-
-      return statusPct;
-    },
-    staleTime: Infinity,
-  });
-
-  if (error) return "An error has occurred: " + error.message;
-
-  return isFetching ? (
-    <Center>
-      <Loader size="xs" type="dots" />
-    </Center>
-  ) : (
-    <Progress.Root
-      size={15}
-      radius={3}
-      style={{
-        justifyContent: "space-between",
-        gap: "1px",
-        backgroundColor: "#696969",
-        border: "1px solid #696969",
-      }}>
+function StatsBar({ data }) {
+  return (
+    <Progress.Root size={16} radius={10} className={classes.bar}>
       {data ? (
-        Object.entries(data).map(([status, [count, percent]], index) => {
-          const msg = `${labels[status]}: ${percent}% (${count} words)`;
-          return (
-            percent >= 1 && (
-              <Tooltip key={index} label={msg}>
-                <Progress.Section
-                  value={percent}
-                  color={`var(--lute-color-highlight-status${status}`}
-                />
-              </Tooltip>
-            )
-          );
-        })
+        Object.entries(data).map(
+          ([status, { wordCount, percentage }], index) => {
+            const msg = `${labels[status]}: ${percentage.toFixed(0)}% (${wordCount} words)`;
+            return (
+              percentage >= 1 && (
+                <Tooltip key={index} label={msg}>
+                  <Progress.Section
+                    value={percentage}
+                    color={`var(--lute-color-highlight-status${status}`}
+                  />
+                </Tooltip>
+              )
+            );
+          }
+        )
       ) : (
         <Tooltip label="Please open the book to calculate stats">
           <Progress.Section />
@@ -82,4 +40,4 @@ function StatsBar({ book }) {
   );
 }
 
-export default StatsBar;
+export default memo(StatsBar);

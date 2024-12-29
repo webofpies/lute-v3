@@ -58,4 +58,17 @@ function pageQuery(bookId, pageNum) {
   };
 }
 
-export { loader, bookQuery, pageQuery };
+function bookStatsQuery(id) {
+  return {
+    queryKey: ["bookStats", id],
+    queryFn: async () => {
+      const response = await fetch(
+        `http://localhost:5001/api/books/${id}/stats`
+      );
+      return await response.json();
+    },
+    enabled: id !== null,
+  };
+}
+
+export { loader, bookQuery, pageQuery, bookStatsQuery };

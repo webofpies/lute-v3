@@ -136,7 +136,22 @@ def book_stats(bookid):
     book = _find_book(bookid)
     svc = StatsService(db.session)
     status_distribution = svc.calc_status_distribution(book)
-    return jsonify(status_distribution)
+
+    sum_words = sum(status_distribution.values())
+    if sum_words == 0:
+        return None
+
+    status_distribution[99] = status_distribution.get(98, 0) + status_distribution.get(
+        99, 0
+    )
+    status_distribution.pop(98, "")
+
+    with_percentages = {}
+    for status, words in status_distribution.items():
+        pct = words / sum_words * 100
+        with_percentages[status] = {"wordCount": words, "percentage": pct}
+
+    return jsonify(with_percentages)
 
 
 def _get_current_page(book):
