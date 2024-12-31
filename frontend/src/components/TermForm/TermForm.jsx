@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Button,
@@ -10,8 +10,11 @@ import {
   Checkbox,
   rem,
   Text,
+  Collapse,
+  ActionIcon,
+  Tooltip,
 } from "@mantine/core";
-import { IconCheck, IconMinus } from "@tabler/icons-react";
+import { IconCheck, IconMinus, IconNotes } from "@tabler/icons-react";
 import TagsField from "../TagsField/TagsField";
 import TermImage from "./TermImage";
 import { tagSuggestionsQuery } from "../../queries/term";
@@ -64,6 +67,8 @@ function TermForm({
   const { data: tags } = useQuery(tagSuggestionsQuery);
   const dir = language.isRightToLeft ? "rtl" : "ltr";
 
+  const [notesOpened, setNotesOpened] = useState(false);
+
   return (
     <form>
       <div className={classes.container}>
@@ -107,6 +112,26 @@ function TermForm({
             placeholder="Translation"
             key={form.key("translation")}
             {...form.getInputProps("translation")}
+            rightSection={
+              <Tooltip label="Notes">
+                <ActionIcon
+                  color="dark.4"
+                  size="sm"
+                  variant="subtle"
+                  onClick={() => setNotesOpened((v) => !v)}>
+                  <IconNotes />
+                </ActionIcon>
+              </Tooltip>
+            }
+            rightSectionPointerEvents="all"
+            rightSectionProps={{
+              style: {
+                height: "fit-content",
+                alignItems: "flex-start",
+                justifyContent: "flex-end",
+                padding: 2,
+              },
+            }}
           />
           {form.getValues().currentImg && (
             <TermImage
@@ -114,6 +139,16 @@ function TermForm({
             />
           )}
         </div>
+        <Collapse in={notesOpened}>
+          <Textarea
+            resize="vertical"
+            placeholder="Notes"
+            autosize
+            spellCheck={false}
+            autoCapitalize="off"
+            minRows={3}
+          />
+        </Collapse>
         <Group dir="ltr" gap="md" style={{ rowGap: rem(7) }}>
           <Radio.Group
             name="status"
