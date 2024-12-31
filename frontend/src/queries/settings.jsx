@@ -1,24 +1,27 @@
-function loader(queryClient) {
-  return async () => {
-    const settings = settingsQuery();
+const settingsQuery = {
+  queryKey: ["settings"],
+  queryFn: async () => {
+    const res = await fetch("http://localhost:5001/api/settings");
+    return await res.json();
+  },
+};
 
-    const settingsData =
-      queryClient.getQueryData(settings.queryKey) ??
-      (await queryClient.fetchQuery(settings));
+const shortcutsQuery = {
+  queryKey: ["shortcuts"],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/shortcuts`);
+    return await response.json();
+  },
+};
 
-    return settingsData;
-  };
-}
-
-function settingsQuery() {
-  return {
-    queryKey: ["settings"],
-    queryFn: async () => {
-      const res = await fetch("http://localhost:5001/api/settings");
-      return await res.json();
-    },
-  };
-}
+const softwareInfoQuery = {
+  queryKey: ["version"],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/appinfo`);
+    return await response.json();
+  },
+  staleTime: Infinity,
+};
 
 const initialQuery = {
   queryKey: ["initialQuery"],
@@ -53,9 +56,21 @@ const deactivateDemoQuery = {
   },
 };
 
+function loader(queryClient) {
+  return async () => {
+    const settingsData =
+      queryClient.getQueryData(settingsQuery.queryKey) ??
+      (await queryClient.fetchQuery(settingsQuery));
+
+    return settingsData;
+  };
+}
+
 export {
   loader,
   settingsQuery,
+  shortcutsQuery,
+  softwareInfoQuery,
   initialQuery,
   backupQuery,
   wipeDemoDBQuery,

@@ -24,8 +24,8 @@ import {
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
 import {
-  parsersQueryObj,
-  predefinedListQueryObj,
+  parsersQuery,
+  predefinedListQuery,
   predefinedOptionsObj,
   definedOptionsObj,
 } from "../../queries/language";
@@ -48,8 +48,8 @@ function LanguageForm() {
   const definedOptionsQuery = useQuery(
     definedOptionsObj(lang, !predefinedSelected)
   );
-  const { data: predefined } = useQuery(predefinedListQueryObj());
-  const { data: parsers } = useQuery(parsersQueryObj());
+  const { data: predefined } = useQuery(predefinedListQuery);
+  const { data: parsers } = useQuery(parsersQuery);
   const { data: initial } = useQuery(initialQuery);
 
   const form = useForm({

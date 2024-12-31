@@ -52,7 +52,7 @@ function getRootElement(scheme) {
 
 function ThemeForm() {
   const { colorScheme } = useMantineColorScheme();
-  const { data: settings } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery);
   const root = getRootElement(colorScheme);
 
   const form = useForm({

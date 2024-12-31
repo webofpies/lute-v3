@@ -61,7 +61,7 @@ function TermForm({
   onSetActiveTerm = null,
   loadDictsButton = null,
 }) {
-  const { data: tags } = useQuery(tagSuggestionsQuery());
+  const { data: tags } = useQuery(tagSuggestionsQuery);
   const dir = language.isRightToLeft ? "rtl" : "ltr";
 
   return (

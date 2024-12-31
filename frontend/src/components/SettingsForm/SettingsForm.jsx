@@ -16,7 +16,7 @@ import MeCabInfo from "./MeCabInfo";
 import { settingsQuery } from "../../queries/settings";
 
 function SettingsForm() {
-  const { data: settings } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery);
 
   const form = useForm({
     mode: "controlled",

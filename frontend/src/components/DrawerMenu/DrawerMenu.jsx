@@ -19,7 +19,7 @@ import { settingsQuery } from "../../queries/settings";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
-  const { data: settings } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery);
 
   return (
     <Drawer.Root

@@ -1,18 +1,24 @@
 import { allBooksQuery } from "./books";
-import { backupQuery, initialQuery, settingsQuery } from "./settings";
+import {
+  backupQuery,
+  initialQuery,
+  settingsQuery,
+  softwareInfoQuery,
+} from "./settings";
 
 function loader(queryClient) {
   return async () => {
-    const settings = settingsQuery();
-    const allBooks = allBooksQuery();
+    const softwareInfoData =
+      queryClient.getQueryData(softwareInfoQuery.queryKey) ??
+      (await queryClient.fetchQuery(softwareInfoQuery));
 
     const settingsData =
-      queryClient.getQueryData(settings.queryKey) ??
-      (await queryClient.fetchQuery(settings));
+      queryClient.getQueryData(settingsQuery.queryKey) ??
+      (await queryClient.fetchQuery(settingsQuery));
 
     const allBooksData =
-      queryClient.getQueryData(allBooks.queryKey) ??
-      (await queryClient.fetchQuery(allBooks));
+      queryClient.getQueryData(allBooksQuery.queryKey) ??
+      (await queryClient.fetchQuery(allBooksQuery));
 
     const initialData =
       queryClient.getQueryData(initialQuery.queryKey) ??
@@ -22,7 +28,13 @@ function loader(queryClient) {
       queryClient.getQueryData(backupQuery.queryKey) ??
       (await queryClient.fetchQuery(backupQuery));
 
-    return { settingsData, allBooksData, initialData, backupData };
+    return {
+      settingsData,
+      allBooksData,
+      initialData,
+      backupData,
+      softwareInfoData,
+    };
   };
 }
 

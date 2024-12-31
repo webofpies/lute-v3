@@ -5,12 +5,12 @@ import { ActionIcon, Box, Button, Group, Select } from "@mantine/core";
 import { IconBook2, IconCheck, IconSelector } from "@tabler/icons-react";
 import {
   loadSampleStoriesQuery,
-  predefinedListQueryObj,
+  predefinedListQuery,
 } from "../../queries/language";
 
 function Welcome() {
   const queryClient = useQueryClient();
-  const { data: predefined } = useQuery(predefinedListQueryObj());
+  const { data: predefined } = useQuery(predefinedListQuery);
   const [language, setLanguage] = useState(null);
 
   async function handleLoadSampleStories() {

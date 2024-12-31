@@ -1,64 +1,52 @@
 import { keepPreviousData } from "@tanstack/react-query";
-import { definedListQueryObj } from "./language";
+import { definedListQuery } from "./language";
+
+const termDataQuery = (id) => ({
+  queryKey: ["termData", id],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/terms/${id}`);
+    return await response.json();
+  },
+  refetchOnWindowFocus: false,
+  placeholderData: keepPreviousData,
+  enabled: id !== null,
+});
+
+const popupQuery = (id) => ({
+  queryKey: ["popupData", id],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/terms/${id}/popup`);
+    return await response.json();
+  },
+  enabled: id !== null,
+});
+
+const termSuggestionsQuery = (searchText, langid) => ({
+  queryKey: ["termSuggestions", searchText, langid],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/terms/${langid}/${searchText}`
+    );
+    return await response.json();
+  },
+  enabled: searchText !== "" && langid != null,
+});
+
+const tagSuggestionsQuery = {
+  queryKey: ["tagSuggestions"],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/terms/tags`);
+    return await response.json();
+  },
+};
 
 function loader(queryClient) {
   return async () => {
-    const defList = definedListQueryObj();
-
     const defListData =
-      queryClient.getQueryData(defList.queryKey) ??
-      (await queryClient.fetchQuery(defList));
+      queryClient.getQueryData(definedListQuery.queryKey) ??
+      (await queryClient.fetchQuery(definedListQuery));
 
     return { defListData };
-  };
-}
-
-function termDataQuery(key) {
-  return {
-    queryKey: ["termData", key],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/terms/${key}`);
-      return await response.json();
-    },
-    refetchOnWindowFocus: false,
-    placeholderData: keepPreviousData,
-    enabled: key !== null,
-  };
-}
-
-function popupQuery(id) {
-  return {
-    queryKey: ["popupData", id],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/terms/${id}/popup`
-      );
-      return await response.json();
-    },
-    enabled: id !== null,
-  };
-}
-
-function termSuggestionsQuery(searchText, langid) {
-  return {
-    queryKey: ["termSuggestions", searchText, langid],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/terms/${langid}/${searchText}`
-      );
-      return await response.json();
-    },
-    enabled: searchText !== "" && langid != null,
-  };
-}
-
-function tagSuggestionsQuery() {
-  return {
-    queryKey: ["tagSuggestions"],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/terms/tags`);
-      return await response.json();
-    },
   };
 }
 

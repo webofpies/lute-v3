@@ -49,7 +49,7 @@ const initialState = {
 };
 
 function useInitialize(book, language, setActiveTerm, onOpenThemeForm) {
-  const { data: settings } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [state, dispatch] = useReducer(reducer, {

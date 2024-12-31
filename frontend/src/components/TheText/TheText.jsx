@@ -20,7 +20,7 @@ import { applyLuteHighlights } from "../../misc/actions";
 import { settingsQuery } from "../../queries/settings";
 
 function TheText({ paragraphs, onSetActiveTerm }) {
-  const { data: settings } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery);
   const colorScheme = useComputedColorScheme();
 
   useEffect(() => {

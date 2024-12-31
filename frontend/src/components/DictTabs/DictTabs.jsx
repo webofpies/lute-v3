@@ -7,7 +7,7 @@ import Sentences from "../Sentences/Sentences";
 import DictTabEmbedded from "../DictTab/DictTabEmbedded";
 import DictTabExternal from "../DictTab/DictTabExternal";
 import classes from "./DictTabs.module.css";
-import { sentencesFetchOptions } from "../../queries/sentences";
+import { sentencesQuery } from "../../queries/sentences";
 import { getLookupURL } from "../../misc/utils";
 
 function DictTabs({ language, term, translationFieldRef = {} }) {
@@ -63,9 +63,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
             id="sentencesTab"
             value="sentencesTab"
             onMouseEnter={() =>
-              queryClient.prefetchQuery(
-                sentencesFetchOptions(language.id, term)
-              )
+              queryClient.prefetchQuery(sentencesQuery(language.id, term))
             }
             onClick={() => {
               setActiveTab("sentencesTab");
@@ -111,9 +109,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
         value="sentencesTab"
         key="sentencesTab">
         {activeTab === "sentencesTab" && (
-          <Sentences
-            sentencesFetchOptions={sentencesFetchOptions(language.id, term)}
-          />
+          <Sentences langId={language.id} termId={term} />
         )}
       </Tabs.Panel>
       <Tabs.Panel

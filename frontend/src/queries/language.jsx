@@ -1,127 +1,106 @@
 import { initialQuery } from "./settings";
 
+const predefinedListQuery = {
+  queryKey: ["predefined"],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/languages/?type=predefined`
+    );
+    return await response.json();
+  },
+  staleTime: Infinity,
+};
+
+const definedListQuery = {
+  queryKey: ["defined"],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/languages`);
+    return await response.json();
+  },
+};
+
+const parsersQuery = {
+  queryKey: ["languageParsers"],
+  queryFn: async () => {
+    const response = await fetch("http://localhost:5001/api/languages/parsers");
+    return await response.json();
+  },
+  staleTime: Infinity,
+};
+
+const languageInfoQuery = (langId) => ({
+  queryKey: ["languageInfo", langId],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/languages/${langId}`
+    );
+    return await response.json();
+  },
+  enabled: langId !== null,
+});
+
+const predefinedOptionsObj = (languageName, enabled) => ({
+  queryKey: ["predefinedOptions", languageName],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/languages/new/${languageName}`
+    );
+    return await response.json();
+  },
+  staleTime: Infinity,
+  enabled: languageName !== null && enabled,
+});
+
+const definedOptionsObj = (languageName, enabled) => ({
+  queryKey: ["definedOptions", languageName],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/languages/${languageName}`
+    );
+    return await response.json();
+  },
+  enabled: languageName !== null && enabled,
+});
+
+const loadSampleStoriesQuery = (language) => ({
+  queryKey: ["sampleStories", language],
+  queryFn: async () => {
+    const res = await fetch(
+      `http://localhost:5001/api/languages/sample/${language}`
+    );
+    return await res.text();
+  },
+});
+
 function loader(queryClient) {
   return async () => {
-    const predefList = predefinedListQueryObj();
-    const defList = definedListQueryObj();
-    const parsers = parsersQueryObj();
-    const initial = initialQuery;
-
     const predefListData =
-      queryClient.getQueryData(predefList.queryKey) ??
-      (await queryClient.fetchQuery(predefList));
+      queryClient.getQueryData(predefinedListQuery.queryKey) ??
+      (await queryClient.fetchQuery(predefinedListQuery));
 
     const defListData =
-      queryClient.getQueryData(defList.queryKey) ??
-      (await queryClient.fetchQuery(defList));
+      queryClient.getQueryData(definedListQuery.queryKey) ??
+      (await queryClient.fetchQuery(definedListQuery));
 
     const parsersData =
-      queryClient.getQueryData(parsers.queryKey) ??
-      (await queryClient.fetchQuery(parsers));
+      queryClient.getQueryData(parsersQuery.queryKey) ??
+      (await queryClient.fetchQuery(parsersQuery));
 
     const initialData =
-      queryClient.getQueryData(initial.queryKey) ??
-      (await queryClient.fetchQuery(initial));
+      queryClient.getQueryData(initialQuery.queryKey) ??
+      (await queryClient.fetchQuery(initialQuery));
 
     return { predefListData, defListData, parsersData, initialData };
   };
 }
 
-function languageInfoQuery(langId) {
-  return {
-    queryKey: ["languageInfo", langId],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/${langId}`
-      );
-      return await response.json();
-    },
-    enabled: langId !== null,
-  };
-}
-
-function predefinedListQueryObj() {
-  return {
-    queryKey: ["predefined"],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/?type=predefined`
-      );
-      return await response.json();
-    },
-    staleTime: Infinity,
-  };
-}
-
-const predefinedOptionsObj = (languageName, enabled) => {
-  return {
-    queryKey: ["predefinedOptions", languageName],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/new/${languageName}`
-      );
-      return await response.json();
-    },
-    staleTime: Infinity,
-    enabled: languageName !== null && enabled,
-  };
-};
-
-function definedListQueryObj() {
-  return {
-    queryKey: ["defined"],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/languages`);
-      return await response.json();
-    },
-  };
-}
-
-const definedOptionsObj = (languageName, enabled) => {
-  return {
-    queryKey: ["definedOptions", languageName],
-    queryFn: async () => {
-      const response = await fetch(
-        `http://localhost:5001/api/languages/${languageName}`
-      );
-      return await response.json();
-    },
-    enabled: languageName !== null && enabled,
-  };
-};
-
-function parsersQueryObj() {
-  return {
-    queryKey: ["languageParsers"],
-    queryFn: async () => {
-      const response = await fetch(
-        "http://localhost:5001/api/languages/parsers"
-      );
-      return await response.json();
-    },
-    staleTime: Infinity,
-  };
-}
-
-function loadSampleStoriesQuery(language) {
-  return {
-    queryKey: ["sampleStories", language],
-    queryFn: async () => {
-      const res = await fetch(
-        `http://localhost:5001/api/languages/sample/${language}`
-      );
-      return await res.text();
-    },
-  };
-}
-
 export {
   loader,
+  definedListQuery,
+  predefinedListQuery,
+  parsersQuery,
   languageInfoQuery,
-  definedListQueryObj,
   definedOptionsObj,
-  predefinedListQueryObj,
   predefinedOptionsObj,
-  parsersQueryObj,
   loadSampleStoriesQuery,
 };

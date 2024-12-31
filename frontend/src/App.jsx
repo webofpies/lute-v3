@@ -23,6 +23,7 @@ import { loader as homeLoader } from "./queries/home";
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
+import { loader as shortcutsLoader } from "./queries/shortcuts";
 import { loader as termsLoader } from "./queries/term";
 
 const queryClient = new QueryClient();
@@ -91,6 +92,7 @@ const router = createBrowserRouter([
             <Shortcuts />
           </Suspense>
         ),
+        loader: shortcutsLoader(queryClient),
       },
       {
         path: "/stats",

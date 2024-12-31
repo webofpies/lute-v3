@@ -14,8 +14,8 @@ function Homepage() {
 
   const [booksWithStats, setBooksWithStats] = useState(null);
 
-  const { data: settings } = useQuery(settingsQuery());
-  const { data: books } = useQuery(allBooksQuery());
+  const { data: settings } = useQuery(settingsQuery);
+  const { data: books } = useQuery(allBooksQuery);
   const { data: initial } = useQuery(initialQuery);
 
   useEffect(() => {

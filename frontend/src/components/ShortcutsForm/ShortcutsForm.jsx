@@ -1,18 +1,9 @@
+import { useEffect } from "react";
 import { Button, CloseButton, Fieldset, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { getPressedKeysAsString } from "../../misc/utils";
 
-function ShortcutsForm() {
-  const { isSuccess, error, data } = useQuery({
-    queryKey: ["shortcuts"],
-    queryFn: async () => {
-      const response = await fetch(`http://localhost:5001/api/shortcuts`);
-      return await response.json();
-    },
-  });
-
+function ShortcutsForm({ data }) {
   const form = useForm({
     mode: "uncontrolled",
     onValuesChange: () => {
@@ -44,6 +35,7 @@ function ShortcutsForm() {
 
       form.initialize(values);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   function handleKeyDown(e) {
@@ -55,8 +47,6 @@ function ShortcutsForm() {
     form.setFieldValue(e.target.name, eventAsString);
   }
 
-  if (error) return "An error has occurred: " + error.message;
-
   return (
     <>
       <p>
@@ -66,46 +56,45 @@ function ShortcutsForm() {
       </p>
       <form onSubmit={form.onSubmit(console.log())}>
         <Group align="flex-stretch" wrap="nowrap">
-          {isSuccess &&
-            data.map((category) => {
-              return (
-                <Fieldset
-                  key={category.name}
-                  styles={{
-                    legend: { fontSize: "1.2rem", fontWeight: 700 },
-                  }}
-                  legend={category.name}>
-                  {category.shortcuts.map((shortcut) => {
-                    return (
-                      <Group key={shortcut.label} gap="0.5rem" align="flex-end">
-                        <TextInput
-                          {...form.getInputProps(shortcut.description)}
-                          key={shortcut.description}
-                          name={shortcut.description}
-                          onKeyDown={handleKeyDown}
-                          size="xs"
-                          label={shortcut.label}
-                          readOnly
-                          rightSection={
-                            <CloseButton
-                              aria-label="Clear input"
-                              onClick={() =>
-                                form.setFieldValue(shortcut.description, "")
-                              }
-                              style={{
-                                display: form.getValues()[shortcut.description]
-                                  ? undefined
-                                  : "none",
-                              }}
-                            />
-                          }
-                        />
-                      </Group>
-                    );
-                  })}
-                </Fieldset>
-              );
-            })}
+          {data.map((category) => {
+            return (
+              <Fieldset
+                key={category.name}
+                styles={{
+                  legend: { fontSize: "1.2rem", fontWeight: 700 },
+                }}
+                legend={category.name}>
+                {category.shortcuts.map((shortcut) => {
+                  return (
+                    <Group key={shortcut.label} gap="0.5rem" align="flex-end">
+                      <TextInput
+                        {...form.getInputProps(shortcut.description)}
+                        key={shortcut.description}
+                        name={shortcut.description}
+                        onKeyDown={handleKeyDown}
+                        size="xs"
+                        label={shortcut.label}
+                        readOnly
+                        rightSection={
+                          <CloseButton
+                            aria-label="Clear input"
+                            onClick={() =>
+                              form.setFieldValue(shortcut.description, "")
+                            }
+                            style={{
+                              display: form.getValues()[shortcut.description]
+                                ? undefined
+                                : "none",
+                            }}
+                          />
+                        }
+                      />
+                    </Group>
+                  );
+                })}
+              </Fieldset>
+            );
+          })}
         </Group>
         <Group justify="flex-end" mt="xl" gap="xs">
           <Button>Cancel</Button>

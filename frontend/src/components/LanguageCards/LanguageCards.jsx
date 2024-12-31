@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { Group, Radio, rem, ScrollArea } from "@mantine/core";
 import LanguageCard from "../LanguageCard/LanguageCard";
-import { definedListQueryObj } from "../../queries/language";
+import { definedListQuery } from "../../queries/language";
 import classes from "../LanguageCard/LanguageCard.module.css";
 
 function LanguageCards({ label, description }) {
-  const { data: languages } = useQuery(definedListQueryObj());
+  const { data: languages } = useQuery(definedListQuery);
   const [params, setParams] = useSearchParams();
   const name = params.get("name");
 

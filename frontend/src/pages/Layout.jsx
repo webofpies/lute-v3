@@ -7,7 +7,7 @@ import { backupQuery, settingsQuery } from "../queries/settings";
 
 export default function Layout() {
   const { data: backup } = useQuery(backupQuery);
-  const { data: settings } = useQuery(settingsQuery());
+  const { data: settings } = useQuery(settingsQuery);
 
   const navigation = useNavigation();
   useEffect(() => {
