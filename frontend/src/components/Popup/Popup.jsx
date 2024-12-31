@@ -1,13 +1,12 @@
 import { memo, useState } from "react";
 import { Popover } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import PopupData from "./PopupData";
 import { popupQuery } from "../../queries/term";
 
-const queryClient = new QueryClient();
-
 function Popup({ children, id }) {
+  const queryClient = useQueryClient();
   const [opened, { close, open }] = useDisclosure(false);
   const [popupData, setPopupData] = useState(null);
 

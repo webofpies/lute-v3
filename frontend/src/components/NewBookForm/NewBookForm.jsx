@@ -10,6 +10,7 @@ import {
   NumberInput,
   Stack,
   TagsInput,
+  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
@@ -24,8 +25,9 @@ import {
   IconWorldWww,
 } from "@tabler/icons-react";
 import LanguageCards from "../LanguageCards/LanguageCards";
-import { definedOptionsObj } from "../../queries/language";
 import ImportURLInfo from "./ImportURLInfo";
+import { definedOptionsObj } from "../../queries/language";
+import { initialQuery } from "../../queries/settings";
 import classes from "./NewBookForm.module.css";
 
 function NewBookForm({ openDrawer }) {
@@ -34,7 +36,7 @@ function NewBookForm({ openDrawer }) {
   const langId = params.get("id");
   const definedLang = lang && langId !== "0";
   const definedOptionsQuery = useQuery(definedOptionsObj(lang));
-
+  const { data: initial } = useQuery(initialQuery);
   const dir = definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr";
 
   const form = useForm({
@@ -45,8 +47,10 @@ function NewBookForm({ openDrawer }) {
   });
 
   const cardsRadioLabel = (
-    <Group wrap="nowrap" gap={5}>
-      Language
+    <Group wrap="nowrap" gap={5} align="center">
+      <Text component="span" fw={500} fz="sm">
+        Language
+      </Text>
       <ActionIcon
         variant="transparent"
         color="green.6"
@@ -59,10 +63,14 @@ function NewBookForm({ openDrawer }) {
 
   return (
     <form className={classes.container}>
-      <LanguageCards
-        label={cardsRadioLabel}
-        description="Choose language for your book or create new"
-      />
+      {initial.haveLanguages ? (
+        <LanguageCards
+          label={cardsRadioLabel}
+          description="Choose language for your book or create new"
+        />
+      ) : (
+        cardsRadioLabel
+      )}
       <TextInput
         wrapperProps={{ dir: dir }}
         disabled={definedLang ? false : true}

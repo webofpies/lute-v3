@@ -7,11 +7,70 @@ from flask import Blueprint, jsonify, current_app
 from lute import __version__
 from lute.db import db
 
+# import lute.utils.formutils
+
 from lute.settings.current import current_settings
+from lute.models.language import Language
 from lute.models.setting import UserSetting
 from lute.models.repositories import UserSettingRepository
+from lute.db.demo import Service as DemoService
 
 bp = Blueprint("api", __name__, url_prefix="/api")
+
+
+@bp.route("/wipe-database")
+def wipe_db():
+    """
+    wipe demo database
+    """
+    response = ""
+    demosvc = DemoService(db.session)
+    if demosvc.contains_demo_data():
+        demosvc.delete_demo_data()
+
+        response = {
+            "message": "Success",
+        }
+
+    return jsonify(response), 200
+
+
+@bp.route("/deactivate-demo")
+def deactivate_demo():
+    """
+    deactivate demo mode
+    """
+    response = ""
+    demosvc = DemoService(db.session)
+    if demosvc.contains_demo_data():
+        demosvc.remove_flag()
+
+        response = {
+            "message": "Success",
+        }
+
+    return jsonify(response), 200
+
+
+@bp.route("/initial", methods=["GET"])
+def initialize():
+    """
+    settings for initial run
+    """
+    demosvc = DemoService(db.session)
+    tutorial_book_id = demosvc.tutorial_book_id()
+    have_languages = len(db.session.query(Language).all()) > 0
+    # language_choices = lute.utils.formutils.language_choices(
+    #     db.session, "(all languages)"
+    # )
+    # current_language_id = lute.utils.formutils.valid_current_language_id(db.session)
+
+    return {
+        "haveLanguages": have_languages,
+        "tutorialBookId": tutorial_book_id,
+        # "languageChoices": language_choices,
+        # "currentLanguageId": current_language_id,
+    }
 
 
 @bp.route("/backup", methods=["GET"])

@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
 import { Link } from "react-router-dom";
+import { modals } from "@mantine/modals";
 import {
   Box,
   Collapse,
@@ -10,7 +11,7 @@ import {
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
 import { menu } from "../../misc/menus";
-import { openSoftwareInfoModal } from "../../misc/modals";
+import { softwareInfo } from "../../misc/modals";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerLinks() {
@@ -79,7 +80,9 @@ const backupsLinks = (
 
 const aboutLinks = (
   <>
-    <UnstyledButton className={classes.link} onClick={openSoftwareInfoModal}>
+    <UnstyledButton
+      className={classes.link}
+      onClick={() => modals.openContextModal(softwareInfo)}>
       {menu.about.info.label}
     </UnstyledButton>
     <Link className={classes.link} to={menu.about.stats.action}>

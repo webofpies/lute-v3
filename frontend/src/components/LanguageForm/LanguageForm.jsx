@@ -29,6 +29,7 @@ import {
   predefinedOptionsObj,
   definedOptionsObj,
 } from "../../queries/language";
+import { initialQuery } from "../../queries/settings";
 import LanguageSelect from "../LanguageSelect/LanguageSelect";
 import DictionaryBar from "../DictionaryBar/DictionaryBar";
 import LanguageCards from "../LanguageCards/LanguageCards";
@@ -47,9 +48,9 @@ function LanguageForm() {
   const definedOptionsQuery = useQuery(
     definedOptionsObj(lang, !predefinedSelected)
   );
-
   const { data: predefined } = useQuery(predefinedListQueryObj());
   const { data: parsers } = useQuery(parsersQueryObj());
+  const { data: initial } = useQuery(initialQuery);
 
   const form = useForm({
     mode: "uncontrolled",
@@ -99,7 +100,7 @@ function LanguageForm() {
 
   return (
     <form>
-      {openedFromLanguages && (
+      {openedFromLanguages && initial.haveLanguages && (
         <LanguageCards
           label="My languages"
           description="Edit existing language"

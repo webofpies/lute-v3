@@ -1,49 +1,67 @@
 import { useEffect, useState } from "react";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { useComputedColorScheme } from "@mantine/core";
+import { Box, Modal, useComputedColorScheme } from "@mantine/core";
 import BookTable from "../components/BookTable/BookTable";
-import { settingsQuery } from "../queries/settings";
+import DemoNotice from "../components/DemoNotice/DemoNotice";
+import Welcome from "../components/Modals/Welcome";
+import { settingsQuery, initialQuery } from "../queries/settings";
 import { applyLuteHighlights } from "../misc/actions";
 import { allBooksQuery } from "../queries/books";
 import { bookStatsQuery } from "../queries/book";
 
 function Homepage() {
   const colorScheme = useComputedColorScheme();
+
+  const [booksWithStats, setBooksWithStats] = useState(null);
+
   const { data: settings } = useQuery(settingsQuery());
-  const books = useQuery(allBooksQuery());
-  const [tableData, setTableData] = useState([]);
+  const { data: books } = useQuery(allBooksQuery());
+  const { data: initial } = useQuery(initialQuery);
 
   useEffect(() => {
     applyLuteHighlights(settings.highlights.status, colorScheme);
     applyLuteHighlights(settings.highlights.general, colorScheme);
   }, [colorScheme, settings.highlights]);
 
-  useEffect(() => {
-    if (books.isSuccess) {
-      setTableData(books.data);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [books.isSuccess]);
-
   const allStats = useQueries({
-    queries: (books.data || []).map((book) => bookStatsQuery(book.id)),
+    queries: books.map((book) => bookStatsQuery(book.id)),
   });
+  const succesStr = allStats.map((stat) => stat.isSuccess).join(",");
   useEffect(() => {
-    if (books.isSuccess) {
-      const allStatsReady = allStats.every((stat) => stat.data);
-      if (allStatsReady) {
-        setTableData((data) =>
-          data.map((d, index) => ({
-            ...d,
-            status: allStats[index].data || d.status,
-          }))
-        );
-      }
+    if (allStats.every((stat) => stat.data)) {
+      setBooksWithStats(
+        books.map((d, index) => ({
+          ...d,
+          status: allStats[index].data || d.status,
+        }))
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allStats.map((stat) => stat.isSuccess).join(","), books.isSuccess]);
+  }, [succesStr]);
 
-  return <BookTable data={tableData} />;
+  return (
+    <>
+      {/* after user wipes off or deactivates demo mode tutorialBookId is set to null */}
+      {initial.tutorialBookId && (
+        <Box pl={20} pr={20} pb={10}>
+          <DemoNotice tutorialBookId={initial.tutorialBookId} />
+        </Box>
+      )}
+
+      <Modal
+        trapFocus={false}
+        opened={!initial.haveLanguages}
+        title="Welcome to Lute"
+        size="auto"
+        withCloseButton={false}
+        closeOnClickOutside={false}
+        closeOnEscape={false}>
+        <Welcome />
+      </Modal>
+
+      {books.length > 0 && <BookTable data={booksWithStats || books} />}
+    </>
+  );
 }
 
 export default Homepage;

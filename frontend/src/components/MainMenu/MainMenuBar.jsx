@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { modals } from "@mantine/modals";
 import {
   Menu,
   Group,
@@ -10,7 +11,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown } from "@tabler/icons-react";
-import { openSoftwareInfoModal } from "../../misc/modals";
+import { softwareInfo } from "../../misc/modals";
 import { menu } from "../../misc/menus";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
@@ -85,7 +86,7 @@ function MainMenuBar({ backupData, settings }) {
         )}
 
         <MenuSection label={menu.about.label}>
-          <Menu.Item onClick={openSoftwareInfoModal}>
+          <Menu.Item onClick={() => modals.openContextModal(softwareInfo)}>
             {menu.about.info.label}
           </Menu.Item>
           <Menu.Item component={NavLink} to={menu.about.stats.action}>

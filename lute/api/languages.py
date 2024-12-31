@@ -11,8 +11,7 @@ from lute.parse.registry import supported_parsers
 from lute.db import db
 from lute.models.language import Language as LanguageModel
 from lute.language.service import Service as LangService
-from lute.models.repositories import LanguageRepository
-
+from lute.models.repositories import LanguageRepository, UserSettingRepository
 
 bp = Blueprint("api_languages", __name__, url_prefix="/api/languages")
 
@@ -125,6 +124,18 @@ def language_info(langid):
             "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
         }
     )
+
+
+@bp.route("/sample/<langname>", methods=["GET"])
+def load_predefined_stories(langname):
+    "Load a predefined language and its stories."
+    service = LangService(db.session)
+    lang_id = service.load_language_def(langname)
+    repo = UserSettingRepository(db.session)
+    repo.set_value("current_language_id", lang_id)
+    db.session.commit()
+
+    return f"Loaded {langname} and sample book(s)"
 
 
 def _get_dict_info(dictURL, dictID, langid):

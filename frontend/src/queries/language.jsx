@@ -1,8 +1,11 @@
+import { initialQuery } from "./settings";
+
 function loader(queryClient) {
   return async () => {
     const predefList = predefinedListQueryObj();
     const defList = definedListQueryObj();
     const parsers = parsersQueryObj();
+    const initial = initialQuery;
 
     const predefListData =
       queryClient.getQueryData(predefList.queryKey) ??
@@ -16,7 +19,11 @@ function loader(queryClient) {
       queryClient.getQueryData(parsers.queryKey) ??
       (await queryClient.fetchQuery(parsers));
 
-    return { predefListData, defListData, parsersData };
+    const initialData =
+      queryClient.getQueryData(initial.queryKey) ??
+      (await queryClient.fetchQuery(initial));
+
+    return { predefListData, defListData, parsersData, initialData };
   };
 }
 
@@ -96,6 +103,18 @@ function parsersQueryObj() {
   };
 }
 
+function loadSampleStoriesQuery(language) {
+  return {
+    queryKey: ["sampleStories", language],
+    queryFn: async () => {
+      const res = await fetch(
+        `http://localhost:5001/api/languages/sample/${language}`
+      );
+      return await res.text();
+    },
+  };
+}
+
 export {
   loader,
   languageInfoQuery,
@@ -104,4 +123,5 @@ export {
   predefinedListQueryObj,
   predefinedOptionsObj,
   parsersQueryObj,
+  loadSampleStoriesQuery,
 };
