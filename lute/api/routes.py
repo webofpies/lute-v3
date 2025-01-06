@@ -14,6 +14,7 @@ from lute.models.language import Language
 from lute.models.setting import UserSetting
 from lute.models.repositories import UserSettingRepository
 from lute.db.demo import Service as DemoService
+from lute.book.model import Repository as BookRepository
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -57,6 +58,7 @@ def initialize():
     """
     settings for initial run
     """
+    book_repo = BookRepository(db.session)
     demosvc = DemoService(db.session)
     tutorial_book_id = demosvc.tutorial_book_id()
     have_languages = len(db.session.query(Language).all()) > 0
@@ -68,7 +70,10 @@ def initialize():
     return {
         "haveLanguages": have_languages,
         "tutorialBookId": tutorial_book_id,
-        # "languageChoices": language_choices,
+        "languageChoices": [
+            language.name for language in db.session.query(Language).all()
+        ],
+        "bookTags": book_repo.get_book_tags(),
         # "currentLanguageId": current_language_id,
     }
 

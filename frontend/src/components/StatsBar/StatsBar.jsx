@@ -1,5 +1,7 @@
 import { memo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Progress, Tooltip } from "@mantine/core";
+import { bookStatsQuery } from "../../queries/book";
 import classes from "./StatsBar.module.css";
 
 const labels = {
@@ -12,7 +14,8 @@ const labels = {
   99: "Well Known or Ignored",
 };
 
-function StatsBar({ data }) {
+function StatsBar({ id }) {
+  const { data } = useQuery(bookStatsQuery(id));
   return (
     <Progress.Root size={16} radius={10} className={classes.bar}>
       {data ? (

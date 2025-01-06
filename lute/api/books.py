@@ -1,42 +1,232 @@
 "Book endpoints"
 
 import os
+import json
 
-from flask import Blueprint, jsonify, send_file, current_app
+from flask import Blueprint, jsonify, send_file, current_app, request
+from sqlalchemy import text as SQLText
 
 from lute.db import db
-from lute.models.book import Text, Book as BookModel
+from lute.models.book import Text
 from lute.models.repositories import BookRepository
 from lute.read.service import Service as ReadService
 from lute.read.render.service import Service as RenderService
 from lute.book.stats import Service as StatsService
+from lute.utils.data_tables import supported_parser_type_criteria
 
 
 bp = Blueprint("api_books", __name__, url_prefix="/api/books")
 
 
+def parse_url_params():
+    """
+    parse table url params
+    """
+    # Pagination
+    start = int(request.args.get("start", 0))  # Starting index
+    size = int(request.args.get("size", 10))  # Page size
+    # Filters
+    global_filter = request.args.get("globalFilter", "").strip()
+    # [{"id": "title", "value": "Book"}]
+    filters = json.loads(request.args.get("filters", "[]"))
+    # {"title": "contains"}
+    filter_modes = json.loads(request.args.get("filterModes", "{}"))
+    # Sorting [{"id": "WordCount", "desc": True}]
+    sorting = json.loads(request.args.get("sorting", "[]"))
+
+    return start, size, filters, filter_modes, global_filter, sorting
+
+
 @bp.route("/", methods=["GET"])
-def all_books():
-    "Hacky listing."
-    results = []
-    books = db.session.query(BookModel).all()
+def get_all_books():
+    "Get all books applying filters and sorting"
 
-    for b in books:
-        row = {
-            "id": b.id,
-            "title": b.title,
-            "language": b.language.name,
-            "wordCount": sum([text.word_count for text in b.texts]),
-            "tags": [
-                {"id": tag.id, "text": tag.text, "comment": tag.comment}
-                for tag in b.book_tags
-            ],
-            "currentPage": _get_current_page(b),
-            # "statusDistribution": get_status_distribution(b)
-        }
-        results.append(row)
+    shelf = request.args.get("shelf", "active")
+    start, size, filters, filter_modes, global_filter, sorting = parse_url_params()
 
-    return jsonify(results)
+    # Base SQL Query
+    base_sql = f"""
+        SELECT
+            books.BkID As BkID,
+            LgName,
+            BkLgID,
+            BkSourceURI,
+            BkTitle,
+            CASE WHEN currtext.TxID IS null then 1 else currtext.TxOrder END AS PageNum,
+            textcounts.pagecount AS PageCount,
+            BkArchived,
+            tags.taglist AS TagList,
+            textcounts.wc AS WordCount,
+            bookstats.distinctterms AS DistinctCount,
+            bookstats.distinctunknowns AS UnknownCount,
+            bookstats.unknownpercent AS UnknownPercent,
+            bookstats.status_distribution AS StatusDistribution,
+            CASE WHEN completed_books.BkID IS null then 0 else 1 END AS IsCompleted,
+            (SELECT COUNT(*) FROM books WHERE BkArchived = TRUE) AS ArchivedCount,
+            (SELECT COUNT(*) FROM books) AS TotalCount
+        FROM books
+
+        INNER JOIN languages ON LgID = books.BkLgID
+
+        LEFT OUTER JOIN texts currtext ON currtext.TxID = BkCurrentTxID
+
+        INNER JOIN (
+            SELECT TxBkID, SUM(TxWordCount) AS wc, COUNT(TxID) AS pagecount
+            FROM texts
+            GROUP BY TxBkID
+        ) textcounts ON textcounts.TxBkID = books.BkID
+
+        LEFT OUTER JOIN bookstats ON bookstats.BkID = books.BkID
+
+        LEFT OUTER JOIN (
+            SELECT BtBkID AS BkID, GROUP_CONCAT(T2Text, ', ') AS taglist
+            FROM (
+                SELECT BtBkID, T2Text
+                FROM booktags bt
+                INNER JOIN tags2 t2 ON t2.T2ID = bt.BtT2ID
+                ORDER BY T2Text
+            ) tagssrc
+            GROUP BY BtBkID
+        ) AS tags ON tags.BkID = books.BkID
+
+        LEFT OUTER JOIN (
+            SELECT texts.TxBkID AS BkID
+            FROM texts
+            INNER JOIN (
+                /* last page in each book */
+                select TxBkID, max(TxOrder) AS maxTxOrder FROM texts GROUP BY TxBkID
+            ) last_page ON last_page.TxBkID = texts.TxBkID AND last_page.maxTxOrder = texts.TxOrder
+            WHERE TxReadDate IS NOT null
+        ) completed_books ON completed_books.BkID = books.BkID
+
+        WHERE languages.LgParserType in ({ supported_parser_type_criteria() })
+    """
+
+    if shelf == "active":
+        base_sql += " AND books.BkArchived != TRUE"
+    elif shelf == "archived":
+        base_sql += " AND books.BkArchived = TRUE"
+
+    # Apply Filters
+    for flt in filters:
+        field = flt.get("id")
+        value = flt.get("value", "").strip()
+        mode = filter_modes.get(field, "contains")  # Default mode: 'contains'
+
+        if field == "title":
+            if mode == "contains":
+                base_sql += f" AND BkTitle LIKE '%{value}%'"
+            elif mode == "startsWith":
+                base_sql += f" AND BkTitle LIKE '{value}%'"
+            elif mode == "endsWith":
+                base_sql += f" AND BkTitle LIKE '%{value}'"
+
+        elif field == "language":
+            if mode == "contains":
+                base_sql += f" AND LgName LIKE '%{value}%'"
+            elif mode == "equals":
+                base_sql += f" AND LgName = '{value}'"
+
+        elif field == "tags":
+            if mode == "contains":
+                base_sql += f" AND TagList LIKE '%{value}%'"
+            elif mode == "equals":
+                base_sql += f" AND TagList = '{value}'"
+
+        elif field == "wordCount":
+            value = int(value)
+            if mode == "greaterThan":
+                base_sql += f" AND WordCount > {value}"
+            elif mode == "lessThan":
+                base_sql += f" AND WordCount < {value}"
+            elif mode == "equals":
+                base_sql += f" AND WordCount = {value}"
+            elif mode == "notEquals":
+                base_sql += f" AND WordCount != {value}"
+
+        elif field == "status":
+            value = int(value)
+            if mode == "greaterThan":
+                base_sql += f" AND UnknownPercent > {value}"
+            elif mode == "lessThan":
+                base_sql += f" AND UnknownPercent < {value}"
+            elif mode == "equals":
+                base_sql += f" AND UnknownPercent = {value}"
+            elif mode == "notEquals":
+                base_sql += f" AND UnknownPercent != {value}"
+
+    # Apply Global Filter
+    if global_filter:
+        if global_filter.isdigit():
+            base_sql += f""" AND (BkTitle LIKE '%{global_filter}%' OR
+                            LgName LIKE '%{global_filter}%' OR
+                            WordCount = {global_filter} OR
+                            UnknownPercent = {global_filter}
+                        )"""
+        else:  # String value
+            base_sql += f""" AND (
+                            BkTitle LIKE '%{global_filter}%' OR
+                            LgName LIKE '%{global_filter}%'
+                        )"""
+
+    # Apply Sorting
+    if sorting:
+        sort_clauses = []
+        for sort in sorting:
+            field = sort.get("id")
+            desc_order = sort.get("desc", False)
+
+            if field == "wordCount":
+                sort_clauses.append(f"WordCount {'DESC' if desc_order else 'ASC'}")
+            elif field == "language":
+                sort_clauses.append(f"LgName {'DESC' if desc_order else 'ASC'}")
+            elif field == "title":
+                sort_clauses.append(f"BkTitle {'DESC' if desc_order else 'ASC'}")
+            elif field == "status":
+                sort_clauses.append(f"UnknownPercent {'DESC' if desc_order else 'ASC'}")
+
+        # Add the ORDER BY clause
+        if sort_clauses:
+            base_sql += " ORDER BY " + ", ".join(sort_clauses)
+
+    # Apply Pagination
+    base_sql += f" LIMIT {size} OFFSET {start}"
+
+    # Execute the Query
+    results = db.session.execute(SQLText(base_sql)).fetchall()
+    totalCount = results[0].TotalCount if results else 0
+    archivedCount = results[0].ArchivedCount if results else 0
+    activeCount = totalCount - archivedCount
+
+    rowCount = totalCount
+    if shelf == "active":
+        rowCount = activeCount
+    elif shelf == "archived":
+        rowCount = archivedCount
+
+    # Prepare Output
+    response = []
+    for row in results:
+        response.append(
+            {
+                "id": row.BkID,
+                "language": row.LgName,
+                "languageId": row.BkLgID,
+                "source": row.BkSourceURI,
+                "title": row.BkTitle,
+                "wordCount": row.WordCount,
+                "pageCount": row.PageCount,
+                "currentPage": row.PageNum,
+                "tags": row.TagList.split(",") if row.TagList else [],
+                "isCompleted": row.IsCompleted,
+                "unknownPercent": row.UnknownPercent,
+                "isArchived": row.BkArchived,
+                # "DistinctCount": row.DistinctCount,
+                # "UnknownCount": row.UnknownCount,
+            }
+        )
+
+    return jsonify({"data": response, "total": rowCount})
 
 
 @bp.route("/<int:bookid>", methods=["GET"])
