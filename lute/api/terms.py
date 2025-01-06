@@ -1,13 +1,127 @@
 "Term endpoints"
 
 from flask import Blueprint, jsonify
+from sqlalchemy import text as SQLText
 
 from lute.db import db
 from lute.read.service import Service as ReadService
 from lute.term.model import Repository
+from lute.utils.data_tables import supported_parser_type_criteria
 
 
 bp = Blueprint("api_terms", __name__, url_prefix="/api/terms")
+
+
+@bp.route("/", methods=["GET"])
+def get_terms():
+    "Term json data for tables."
+
+    base_sql = f"""
+                SELECT w.WoID AS WoID,
+                    LgName,
+                    L.LgID AS LgID,
+                    w.WoText AS WoText,
+                    parents.parentlist AS ParentText,
+                    w.WoTranslation,
+                    w.WoRomanization,
+                    replace(wi.WiSource, '.jpeg', '') AS WiSource,
+                    ifnull(tags.taglist, '') AS TagList,
+                    StText,
+                    StID,
+                    StAbbreviation,
+                    CASE w.WoSyncStatus
+                        WHEN 1 THEN 'y'
+                        ELSE ''
+                    END AS SyncStatus,
+                    datetime(WoCreated, 'localtime') AS WoCreated
+                FROM words w
+
+                INNER JOIN languages L ON L.LgID = w.WoLgID
+
+                INNER JOIN statuses S ON S.StID = w.WoStatus
+
+                LEFT OUTER JOIN
+                (SELECT WpWoID AS WoID,
+                        GROUP_CONCAT(PText, ', ') AS parentlist
+                FROM
+                    (SELECT WpWoID,
+                            WoText AS PText
+                    FROM wordparents wp
+                    INNER JOIN words ON WoID = WpParentWoID
+                    ORDER BY WoText) parentssrc
+                GROUP BY WpWoID) AS parents ON parents.WoID = w.WoID
+
+                LEFT OUTER JOIN
+                (SELECT WtWoID AS WoID,
+                        GROUP_CONCAT(TgText, ', ') AS taglist
+                FROM
+                    (SELECT WtWoID,
+                            TgText
+                    FROM wordtags wt
+                    INNER JOIN tags t ON t.TgID = wt.WtTgID
+                    ORDER BY TgText) tagssrc
+                GROUP BY WtWoID) AS tags ON tags.WoID = w.WoID
+
+                LEFT OUTER JOIN wordimages wi ON wi.WiWoID = w.WoID
+
+                WHERE L.LgParserType in ({ supported_parser_type_criteria() })
+    """
+
+    results = db.session.execute(SQLText(base_sql)).fetchall()
+
+    # print([print(row.WoID) for row in results])
+
+    response = []
+    for row in results:
+        response.append(
+            {
+                "id": row.WoID,
+                "language": row.LgName,
+                "languageId": row.LgID,
+                "text": row.WoText,
+                "parentText": row.ParentText,
+                "translation": row.WoTranslation,
+                "romanization": row.WoRomanization,
+                "statusLabel": row.StText,
+                "statusId": row.StID,
+                "createdOn": row.WoCreated
+                # "StAbbreviation": row.StAbbreviation,
+                # "tags": row.TagList.split(",") if row.TagList else [],
+            }
+        )
+
+    return jsonify(response)
+
+    # typecrit = supported_parser_type_criteria()
+    # wheres = [f"L.LgParserType in ({typecrit})"]
+
+    # language_id = parameters["filtLanguage"]
+    # if language_id == "null" or language_id is None:
+    #     language_id = "0"
+    # language_id = int(language_id)
+    # if language_id != 0:
+    #     wheres.append(f"L.LgID == {language_id}")
+
+    # # if parameters["filtParentsOnly"] == "true":
+    # #     wheres.append("parents.parentlist IS NULL")
+
+    # sql_age_calc = "cast(julianday('now') - julianday(w.wocreated) as int)"
+    # age_min = parameters["filtAgeMin"].strip()
+    # if age_min:
+    #     wheres.append(f"{sql_age_calc} >= {int(age_min)}")
+    # age_max = parameters["filtAgeMax"].strip()
+    # if age_max:
+    #     wheres.append(f"{sql_age_calc} <= {int(age_max)}")
+
+    # st_range = ["StID != 98"]
+    # status_min = int(parameters.get("filtStatusMin", "0"))
+    # status_max = int(parameters.get("filtStatusMax", "99"))
+    # st_range.append(f"StID >= {status_min}")
+    # st_range.append(f"StID <= {status_max}")
+    # st_where = " AND ".join(st_range)
+    # if parameters["filtIncludeIgnored"] == "true":
+    #     st_where = f"({st_where} OR StID = 98)"
+    # wheres.append(st_where)
 
 
 @bp.route("/<int:term_id>", methods=["GET", "POST"])

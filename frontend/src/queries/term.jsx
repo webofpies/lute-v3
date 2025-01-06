@@ -1,5 +1,6 @@
 import { keepPreviousData } from "@tanstack/react-query";
 import { definedListQuery } from "./language";
+import { initialQuery } from "./settings";
 
 const termDataQuery = (id) => ({
   queryKey: ["termData", id],
@@ -46,7 +47,11 @@ function loader(queryClient) {
       queryClient.getQueryData(definedListQuery.queryKey) ??
       (await queryClient.fetchQuery(definedListQuery));
 
-    return { defListData };
+    const initialData =
+      queryClient.getQueryData(initialQuery.queryKey) ??
+      (await queryClient.fetchQuery(initialQuery));
+
+    return { defListData, initialData };
   };
 }
 

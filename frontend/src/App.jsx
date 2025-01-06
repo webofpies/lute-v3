@@ -33,11 +33,12 @@ const Languages = lazy(() => import("./pages/Languages"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Terms = lazy(() => import("./pages/Terms"));
 const NewTerm = lazy(() => import("./pages/NewTerm"));
 const Book = lazy(() => import("./pages/Book"));
 
 const theme = createTheme({
-  fontFamily: "Rubik, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   bar: "calc(0% * var(--slider-size))",
 });
 
@@ -66,6 +67,15 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         loader: languagesLoader(queryClient),
+      },
+      {
+        path: "/terms",
+        element: (
+          <Suspense fallback={<PageSpinner />}>
+            <Terms />
+          </Suspense>
+        ),
+        loader: termsLoader(queryClient),
       },
       {
         path: "/terms/new",
