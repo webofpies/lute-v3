@@ -14,7 +14,7 @@ function Backups() {
   }));
 
   return (
-    <PageContainer width="75%">
+    <PageContainer>
       <PageTitle>Backups</PageTitle>
       <Group justify="space-between">
         <Text component="p" size="sm">{`Stored in: ${data.directory}`}</Text>

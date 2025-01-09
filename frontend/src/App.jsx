@@ -38,11 +38,11 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Backups = lazy(() => import("./pages/Backups"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NewTerm = lazy(() => import("./pages/NewTerm"));
+const Tags = lazy(() => import("./pages/Tags"));
 const Book = lazy(() => import("./pages/Book"));
 
 const theme = createTheme({
   fontFamily: "Poppins, sans-serif",
-  bar: "calc(0% * var(--slider-size))",
 });
 
 const router = createBrowserRouter([
@@ -85,6 +85,15 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<PageSpinner />}>
             <NewTerm />
+          </Suspense>
+        ),
+        loader: termsLoader(queryClient),
+      },
+      {
+        path: "/terms/tags",
+        element: (
+          <Suspense fallback={<PageSpinner />}>
+            <Tags />
           </Suspense>
         ),
         loader: termsLoader(queryClient),

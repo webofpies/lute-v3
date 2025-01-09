@@ -9,6 +9,7 @@ const tableDefault = {
 
   paginationDisplayMode: "pages",
   positionToolbarAlertBanner: "bottom",
+  positionActionsColumn: "last",
   enableStickyHeader: true,
   enableDensityToggle: false,
   enableFullScreenToggle: false,
@@ -38,8 +39,6 @@ const tableDefault = {
   mantinePaperProps: {
     withBorder: false,
     shadow: false,
-    pl: 30,
-    pr: 30,
   },
   mantineSearchTextInputProps: {
     w: 200,

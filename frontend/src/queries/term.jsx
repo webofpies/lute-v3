@@ -36,6 +36,16 @@ const termSuggestionsQuery = (searchText, langid) => ({
 const tagSuggestionsQuery = {
   queryKey: ["tagSuggestions"],
   queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/terms/tags/suggestions`
+    );
+    return await response.json();
+  },
+};
+
+const tagsQuery = {
+  queryKey: ["termTags"],
+  queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/terms/tags`);
     return await response.json();
   },
@@ -47,15 +57,19 @@ function loader(queryClient) {
       queryClient.getQueryData(definedListQuery.queryKey) ??
       (await queryClient.fetchQuery(definedListQuery));
 
-    const tagsData =
+    const tagSuggestionsData =
       queryClient.getQueryData(tagSuggestionsQuery.queryKey) ??
       (await queryClient.fetchQuery(tagSuggestionsQuery));
+
+    const tagsData =
+      queryClient.getQueryData(tagsQuery.queryKey) ??
+      (await queryClient.fetchQuery(tagsQuery));
 
     const initialData =
       queryClient.getQueryData(initialQuery.queryKey) ??
       (await queryClient.fetchQuery(initialQuery));
 
-    return { defListData, initialData, tagsData };
+    return { defListData, initialData, tagsData, tagSuggestionsData };
   };
 }
 
@@ -64,5 +78,6 @@ export {
   popupQuery,
   termSuggestionsQuery,
   tagSuggestionsQuery,
+  tagsQuery,
   loader,
 };

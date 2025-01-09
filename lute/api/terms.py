@@ -211,6 +211,40 @@ def get_all_terms(params):
     return jsonify({"data": response, "total": rowCount})
 
 
+@bp.route("/tags", methods=["GET"])
+def get_term_tags():
+    "json data for term tags."
+
+    base_sql = """SELECT
+          TgID,
+          TgText,
+          TgComment,
+          ifnull(TermCount, 0) as TermCount
+          FROM tags
+          left join (
+            select WtTgID,
+            count(*) as TermCount
+            from wordtags
+            group by WtTgID
+          ) src on src.WtTgID = TgID
+    """
+
+    results = db.session.execute(SQLText(base_sql)).fetchall()
+
+    response = []
+    for row in results:
+        response.append(
+            {
+                "id": row.TgID,
+                "text": row.TgText,
+                "termCount": row.TermCount,
+                "comment": row.TgComment,
+            }
+        )
+
+    return jsonify(response)
+
+
 @bp.route("/export", methods=["GET"])
 def export_terms():
     "Generate export file of terms."
@@ -348,7 +382,7 @@ def get_term_suggestions(text, langid):
     return jsonify(result)
 
 
-@bp.route("/tags", methods=["GET"])
+@bp.route("/tags/suggestions", methods=["GET"])
 def get_tag_suggestions():
     "tag suggestions"
 
