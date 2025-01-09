@@ -129,9 +129,11 @@ function TermForm({
           key={form.key("termTags")}
           {...form.getInputProps("termTags")}
         />
-        <Group justify="flex-end" mt="sm" gap="xs" wrap="nowrap">
-          <Button>Delete</Button>
+        <Group justify="flex-end" mt="sm" gap={5} wrap="nowrap">
           <Button type="submit">Save</Button>
+          <Button variant="subtle" color="red.6">
+            Delete
+          </Button>
         </Group>
       </div>
     </form>
