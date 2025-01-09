@@ -24,6 +24,7 @@ import { loader as homeLoader } from "./queries/home";
 import { loader as bookLoader } from "./queries/book";
 import { loader as languagesLoader } from "./queries/language";
 import { loader as settingsLoader } from "./queries/settings";
+import { loader as backupsLoader } from "./queries/backup";
 import { loader as shortcutsLoader } from "./queries/shortcuts";
 import { loader as termsLoader } from "./queries/term";
 
@@ -34,6 +35,7 @@ const Languages = lazy(() => import("./pages/Languages"));
 const Shortcuts = lazy(() => import("./pages/Shortcuts"));
 const Statistics = lazy(() => import("./pages/Statistics"));
 const Settings = lazy(() => import("./pages/Settings"));
+const Backups = lazy(() => import("./pages/Backups"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NewTerm = lazy(() => import("./pages/NewTerm"));
 const Book = lazy(() => import("./pages/Book"));
@@ -95,6 +97,15 @@ const router = createBrowserRouter([
           </Suspense>
         ),
         loader: settingsLoader(queryClient),
+      },
+      {
+        path: "/backups",
+        element: (
+          <Suspense fallback={<PageSpinner />}>
+            <Backups />
+          </Suspense>
+        ),
+        loader: backupsLoader(queryClient),
       },
       {
         path: "/settings/shortcuts",

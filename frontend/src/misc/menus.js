@@ -68,7 +68,7 @@ const menu = {
 
     backups: {
       label: "Backups",
-      action: "/backup/index",
+      action: "/backups",
     },
     new: {
       label: "Create backup",

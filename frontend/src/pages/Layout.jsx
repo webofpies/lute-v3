@@ -3,10 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Outlet, useNavigation } from "react-router-dom";
 import { nprogress } from "@mantine/nprogress";
 import MainMenuBar from "../components/MainMenu/MainMenuBar";
-import { backupQuery, settingsQuery } from "../queries/settings";
+import { settingsQuery } from "../queries/settings";
 
 export default function Layout() {
-  const { data: backup } = useQuery(backupQuery);
   const { data: settings } = useQuery(settingsQuery);
 
   const navigation = useNavigation();
@@ -16,7 +15,7 @@ export default function Layout() {
 
   return (
     <>
-      <MainMenuBar backupData={backup} settings={settings} />
+      <MainMenuBar settings={settings} />
       <main>
         <Outlet />
       </main>

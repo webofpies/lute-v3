@@ -32,14 +32,6 @@ const initialQuery = {
   staleTime: Infinity,
 };
 
-const backupQuery = {
-  queryKey: ["backup"],
-  queryFn: async () => {
-    const res = await fetch("http://localhost:5001/api/backup");
-    return await res.json();
-  },
-};
-
 const wipeDemoDBQuery = {
   queryKey: ["wipeDatabase"],
   queryFn: async () => {
@@ -72,7 +64,6 @@ export {
   shortcutsQuery,
   softwareInfoQuery,
   initialQuery,
-  backupQuery,
   wipeDemoDBQuery,
   deactivateDemoQuery,
 };

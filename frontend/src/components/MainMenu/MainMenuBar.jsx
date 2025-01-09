@@ -17,9 +17,10 @@ import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
 import classes from "./MainMenuBar.module.css";
 
-function MainMenuBar({ backupData, settings }) {
+function MainMenuBar({ settings }) {
   const [opened, { toggle }] = useDisclosure(false);
-  const createBackupMenu = backupData?.enabled && backupData?.directory != "";
+  const createBackupMenu =
+    settings.backup.enabled && settings.backup.directory != "";
 
   return (
     <header className={classes.header}>
@@ -63,13 +64,13 @@ function MainMenuBar({ backupData, settings }) {
 
         {createBackupMenu && (
           <MenuSection label={menu.backup.label}>
-            {backupData.lastDate && (
+            {settings.backup.lastDate && (
               <>
                 <div className={classes.backup}>
-                  {backupData.timeSince && (
-                    <p>{`Last backup was ${backupData.timeSince}`}</p>
+                  {settings.backup.timeSince && (
+                    <p>{`Last backup was ${settings.backup.timeSince}`}</p>
                   )}
-                  <p>{backupData.lastDate}</p>
+                  <p>{settings.backup.lastDate}</p>
                 </div>
                 <Menu.Label>
                   <Divider />

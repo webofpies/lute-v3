@@ -4,7 +4,7 @@ import TermsTable from "../components/TermsTable/TermsTable";
 import { initialQuery } from "../queries/settings";
 import { tagSuggestionsQuery } from "../queries/term";
 
-function Languages() {
+function Terms() {
   const { data: initial } = useQuery(initialQuery);
   const { data: tagChoices } = useQuery(tagSuggestionsQuery);
   return (
@@ -18,4 +18,4 @@ function Languages() {
   );
 }
 
-export default Languages;
+export default Terms;

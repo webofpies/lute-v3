@@ -13,8 +13,9 @@ from lute.settings.current import current_settings
 from lute.models.language import Language
 from lute.models.setting import UserSetting
 from lute.models.repositories import UserSettingRepository
-from lute.db.demo import Service as DemoService
 from lute.book.model import Repository as BookRepository
+from lute.db.demo import Service as DemoService
+from lute.backup.service import Service as BackupService
 
 bp = Blueprint("api", __name__, url_prefix="/api")
 
@@ -78,20 +79,30 @@ def initialize():
     }
 
 
-@bp.route("/backup", methods=["GET"])
-def backup():
-    """
-    backup settings
-    """
-    us_repo = UserSettingRepository(db.session)
-    bs = us_repo.get_backup_settings()
+@bp.route("/backups", methods=["GET"])
+def get_backup_list():
+    "get backups list"
 
-    return {
-        "enabled": bs.backup_enabled,
-        "directory": bs.backup_dir,
-        "lastDate": bs.last_backup_display_date,
-        "timeSince": bs.time_since_last_backup,
-    }
+    bs = _get_backup_settings()
+    service = BackupService(db.session)
+    backups = service.list_backups(bs.backup_dir)
+    backups.sort(reverse=True)
+
+    print(backups)
+
+    return jsonify(
+        {
+            "backups": [
+                {
+                    "name": backup.name,
+                    "size": backup.size,
+                    "lastModified": backup.last_modified.strftime("%Y-%m-%d %H:%M:%S"),
+                }
+                for backup in backups
+            ],
+            "directory": bs.backup_dir,
+        }
+    )
 
 
 @bp.route("/settings", methods=["GET"])
@@ -99,6 +110,8 @@ def user_settings():
     """
     settings
     """
+
+    bs = _get_backup_settings()
 
     # temporary mock data
     highlights = {
@@ -123,6 +136,13 @@ def user_settings():
     }
 
     settings = current_settings | highlights
+
+    settings["backup"] = {
+        "enabled": bs.backup_enabled,
+        "directory": bs.backup_dir,
+        "lastDate": bs.last_backup_display_date,
+        "timeSince": bs.time_since_last_backup,
+    }
 
     return jsonify(settings)
 
@@ -251,3 +271,8 @@ def version():
             "isDocker": ac.is_docker,
         }
     )
+
+
+def _get_backup_settings():
+    us_repo = UserSettingRepository(db.session)
+    return us_repo.get_backup_settings()

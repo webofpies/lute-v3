@@ -1,10 +1,5 @@
 import { allBooksQuery } from "./books";
-import {
-  backupQuery,
-  initialQuery,
-  settingsQuery,
-  softwareInfoQuery,
-} from "./settings";
+import { initialQuery, settingsQuery, softwareInfoQuery } from "./settings";
 
 function loader(queryClient) {
   return async () => {
@@ -24,15 +19,10 @@ function loader(queryClient) {
       queryClient.getQueryData(initialQuery.queryKey) ??
       (await queryClient.fetchQuery(initialQuery));
 
-    const backupData =
-      queryClient.getQueryData(backupQuery.queryKey) ??
-      (await queryClient.fetchQuery(backupQuery));
-
     return {
       settingsData,
       allBooksData,
       initialData,
-      backupData,
       softwareInfoData,
     };
   };
