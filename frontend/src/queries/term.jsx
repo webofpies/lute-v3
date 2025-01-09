@@ -47,11 +47,15 @@ function loader(queryClient) {
       queryClient.getQueryData(definedListQuery.queryKey) ??
       (await queryClient.fetchQuery(definedListQuery));
 
+    const tagsData =
+      queryClient.getQueryData(tagSuggestionsQuery.queryKey) ??
+      (await queryClient.fetchQuery(tagSuggestionsQuery));
+
     const initialData =
       queryClient.getQueryData(initialQuery.queryKey) ??
       (await queryClient.fetchQuery(initialQuery));
 
-    return { defListData, initialData };
+    return { defListData, initialData, tagsData };
   };
 }
 

@@ -12,6 +12,17 @@ body,
   height: 100%;
 }
 
+:root {
+  --lute-text-color-status0: var(--mantine-color-dark-7);
+  --lute-text-color-status1: var(--mantine-color-dark-7);
+  --lute-text-color-status2: var(--mantine-color-dark-7);
+  --lute-text-color-status3: var(--mantine-color-dark-7);
+  --lute-text-color-status4: var(--mantine-color-dark-7);
+  --lute-text-color-status5: var(--mantine-color-dark-7);
+  --lute-text-color-status98: var(--mantine-color-dark-7);
+  --lute-text-color-status99: var(--mantine-color-dark-7);
+}
+
 [data-mantine-color-scheme="light"] {
   --lute-color-highlight-status0: #d0ebff;
   --lute-color-highlight-status1: #ffd8a8;

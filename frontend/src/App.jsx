@@ -9,6 +9,7 @@ import { NavigationProgress } from "@mantine/nprogress";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/nprogress/styles.css";
+import "@mantine/dates/styles.css";
 import "mantine-react-table/styles.css";
 import "./index.css";
 import "./highlight.css";

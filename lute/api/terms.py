@@ -1,6 +1,10 @@
 "Term endpoints"
 
-from flask import Blueprint, jsonify
+import os
+import json
+import csv
+
+from flask import Blueprint, jsonify, send_file, current_app, request
 from sqlalchemy import text as SQLText
 
 from lute.db import db
@@ -12,8 +16,35 @@ from lute.utils.data_tables import supported_parser_type_criteria
 bp = Blueprint("api_terms", __name__, url_prefix="/api/terms")
 
 
+def parse_url_params():
+    """
+    parse table url params
+    """
+    return {
+        # Pagination
+        "start": int(request.args.get("start", 0)),  # Starting index
+        "size": int(request.args.get("size", 10)),  # Page size
+        # Filters
+        "global_filter": request.args.get("globalFilter", "").strip(),
+        # [{"id": "title", "value": "Book"}]
+        "filters": json.loads(request.args.get("filters", "[]")),
+        # {"title": "contains"}
+        "filter_modes": json.loads(request.args.get("filterModes", "{}")),
+        # Sorting [{"id": "WordCount", "desc": True}]
+        "sorting": json.loads(request.args.get("sorting", "[]")),
+    }
+
+
 @bp.route("/", methods=["GET"])
 def get_terms():
+    """
+    get terms with request parameters
+    """
+    params = parse_url_params()
+    return get_all_terms(params)
+
+
+def get_all_terms(params):
     "Term json data for tables."
 
     base_sql = f"""
@@ -67,9 +98,96 @@ def get_terms():
                 WHERE L.LgParserType in ({ supported_parser_type_criteria() })
     """
 
-    results = db.session.execute(SQLText(base_sql)).fetchall()
+    if request.args.get("parentsOnly", "false") == "true":
+        base_sql += "AND parents.parentlist IS NULL"
 
-    # print([print(row.WoID) for row in results])
+    # Mapping fields to their respective database columns
+    field_mapping = {
+        "text": "WoText",
+        "parentText": "ParentText",
+        "translation": "WoTranslation",
+        "language": "LgName",
+        "status": "StID",
+        "createdOn": "WoCreated",
+        "tags": "TagList",
+    }
+    # Apply Filters
+    for flt in params["filters"]:
+        field = flt.get("id")
+        value = flt.get("value", "")
+        mode = params["filter_modes"].get(field, "contains")
+
+        # Check if the field is valid
+        if field in field_mapping and field != "status" and field != "createdOn":
+            column = field_mapping[field]
+            if mode == "contains":
+                base_sql += f" AND {column} LIKE '%{value}%'"
+            elif mode == "startsWith":
+                base_sql += f" AND {column} LIKE '{value}%'"
+            elif mode == "endsWith":
+                base_sql += f" AND {column} LIKE '%{value}'"
+
+        if field == "status":
+            value0 = value[0]
+            value1 = value[1]
+            statuses = [0, 1, 2, 3, 4, 5, 99, 98]
+
+            if value0 == value1:
+                base_sql += f" AND StID = {statuses[value0]}"
+                continue
+
+            status_range = statuses[value0 : value1 + 1]
+            base_sql += f" AND StID IN {(tuple(status_range))}"
+
+        elif field == "createdOn":
+            value0 = value[0]
+            value1 = value[1]
+
+            if not value0 and not value1:
+                continue
+
+            base_sql += f" AND WoCreated BETWEEN '{value0}' AND '{value1}'"
+
+    # Apply Global Filter
+    if params["global_filter"]:
+        global_filter = params["global_filter"]
+        if global_filter.isdigit():
+            base_sql += f""" AND (WoCreated LIKE '%{global_filter}%' OR
+                            StID = {global_filter}
+                        )"""
+        else:  # String value
+            base_sql += f""" AND (
+                            WoText LIKE '%{global_filter}%' OR
+                            ParentText LIKE '%{global_filter}%' OR
+                            WoTranslation LIKE '%{global_filter}%' OR
+                            LgName LIKE '%{global_filter}%'
+                        )"""
+
+    # initial sorting (status filtering messes up default sorting)
+    sort_clauses = ["WoCreated DESC"]
+    # Apply Sorting
+    if params["sorting"]:
+        sort_clauses = []
+        for sort in params["sorting"]:
+            field = sort.get("id")
+            desc_order = sort.get("desc", False)
+
+            # Check if the field is valid and append the corresponding sort clause
+            if field in field_mapping:
+                sort_direction = "DESC" if desc_order else "ASC"
+                sort_clauses.append(f"{field_mapping[field]} {sort_direction}")
+
+    # Add the ORDER BY clause
+    if sort_clauses:
+        base_sql += " ORDER BY " + ", ".join(sort_clauses)
+
+    # Count rows after filtering
+    count_sql = f"SELECT COUNT(*) FROM ({base_sql}) AS filtered_query"
+    # Apply Pagination
+    base_sql += f" LIMIT {params['size']} OFFSET {params['start']}"
+
+    results = db.session.execute(SQLText(base_sql)).fetchall()
+    rowCount = db.session.execute(SQLText(count_sql)).scalar()
 
     response = []
     for row in results:
@@ -82,46 +200,47 @@ def get_terms():
                 "parentText": row.ParentText,
                 "translation": row.WoTranslation,
                 "romanization": row.WoRomanization,
-                "statusLabel": row.StText,
                 "statusId": row.StID,
-                "createdOn": row.WoCreated
-                # "StAbbreviation": row.StAbbreviation,
-                # "tags": row.TagList.split(",") if row.TagList else [],
+                "image": row.WiSource,
+                "createdOn": row.WoCreated,
+                "tags": row.TagList.split(",") if row.TagList else [],
+                # "statusLabel": row.StText,
             }
         )
 
-    return jsonify(response)
+    return jsonify({"data": response, "total": rowCount})
 
-    # typecrit = supported_parser_type_criteria()
-    # wheres = [f"L.LgParserType in ({typecrit})"]
 
-    # language_id = parameters["filtLanguage"]
-    # if language_id == "null" or language_id is None:
-    #     language_id = "0"
-    # language_id = int(language_id)
-    # if language_id != 0:
-    #     wheres.append(f"L.LgID == {language_id}")
+@bp.route("/export", methods=["GET"])
+def export_terms():
+    "Generate export file of terms."
+    # !!! NEED TO GET ALL DATA, NOT FILTERED OR PAGINATED (OR CAN USE PARAMS FOR CUSTOM EXPORT)
+    export_file = os.path.join(current_app.env_config.temppath, "terms.csv")
+    response = get_terms()
+    term_data = response.get_json()
+    # Term data is an array of dicts, with the sql field name as dict
+    # keys.  These need to be mapped to headings.
+    heading_to_fieldname = {
+        "Term": "text",
+        "Parent": "parentText",
+        "Translation": "translation",
+        "Language": "language",
+        "Status": "statusLabel",
+        "Added on": "createdOn",
+        "Pronunciation": "romanization",
+    }
 
-    # # if parameters["filtParentsOnly"] == "true":
-    # #     wheres.append("parents.parentlist IS NULL")
+    headings = heading_to_fieldname.keys()
+    output_data = [
+        [r[heading_to_fieldname[fieldname]] for fieldname in headings]
+        for r in term_data
+    ]
+    with open(export_file, "w", encoding="utf-8", newline="") as f:
+        csv_writer = csv.writer(f)
+        csv_writer.writerow(headings)
+        csv_writer.writerows(output_data)
 
-    # sql_age_calc = "cast(julianday('now') - julianday(w.wocreated) as int)"
-    # age_min = parameters["filtAgeMin"].strip()
-    # if age_min:
-    #     wheres.append(f"{sql_age_calc} >= {int(age_min)}")
-    # age_max = parameters["filtAgeMax"].strip()
-    # if age_max:
-    #     wheres.append(f"{sql_age_calc} <= {int(age_max)}")
-
-    # st_range = ["StID != 98"]
-    # status_min = int(parameters.get("filtStatusMin", "0"))
-    # status_max = int(parameters.get("filtStatusMax", "99"))
-    # st_range.append(f"StID >= {status_min}")
-    # st_range.append(f"StID <= {status_max}")
-    # st_where = " AND ".join(st_range)
-    # if parameters["filtIncludeIgnored"] == "true":
-    #     st_where = f"({st_where} OR StID = 98)"
-    # wheres.append(st_where)
+    return send_file(export_file, as_attachment=True)
 
 
 @bp.route("/<int:term_id>", methods=["GET", "POST"])
