@@ -88,8 +88,6 @@ def get_backup_list():
     backups = service.list_backups(bs.backup_dir)
     backups.sort(reverse=True)
 
-    print(backups)
-
     return jsonify(
         {
             "backups": [

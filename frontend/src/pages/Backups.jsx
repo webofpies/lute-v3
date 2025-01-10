@@ -8,10 +8,6 @@ import { backupsQuery } from "../queries/backup";
 
 function Backups() {
   const { data } = useQuery(backupsQuery);
-  const backups = data.backups.map((backup) => ({
-    ...backup,
-    url: `/backup/download/${backup.name}`,
-  }));
 
   return (
     <PageContainer>
@@ -24,7 +20,7 @@ function Backups() {
           Create New
         </Button>
       </Group>
-      <BackupsTable data={backups} />
+      <BackupsTable data={data.backups} />
     </PageContainer>
   );
 }

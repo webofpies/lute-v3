@@ -1,4 +1,4 @@
-import { MRT_Table, useMantineReactTable } from "mantine-react-table";
+import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import tableDefault from "../../misc/tableDefault";
 
 const columns = [
@@ -14,12 +14,6 @@ const columns = [
     accessorKey: "lastModified",
     header: "Last modified",
   },
-  {
-    accessorKey: "url",
-    Cell: ({ row }) => (
-      <a href={`http://localhost:5001${row.original.url}`}>Download</a>
-    ),
-  },
 ];
 
 function BackupsTable({ data }) {
@@ -27,13 +21,26 @@ function BackupsTable({ data }) {
     ...tableDefault,
     columns,
     data,
+
+    mantineTableContainerProps: {
+      mah: 500,
+    },
+
+    enableToolbarInternalActions: false,
+    enableGlobalFilter: false,
     enableColumnActions: false,
     enableColumnFilters: false,
     enablePagination: false,
     enableSorting: false,
+    enableRowActions: true,
+    renderRowActions: ({ row }) => (
+      <a href={`http://localhost:5001/backup/download/${row.original.name}`}>
+        Download
+      </a>
+    ),
   });
 
-  return <MRT_Table table={table} />;
+  return <MantineReactTable table={table} />;
 }
 
 export default BackupsTable;
