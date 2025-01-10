@@ -21,7 +21,6 @@ import {
 import {
   MantineReactTable,
   MRT_EditActionButtons,
-  MRT_ShowHideColumnsButton,
   useMantineReactTable,
 } from "mantine-react-table";
 import {
@@ -36,6 +35,7 @@ import {
 } from "@tabler/icons-react";
 import StatsBar from "../StatsBar/StatsBar";
 import { languageInfoQuery } from "../../queries/language";
+import tableDefault from "../../misc/tableDefault";
 
 const PAGINATION = {
   pageIndex: 0,
@@ -90,14 +90,14 @@ function BooksTable({ languageChoices, tagChoices }) {
   });
 
   const table = useMantineReactTable({
+    ...tableDefault,
+
     columns: columns,
     data: data?.data || [],
     rowCount: data?.total,
 
     initialState: {
-      density: 4,
-      showGlobalFilter: true,
-      showColumnFilters: true,
+      ...tableDefault.initialState,
       columnVisibility: {
         tags: false,
       },
@@ -111,14 +111,8 @@ function BooksTable({ languageChoices, tagChoices }) {
       sorting,
     },
 
-    paginationDisplayMode: "pages",
-    positionActionsColumn: "last",
-    enableStickyHeader: true,
     enableRowActions: true,
     enableColumnFilterModes: true,
-    enableDensityToggle: false,
-    enableFullScreenToggle: false,
-    enableColumnActions: false,
     enableEditing: true,
     editDisplayMode: "modal",
     renderEditRowModalContent: ({ row, table }) => (
@@ -134,32 +128,6 @@ function BooksTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
 
-    mantinePaperProps: {
-      withBorder: false,
-      shadow: false,
-    },
-    mantineSearchTextInputProps: {
-      w: 200,
-      size: "xs",
-      leftSectionProps: {
-        style: {
-          padding: "5px",
-        },
-      },
-    },
-    mantineTableContainerProps: {
-      mah: 600,
-      pl: 30,
-      pr: 30,
-    },
-    mantineTableProps: {
-      striped: true,
-      withColumnBorders: true,
-    },
-
-    renderToolbarInternalActions: ({ table }) => (
-      <MRT_ShowHideColumnsButton table={table} />
-    ),
     renderEmptyRowsFallback: ({ table }) => <EmptyFallback table={table} />,
     renderRowActionMenuItems: ({ row }) => actionItems(row),
     renderBottomToolbarCustomActions: () => (

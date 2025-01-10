@@ -4,6 +4,7 @@ import { Box, Modal, useComputedColorScheme } from "@mantine/core";
 import BooksTable from "../components/BooksTable/BooksTable";
 import DemoNotice from "../components/DemoNotice/DemoNotice";
 import Welcome from "../components/Modals/Welcome";
+import PageContainer from "../components/PageContainer/PageContainer";
 import { settingsQuery, initialQuery } from "../queries/settings";
 import { applyLuteHighlights } from "../misc/actions";
 
@@ -37,10 +38,12 @@ function Homepage() {
         <Welcome />
       </Modal>
 
-      <BooksTable
-        languageChoices={initial.languageChoices}
-        tagChoices={initial.bookTags}
-      />
+      <PageContainer>
+        <BooksTable
+          languageChoices={initial.languageChoices}
+          tagChoices={initial.bookTags}
+        />
+      </PageContainer>
     </>
   );
 }
