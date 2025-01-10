@@ -81,76 +81,14 @@ function ThemeForm() {
     },
   });
 
-  function handleStatusHighlightChange(highlight, color) {
-    root.style.setProperty(`--lute-color-highlight-${highlight.id}`, color);
-    setTextColor(highlight.id, color, root);
-  }
-
-  function handleStatusHighlightChangeEnd(color, index) {
-    form.setFieldValue(`highlights.statuses.${index}.color`, color);
-  }
-
-  function handleTypeChange(e, index, highlight) {
-    const val = e.currentTarget.value;
-    const textitems = document.querySelectorAll(`.${highlight.id}`);
-    textitems.forEach((textitem) => (textitem.dataset.highlightType = val));
-
-    setTextColor(highlight.id, highlight.color, root);
-
-    form.setFieldValue(`highlights.statuses.${index}.type`, val);
-    form.setFieldValue("highlights.allType", "-");
-  }
-
-  function handleAllTypeChange(type) {
-    const textitems = document.querySelectorAll(
-      form
-        .getValues()
-        .highlights.statuses.map((highlight) => `.${highlight.id}`)
-        .join(",")
-    );
-    textitems.forEach((textitem) => (textitem.dataset.highlightType = type));
-
-    form
-      .getValues()
-      .highlights.statuses.forEach((highlight, index) =>
-        form.setFieldValue(`highlights.statuses.${index}.type`, type)
-      );
-  }
-
-  function handleGeneralHighlightChange(id, color) {
-    root.style.setProperty(`--lute-color-highlight-${id}`, color);
-    setTextColor(id, color, root);
-  }
-
-  function handleGeneralHighlightChangeEnd(id, color, index) {
-    form.setFieldValue(`highlights.general.${index}.color`, color);
-    setTextColor(id, color, root);
-
-    if (id === "flash") {
-      const textitem = document.querySelector('[data-sentence-id="0"]');
-      const matched = getMatchedTextItems(textitem, "sentence-id");
-      addFlash(matched);
-      removeFlash();
-    }
-  }
-
-  useEffect(() => {
-    form.setFieldValue("highlights.statuses", [
-      ...getLuteHighlights(
-        labels.status,
-        settings.highlights.status,
-        colorScheme
-      ),
-    ]);
-    form.setFieldValue("highlights.general", [
-      ...getLuteHighlights(
-        labels.general,
-        settings.highlights.general,
-        colorScheme
-      ),
-    ]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colorScheme]);
+  const {
+    handleStatusHighlightChange,
+    handleStatusHighlightChangeEnd,
+    handleTypeChange,
+    handleAllTypeChange,
+    handleGeneralHighlightChange,
+    handleGeneralHighlightChangeEnd,
+  } = useThemeForm(form, root, settings, colorScheme);
 
   return (
     <Stack gap={0} wrap="nowrap" align="flex-end">
@@ -337,6 +275,88 @@ function ThemeForm() {
       </form>
     </Stack>
   );
+}
+
+function useThemeForm(form, root, settings, colorScheme) {
+  function handleStatusHighlightChange(highlight, color) {
+    root.style.setProperty(`--lute-color-highlight-${highlight.id}`, color);
+    setTextColor(highlight.id, color, root);
+  }
+
+  function handleStatusHighlightChangeEnd(color, index) {
+    form.setFieldValue(`highlights.statuses.${index}.color`, color);
+  }
+
+  function handleTypeChange(e, index, highlight) {
+    const val = e.currentTarget.value;
+    const textitems = document.querySelectorAll(`.${highlight.id}`);
+    textitems.forEach((textitem) => (textitem.dataset.highlightType = val));
+
+    setTextColor(highlight.id, highlight.color, root);
+
+    form.setFieldValue(`highlights.statuses.${index}.type`, val);
+    form.setFieldValue("highlights.allType", "-");
+  }
+
+  function handleAllTypeChange(type) {
+    const textitems = document.querySelectorAll(
+      form
+        .getValues()
+        .highlights.statuses.map((highlight) => `.${highlight.id}`)
+        .join(",")
+    );
+    textitems.forEach((textitem) => (textitem.dataset.highlightType = type));
+
+    form
+      .getValues()
+      .highlights.statuses.forEach((highlight, index) =>
+        form.setFieldValue(`highlights.statuses.${index}.type`, type)
+      );
+  }
+
+  function handleGeneralHighlightChange(id, color) {
+    root.style.setProperty(`--lute-color-highlight-${id}`, color);
+    setTextColor(id, color, root);
+  }
+
+  function handleGeneralHighlightChangeEnd(id, color, index) {
+    form.setFieldValue(`highlights.general.${index}.color`, color);
+    setTextColor(id, color, root);
+
+    if (id === "flash") {
+      const textitem = document.querySelector('[data-sentence-id="0"]');
+      const matched = getMatchedTextItems(textitem, "sentence-id");
+      addFlash(matched);
+      removeFlash();
+    }
+  }
+
+  useEffect(() => {
+    form.setFieldValue("highlights.statuses", [
+      ...getLuteHighlights(
+        labels.status,
+        settings.highlights.status,
+        colorScheme
+      ),
+    ]);
+    form.setFieldValue("highlights.general", [
+      ...getLuteHighlights(
+        labels.general,
+        settings.highlights.general,
+        colorScheme
+      ),
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colorScheme]);
+
+  return {
+    handleStatusHighlightChange,
+    handleStatusHighlightChangeEnd,
+    handleTypeChange,
+    handleAllTypeChange,
+    handleGeneralHighlightChange,
+    handleGeneralHighlightChangeEnd,
+  };
 }
 
 export default ThemeForm;
