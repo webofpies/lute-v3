@@ -1,7 +1,37 @@
-import { Pill, PillGroup } from "@mantine/core";
-import StatusCell from "./StatusCell";
-import TranslationCell from "./TranslationCell";
-import statusLabels from "../../misc/statusLabels";
+import {
+  Group,
+  Image,
+  Pill,
+  PillGroup,
+  rem,
+  Text,
+  ThemeIcon,
+} from "@mantine/core";
+import {
+  IconCheck,
+  IconMinus,
+  IconNumber0,
+  IconNumber1,
+  IconNumber2,
+  IconNumber3,
+  IconNumber4,
+  IconNumber5,
+} from "@tabler/icons-react";
+
+const status = {
+  0: { icon: IconNumber0, label: "Unknown" },
+  1: { icon: IconNumber1, label: "New" },
+  2: { icon: IconNumber2, label: "New" },
+  3: { icon: IconNumber3, label: "Learning" },
+  4: { icon: IconNumber4, label: "Learning" },
+  5: { icon: IconNumber5, label: "Learned" },
+
+  6: { icon: IconCheck, label: "Well Known" },
+  7: { icon: IconMinus, label: "Ignored" },
+
+  98: { icon: IconMinus, label: "Ignored" },
+  99: { icon: IconCheck, label: "Well Known" },
+};
 
 const dateFormatter = new Intl.DateTimeFormat(navigator.language, {
   year: "numeric",
@@ -28,7 +58,19 @@ const columnDefinition = (languageChoices, tagChoices) => [
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
     minSize: 300,
     size: 400,
-    Cell: ({ row }) => <TranslationCell row={row} />,
+    Cell: ({ row }) => {
+      const img = row.original.image;
+      return (
+        <>
+          <Text size="sm" component="span">
+            {row.original.translation}
+          </Text>
+          {img && (
+            <Image src={`http://localhost:5001${img}`} h={150} w="auto" />
+          )}
+        </>
+      );
+    },
   },
   {
     header: "Status",
@@ -43,7 +85,22 @@ const columnDefinition = (languageChoices, tagChoices) => [
       if (row.statusId == 98) id = 7;
       return id;
     },
-    Cell: ({ row }) => <StatusCell row={row} />,
+    Cell: ({ row }) => {
+      const id = row.original.statusId;
+      const Icon = status[id].icon;
+      return (
+        <Group gap={6}>
+          <ThemeIcon
+            variant="filled"
+            size={rem(20)}
+            radius="50%"
+            color={`var(--lute-color-highlight-status${id}`}>
+            {<Icon color={`var(--lute-text-color-status${id})`} size="80%" />}
+          </ThemeIcon>
+          <Text size="sm">{status[id].label}</Text>
+        </Group>
+      );
+    },
     mantineFilterRangeSliderProps: {
       min: 0,
       max: 7,
@@ -59,7 +116,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
         { value: 6 },
         { value: 7 },
       ],
-      label: (value) => statusLabels[value],
+      label: (value) => status[value].label,
     },
   },
   {

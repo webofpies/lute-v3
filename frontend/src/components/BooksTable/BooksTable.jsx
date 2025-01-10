@@ -5,17 +5,12 @@ import {
   Box,
   FileInput,
   Flex,
-  Group,
   LoadingOverlay,
   Menu,
-  Pill,
-  PillGroup,
   SegmentedControl,
   Stack,
   TagsInput,
-  Text,
   TextInput,
-  ThemeIcon,
   Title,
 } from "@mantine/core";
 import {
@@ -25,17 +20,15 @@ import {
 } from "mantine-react-table";
 import {
   IconArchive,
-  IconArchiveFilled,
-  IconCircleCheckFilled,
   IconHeading,
   IconHeadphones,
   IconLink,
   IconTags,
   IconTrash,
 } from "@tabler/icons-react";
-import StatsBar from "../StatsBar/StatsBar";
 import { languageInfoQuery } from "../../queries/language";
 import tableDefault from "../../misc/tableDefault";
+import columnDefinition from "./columnDefinition";
 
 const PAGINATION = {
   pageIndex: 0,
@@ -54,7 +47,7 @@ const fetchURL = new URL("/api/books", "http://localhost:5001");
 
 function BooksTable({ languageChoices, tagChoices }) {
   const columns = useMemo(
-    () => getColumns(languageChoices, tagChoices),
+    () => columnDefinition(languageChoices, tagChoices),
     [languageChoices, tagChoices]
   );
 
@@ -232,104 +225,6 @@ function actionItems(row) {
       }}>
       Delete
     </Menu.Item>,
-  ];
-}
-
-function getColumns(languageChoices, tagChoices) {
-  return [
-    {
-      header: "Title",
-      accessorKey: "title",
-      minSize: 600,
-      columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
-      Cell: ({ row }) => {
-        const currentPage = row.original.currentPage;
-        const pageCount = row.original.pageCount;
-        const title = row.original.title;
-        const isCompleted = row.original.isCompleted;
-        const isArchived = row.original.isArchived;
-        return (
-          <Group gap={5} align="center">
-            <ThemeIcon
-              size="sm"
-              color={isCompleted ? "green.6" : "dark.1"}
-              variant="transparent">
-              <IconCircleCheckFilled />
-            </ThemeIcon>
-            <Link
-              to={`/books/${row.original.id}/pages/${currentPage}`}
-              style={{ color: "inherit", textDecoration: "none" }}>
-              <Text lineClamp={1}>{title}</Text>
-            </Link>
-            {currentPage > 1 && (
-              <Text component="span" size="sm" c="dimmed">
-                ({currentPage}/{pageCount})
-              </Text>
-            )}
-            {isArchived && (
-              <ThemeIcon
-                size="xs"
-                variant="transparent"
-                color="dimmed"
-                opacity="0.4">
-                <IconArchiveFilled />
-              </ThemeIcon>
-            )}
-          </Group>
-        );
-      },
-    },
-    {
-      header: "Language",
-      accessorKey: "language",
-      filterVariant: "select",
-      columnFilterModeOptions: false,
-      mantineFilterSelectProps: {
-        data: languageChoices,
-      },
-    },
-    {
-      header: "Word Count",
-      accessorKey: "wordCount",
-      columnFilterModeOptions: [
-        "equals",
-        "greaterThan",
-        "lessThan",
-        "notEquals",
-      ],
-    },
-    {
-      header: "Status",
-      id: "status",
-      accessorFn: (row) => row.unknownPercent,
-      Cell: ({ row }) => <StatsBar id={row.original.id} />,
-      columnFilterModeOptions: [
-        "equals",
-        "greaterThan",
-        "lessThan",
-        "notEquals",
-      ],
-      mantineFilterTextInputProps: {
-        placeholder: "Filter by Unknown %",
-      },
-    },
-    {
-      header: "Tags",
-      id: "tags",
-      mantineFilterSelectProps: {
-        data: tagChoices,
-      },
-      filterVariant: "select",
-      columnFilterModeOptions: false,
-      accessorFn: (row) => (row.tags.length > 0 ? row.tags.join() : ""),
-      Cell: ({ row }) => (
-        <PillGroup gap={4}>
-          {row.original.tags.map((tag) => (
-            <Pill key={tag}>{tag}</Pill>
-          ))}
-        </PillGroup>
-      ),
-    },
   ];
 }
 

@@ -97,7 +97,6 @@ function TermsTable({ languageChoices, tagChoices }) {
     renderEmptyRowsFallback: ({ table }) => <EmptyRow table={table} />,
     renderTopToolbarCustomActions: ({ table }) => (
       <TopToolbarActions
-        data={data}
         table={table}
         onSetShowParentsOnly={setShowParentsOnly}
         onSetEditModalOpened={setEditModalOpened}
