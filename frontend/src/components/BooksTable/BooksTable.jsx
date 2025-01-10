@@ -52,7 +52,7 @@ const COLUMN_FILTER_FNS = {
 //build the URL (start=0&size=10&filters=[]&globalFilter=&sorting=[])
 const fetchURL = new URL("/api/books", "http://localhost:5001");
 
-function BookTable({ languageChoices, tagChoices }) {
+function BooksTable({ languageChoices, tagChoices }) {
   const columns = useMemo(
     () => getColumns(languageChoices, tagChoices),
     [languageChoices, tagChoices]
@@ -365,4 +365,4 @@ function getColumns(languageChoices, tagChoices) {
   ];
 }
 
-export default memo(BookTable);
+export default memo(BooksTable);

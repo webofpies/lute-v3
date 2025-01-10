@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Modal, useComputedColorScheme } from "@mantine/core";
-import BookTable from "../components/BookTable/BookTable";
+import BooksTable from "../components/BooksTable/BooksTable";
 import DemoNotice from "../components/DemoNotice/DemoNotice";
 import Welcome from "../components/Modals/Welcome";
 import { settingsQuery, initialQuery } from "../queries/settings";
@@ -37,7 +37,7 @@ function Homepage() {
         <Welcome />
       </Modal>
 
-      <BookTable
+      <BooksTable
         languageChoices={initial.languageChoices}
         tagChoices={initial.bookTags}
       />
