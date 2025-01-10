@@ -6,7 +6,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ReadPane from "../ReadPane/ReadPane";
 import TranslationPane from "../TranslationPane/TranslationPane";
 import { bookQuery, pageQuery } from "../../queries/book";
-import { languageInfoQuery } from "../../queries/language";
+import { definedLangInfoQuery } from "../../queries/language";
 import { termDataQuery } from "../../queries/term";
 import { useInitialize } from "../../hooks/book";
 import { paneResizeStorage } from "../../misc/utils";
@@ -28,7 +28,7 @@ function BookView({ themeFormOpen, onOpenThemeForm, onDrawerOpen }) {
 
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
-  const { data: language } = useQuery(languageInfoQuery(book.languageId));
+  const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
   const { data: term } = useQuery(termDataQuery(key));
 
   const [state, dispatch] = useInitialize(

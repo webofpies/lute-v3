@@ -1,5 +1,37 @@
 import { initialQuery } from "./settings";
 
+const definedLangInfoQuery = (id) => ({
+  queryKey: ["definedInfo", id],
+  queryFn: async () => {
+    const response = await fetch(`http://localhost:5001/api/languages/${id}`);
+    return await response.json();
+  },
+  enabled: id != null && id !== "0",
+});
+
+const definedLangFormSettingsQuery = (id) => ({
+  queryKey: ["definedFormSettings", id],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/languages/${id}/settings`
+    );
+    return await response.json();
+  },
+  enabled: id != null && id !== "0",
+});
+
+const predefinedLangFormSettingsQuery = (name) => ({
+  queryKey: ["predefinedFormSettings", name],
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/languages/new/${name}`
+    );
+    return await response.json();
+  },
+  staleTime: Infinity,
+  enabled: name !== null,
+});
+
 const predefinedListQuery = {
   queryKey: ["predefined"],
   queryFn: async () => {
@@ -27,40 +59,6 @@ const parsersQuery = {
   },
   staleTime: Infinity,
 };
-
-const languageInfoQuery = (langId) => ({
-  queryKey: ["languageInfo", langId],
-  queryFn: async () => {
-    const response = await fetch(
-      `http://localhost:5001/api/languages/${langId}`
-    );
-    return await response.json();
-  },
-  enabled: langId !== null,
-});
-
-const predefinedOptionsObj = (languageName, enabled) => ({
-  queryKey: ["predefinedOptions", languageName],
-  queryFn: async () => {
-    const response = await fetch(
-      `http://localhost:5001/api/languages/new/${languageName}`
-    );
-    return await response.json();
-  },
-  staleTime: Infinity,
-  enabled: languageName !== null && enabled,
-});
-
-const definedOptionsObj = (languageName, enabled) => ({
-  queryKey: ["definedOptions", languageName],
-  queryFn: async () => {
-    const response = await fetch(
-      `http://localhost:5001/api/languages/${languageName}`
-    );
-    return await response.json();
-  },
-  enabled: languageName !== null && enabled,
-});
 
 const loadSampleStoriesQuery = (language) => ({
   queryKey: ["sampleStories", language],
@@ -99,8 +97,8 @@ export {
   definedListQuery,
   predefinedListQuery,
   parsersQuery,
-  languageInfoQuery,
-  definedOptionsObj,
-  predefinedOptionsObj,
+  definedLangInfoQuery,
+  definedLangFormSettingsQuery,
+  predefinedLangFormSettingsQuery,
   loadSampleStoriesQuery,
 };

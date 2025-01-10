@@ -1,4 +1,4 @@
-import { languageInfoQuery } from "./language";
+import { definedLangInfoQuery } from "./language";
 import { settingsQuery } from "./settings";
 
 const bookQuery = (id) => ({
@@ -50,7 +50,7 @@ function loader(queryClient) {
       queryClient.getQueryData(settingsQuery.queryKey) ??
       (await queryClient.fetchQuery(settingsQuery));
 
-    const languageQ = languageInfoQuery(bookData?.languageId);
+    const languageQ = definedLangInfoQuery(bookData?.languageId);
     const languageData =
       queryClient.getQueryData(languageQ.queryKey) ??
       (await queryClient.fetchQuery(languageQ));

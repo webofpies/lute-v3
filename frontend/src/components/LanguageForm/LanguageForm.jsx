@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Divider,
   Fieldset,
   Group,
   LoadingOverlay,
@@ -26,8 +27,8 @@ import {
 import {
   parsersQuery,
   predefinedListQuery,
-  predefinedOptionsObj,
-  definedOptionsObj,
+  predefinedLangFormSettingsQuery,
+  definedLangFormSettingsQuery,
 } from "../../queries/language";
 import { initialQuery } from "../../queries/settings";
 import LanguageSelect from "../LanguageSelect/LanguageSelect";
@@ -39,15 +40,12 @@ function LanguageForm() {
   const { pathname } = useLocation();
   const [params] = useSearchParams();
   const openedFromLanguages = pathname === "/languages";
-  const lang = params.get("name");
   const langId = params.get("id");
   const predefinedSelected = langId === "0";
   const predefinedOptionsQuery = useQuery(
-    predefinedOptionsObj(lang, predefinedSelected)
+    predefinedLangFormSettingsQuery(params.get("name", null))
   );
-  const definedOptionsQuery = useQuery(
-    definedOptionsObj(lang, !predefinedSelected)
-  );
+  const definedOptionsQuery = useQuery(definedLangFormSettingsQuery(langId));
   const { data: predefined } = useQuery(predefinedListQuery);
   const { data: parsers } = useQuery(parsersQuery);
   const { data: initial } = useQuery(initialQuery);
@@ -107,6 +105,9 @@ function LanguageForm() {
         />
       )}
       <LanguageSelect form={form} languages={predefined} />
+
+      <Divider mt="md" mb="xs" />
+
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay
           visible={

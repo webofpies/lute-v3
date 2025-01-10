@@ -125,7 +125,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     filterVariant: "select",
     columnFilterModeOptions: false,
     mantineFilterSelectProps: {
-      data: languageChoices,
+      data: languageChoices.map((lang) => lang.name),
     },
     enableClickToCopy: false,
   },

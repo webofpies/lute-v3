@@ -26,18 +26,17 @@ import {
 } from "@tabler/icons-react";
 import LanguageCards from "../LanguageCards/LanguageCards";
 import ImportURLInfo from "./ImportURLInfo";
-import { definedOptionsObj } from "../../queries/language";
+import { definedLangFormSettingsQuery } from "../../queries/language";
 import { initialQuery } from "../../queries/settings";
 import classes from "./NewBookForm.module.css";
 
 function NewBookForm({ openDrawer }) {
   const [params] = useSearchParams();
-  const lang = params.get("name");
   const langId = params.get("id");
-  const definedLang = lang && langId !== "0";
-  const definedOptionsQuery = useQuery(definedOptionsObj(lang));
+  const definedLang = langId && langId !== "0";
+  const { data } = useQuery(definedLangFormSettingsQuery(langId));
   const { data: initial } = useQuery(initialQuery);
-  const dir = definedOptionsQuery?.data?.right_to_left ? "rtl" : "ltr";
+  const dir = data?.right_to_left ? "rtl" : "ltr";
 
   const form = useForm({
     mode: "uncontrolled",

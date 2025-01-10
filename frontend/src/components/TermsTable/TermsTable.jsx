@@ -3,7 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import TermsBulkEditForm from "./TermsBulkEditForm";
-import EmptyRow from "./EmptyRow";
+import EmptyRow from "../EmptyRow/EmptyRow";
 import TopToolbarActions from "./TopToolbarActions";
 import tableDefault from "../../misc/tableDefault";
 import columnDefinition from "./columnDefinition";
@@ -94,7 +94,17 @@ function TermsTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
 
-    renderEmptyRowsFallback: ({ table }) => <EmptyRow table={table} />,
+    renderEmptyRowsFallback: ({ table }) => {
+      const language = table.getColumn("language").getFilterValue();
+      const isLanguageFiltered = language?.length > 0;
+      return isLanguageFiltered ? (
+        <EmptyRow
+          tableName="terms"
+          language={language}
+          languageChoices={languageChoices}
+        />
+      ) : null;
+    },
     renderTopToolbarCustomActions: ({ table }) => (
       <TopToolbarActions
         table={table}

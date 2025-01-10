@@ -8,7 +8,7 @@ import LanguageCards from "../components/LanguageCards/LanguageCards";
 import PageContainer from "../components/PageContainer/PageContainer";
 import PageTitle from "../components/PageTitle/PageTitle";
 import TermForm from "../components/TermForm/TermForm";
-import { languageInfoQuery } from "../queries/language";
+import { definedLangInfoQuery } from "../queries/language";
 import { useTermForm } from "../hooks/term";
 
 const term = {
@@ -28,7 +28,7 @@ function NewTerm() {
   const [newTerm, setNewTerm] = useState("");
   const [params] = useSearchParams();
   const langId = params.get("id");
-  const { data: language } = useQuery(languageInfoQuery(langId));
+  const { data: language } = useQuery(definedLangInfoQuery(langId));
 
   const form = useTermForm(term);
 

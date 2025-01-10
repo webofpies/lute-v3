@@ -78,15 +78,11 @@ def new_language(langname=None):
     return jsonify(language.to_dict())
 
 
-@bp.route("/<string:langname>", methods=["GET"])
-def get_existing_language(langname):
-    "get existing language"
-
-    langid = None
-    for lang in db.session.query(LanguageModel).all():
-        if lang.name == langname:
-            langid = lang.id
-            break
+@bp.route("/<int:langid>/settings", methods=["GET"])
+def get_existing_lang_settings(langid):
+    """
+    get existing language form data
+    """
 
     if not langid:
         return jsonify("Language does not exist")
@@ -95,14 +91,12 @@ def get_existing_language(langname):
     return jsonify(language.to_dict())
 
 
-@bp.route("/parsers", methods=["GET"])
-def get_parsers():
-    return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
-
-
 @bp.route("/<int:langid>", methods=["GET"])
-def language_info(langid):
-    "language info from langid"
+def get_existing_lang_info(langid):
+    """
+    get existing language data
+    to create dict tabs, book view and term form
+    """
 
     language = db.session.get(LanguageModel, langid)
     lang_repo = LanguageRepository(db.session)
@@ -124,6 +118,11 @@ def language_info(langid):
             "dictionaries": {"term": term_dicts, "sentence": sentence_dicts},
         }
     )
+
+
+@bp.route("/parsers", methods=["GET"])
+def get_parsers():
+    return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
 
 
 @bp.route("/sample/<langname>", methods=["GET"])

@@ -72,7 +72,8 @@ def initialize():
         "haveLanguages": have_languages,
         "tutorialBookId": tutorial_book_id,
         "languageChoices": [
-            language.name for language in db.session.query(Language).all()
+            {"name": language.name, "id": language.id}
+            for language in db.session.query(Language).all()
         ],
         "bookTags": book_repo.get_book_tags(),
         # "currentLanguageId": current_language_id,

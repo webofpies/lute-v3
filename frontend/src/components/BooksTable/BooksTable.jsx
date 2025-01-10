@@ -1,6 +1,5 @@
 import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
 import {
   Box,
   FileInput,
@@ -26,8 +25,9 @@ import {
   IconTags,
   IconTrash,
 } from "@tabler/icons-react";
-import { languageInfoQuery } from "../../queries/language";
+import EmptyRow from "../EmptyRow/EmptyRow";
 import tableDefault from "../../misc/tableDefault";
+import { definedLangInfoQuery } from "../../queries/language";
 import columnDefinition from "./columnDefinition";
 
 const PAGINATION = {
@@ -121,7 +121,17 @@ function BooksTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
 
-    renderEmptyRowsFallback: ({ table }) => <EmptyFallback table={table} />,
+    renderEmptyRowsFallback: ({ table }) => {
+      const language = table.getColumn("language").getFilterValue();
+      const isLanguageFiltered = language?.length > 0;
+      return isLanguageFiltered ? (
+        <EmptyRow
+          tableName="books"
+          language={language}
+          languageChoices={languageChoices}
+        />
+      ) : null;
+    },
     renderRowActionMenuItems: ({ row }) => actionItems(row),
     renderBottomToolbarCustomActions: () => (
       <ShelfSwitch shelf={shelf} onSetShelf={setShelf} />
@@ -131,24 +141,9 @@ function BooksTable({ languageChoices, tagChoices }) {
   return data && <MantineReactTable table={table} />;
 }
 
-function EmptyFallback({ table }) {
-  const language = table.getColumn("language").getFilterValue();
-  const isLanguageFiltered = language?.length > 0;
-
-  return isLanguageFiltered ? (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      No books found for <strong>{language}</strong>.{" "}
-      <Link
-        to={`/books/new?name=${encodeURIComponent(language.replace(/\s/g, "%20"))}`}>
-        Create one?
-      </Link>
-    </div>
-  ) : null;
-}
-
 function EditModal({ row, table }) {
   const { data: language, isFetching } = useQuery(
-    languageInfoQuery(row.original.languageId)
+    definedLangInfoQuery(row.original.languageId)
   );
   return (
     <Box pos="relative">

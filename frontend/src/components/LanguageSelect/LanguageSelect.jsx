@@ -53,7 +53,7 @@ function LanguageSelect({ form, languages }) {
     } else {
       setValue(val);
       setSearch(val);
-      setParams({ name: val, id: 0 });
+      setParams({ id: 0, name: val });
     }
 
     combobox.closeDropdown();
@@ -73,11 +73,16 @@ function LanguageSelect({ form, languages }) {
 
   useEffect(() => {
     const lang = params.get("name");
+    const id = params.get("id");
     const openedFromLanguages = pathname === "/languages";
 
     if (lang && openedFromLanguages) {
       setSearch(lang);
       setValue(lang);
+    }
+    if (id !== "0") {
+      setSearch("");
+      setValue(null);
     }
   }, [params, pathname]);
 
@@ -90,7 +95,7 @@ function LanguageSelect({ form, languages }) {
         <InputBase
           mb={10}
           w="fit-content"
-          label="Name"
+          label="New language"
           description="Create new or from predefined"
           placeholder="e.g. Arabic"
           leftSection={<IconLanguage />}
