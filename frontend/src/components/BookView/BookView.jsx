@@ -14,7 +14,7 @@ import classes from "./BookView.module.css";
 
 const ThemeForm = lazy(() => import("../ThemeForm/ThemeForm"));
 
-function BookView({ themeFormOpen, onOpenThemeForm, onDrawerOpen }) {
+function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const { id, page: pageNum } = useParams();
   const [params] = useSearchParams();
   const editMode = params.get("edit") === "true";
@@ -35,7 +35,7 @@ function BookView({ themeFormOpen, onOpenThemeForm, onDrawerOpen }) {
     book,
     language,
     setActiveTerm,
-    onOpenThemeForm
+    onThemeFormOpen
   );
 
   const showTranslationPane = activeTerm.data && term && !themeFormOpen;

@@ -116,12 +116,12 @@ def user_settings():
     highlights = {
         "highlights": {
             "status": {
-                "status0": {"light": "#d0ebff", "dark": "#5cacf3", "type": "bg"},
-                "status1": {"light": "#ffd8a8", "dark": "#e68f79", "type": "bg"},
-                "status2": {"light": "#8ce99a", "dark": "#efa96d", "type": "text"},
-                "status3": {"light": "#b2f2bb", "dark": "#f3cd64", "type": "text"},
-                "status4": {"light": "#d3f9d8", "dark": "#fcac67", "type": "solid"},
-                "status5": {"light": "#ebfbee", "dark": "#7ae07a", "type": "dashed"},
+                "status0": {"light": "#addfff", "dark": "#5cacf3", "type": "bg"},
+                "status1": {"light": "#f5b8a9", "dark": "#e68f79", "type": "bg"},
+                "status2": {"light": "#f5cca9", "dark": "#efa96d", "type": "bg"},
+                "status3": {"light": "#f5e1a9", "dark": "#f3cd64", "type": "bg"},
+                "status4": {"light": "#f5f3a9", "dark": "#fcac67", "type": "bg"},
+                "status5": {"light": "#ddffdd", "dark": "#7ae07a", "type": "bg"},
                 "status98": {"light": "#ee8577", "dark": "#ee8577", "type": "none"},
                 "status99": {"light": "#51cf66", "dark": "#51cf66", "type": "none"},
             },
