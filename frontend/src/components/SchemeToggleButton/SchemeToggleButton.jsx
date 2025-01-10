@@ -20,7 +20,7 @@ function SchemeToggleButton({ colors, onCloseDrawer = null }) {
 
   return (
     <ActionIcon
-      variant="default"
+      variant="subtle"
       size="lg"
       onClick={() => {
         handleToggleScheme();
