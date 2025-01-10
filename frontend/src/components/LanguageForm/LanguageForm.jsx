@@ -27,8 +27,8 @@ import {
 import {
   parsersQuery,
   predefinedListQuery,
-  predefinedLangFormSettingsQuery,
-  definedLangFormSettingsQuery,
+  defFormSettingsQuery,
+  predefFormSettingsQuery,
 } from "../../queries/language";
 import { initialQuery } from "../../queries/settings";
 import LanguageSelect from "../LanguageSelect/LanguageSelect";
@@ -42,10 +42,10 @@ function LanguageForm() {
   const openedFromLanguages = pathname === "/languages";
   const langId = params.get("id");
   const predefinedSelected = langId === "0";
-  const predefinedOptionsQuery = useQuery(
-    predefinedLangFormSettingsQuery(params.get("name", null))
+  const predefSettingsQuery = useQuery(
+    predefFormSettingsQuery(params.get("name", null))
   );
-  const definedOptionsQuery = useQuery(definedLangFormSettingsQuery(langId));
+  const defSettingsQuery = useQuery(defFormSettingsQuery(langId));
   const { data: predefined } = useQuery(predefinedListQuery);
   const { data: parsers } = useQuery(parsersQuery);
   const { data: initial } = useQuery(initialQuery);
@@ -53,14 +53,8 @@ function LanguageForm() {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      name: "",
-      right_to_left: false,
-      show_romanization: false,
-      parser_type: "spacedel",
-      word_chars: "a-zA-ZÀ-ÖØ-öø-ȳáéíóúÁÉÍÓÚñÑ",
-      character_substitutions: "´='|`='|’='|‘='|...=…|..=‥",
-      split_sentences: ".!?",
-      split_sentence_exceptions: "Mr.|Mrs.|Dr.|[A-Z].|Vd.|Vds.",
+      ...predefSettingsQuery.data,
+      // minimum dictionaries should be defined on backend with other settings
       dictionaries: [
         {
           for: "terms",
@@ -81,20 +75,20 @@ function LanguageForm() {
   });
 
   useEffect(() => {
-    if (predefinedOptionsQuery.isSuccess) {
-      const { dictionaries, ...rest } = predefinedOptionsQuery.data;
+    if (predefSettingsQuery.isSuccess && params.get("name", null)) {
+      const { dictionaries, ...rest } = predefSettingsQuery.data;
       setFormValues(rest, dictionaries);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [predefinedOptionsQuery.data, predefinedOptionsQuery.isSuccess]);
+  }, [predefSettingsQuery.data, predefSettingsQuery.isSuccess]);
 
   useEffect(() => {
-    if (definedOptionsQuery.isSuccess && openedFromLanguages) {
-      const { dictionaries, ...rest } = definedOptionsQuery.data;
+    if (defSettingsQuery.isSuccess && openedFromLanguages) {
+      const { dictionaries, ...rest } = defSettingsQuery.data;
       setFormValues(rest, dictionaries);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [definedOptionsQuery.data, definedOptionsQuery.isSuccess]);
+  }, [defSettingsQuery.data, defSettingsQuery.isSuccess]);
 
   return (
     <form>
@@ -110,9 +104,7 @@ function LanguageForm() {
 
       <Box pos="relative" className={classes.container}>
         <LoadingOverlay
-          visible={
-            predefinedSelected ? !predefinedOptionsQuery.isSuccess : false
-          }
+          visible={predefinedSelected ? !predefSettingsQuery.isSuccess : false}
           zIndex={1000}
           overlayProps={{ radius: "sm", blur: 2 }}
         />

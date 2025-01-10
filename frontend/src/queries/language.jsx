@@ -9,7 +9,7 @@ const definedLangInfoQuery = (id) => ({
   enabled: id != null && id !== "0",
 });
 
-const definedLangFormSettingsQuery = (id) => ({
+const defFormSettingsQuery = (id) => ({
   queryKey: ["definedFormSettings", id],
   queryFn: async () => {
     const response = await fetch(
@@ -20,7 +20,7 @@ const definedLangFormSettingsQuery = (id) => ({
   enabled: id != null && id !== "0",
 });
 
-const predefinedLangFormSettingsQuery = (name) => ({
+const predefFormSettingsQuery = (name) => ({
   queryKey: ["predefinedFormSettings", name],
   queryFn: async () => {
     const response = await fetch(
@@ -29,7 +29,6 @@ const predefinedLangFormSettingsQuery = (name) => ({
     return await response.json();
   },
   staleTime: Infinity,
-  enabled: name !== null,
 });
 
 const predefinedListQuery = {
@@ -88,7 +87,18 @@ function loader(queryClient) {
       queryClient.getQueryData(initialQuery.queryKey) ??
       (await queryClient.fetchQuery(initialQuery));
 
-    return { predefListData, defListData, parsersData, initialData };
+    const predefinedSettingsQ = predefFormSettingsQuery(null);
+    const predefinedSettingsData =
+      queryClient.getQueryData(predefinedSettingsQ.queryKey) ??
+      (await queryClient.fetchQuery(predefinedSettingsQ));
+
+    return {
+      predefListData,
+      defListData,
+      parsersData,
+      initialData,
+      predefinedSettingsData,
+    };
   };
 }
 
@@ -98,7 +108,7 @@ export {
   predefinedListQuery,
   parsersQuery,
   definedLangInfoQuery,
-  definedLangFormSettingsQuery,
-  predefinedLangFormSettingsQuery,
+  defFormSettingsQuery,
+  predefFormSettingsQuery,
   loadSampleStoriesQuery,
 };
