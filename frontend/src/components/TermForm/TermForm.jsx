@@ -44,8 +44,6 @@ function TermForm({
         />
         <TagsField
           form={form}
-          tags={form.getValues().parents}
-          activeTermText={form.getValues().originalText}
           onSetActiveTerm={onSetActiveTerm}
           languageId={language.id}
         />

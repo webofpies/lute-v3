@@ -15,13 +15,7 @@ import { buildSuggestionsList } from "../../misc/utils";
 
 const MAX_SUGGESTION_COUNT = 15;
 
-function TagsField({
-  form,
-  tags,
-  languageId,
-  activeTermText,
-  onSetActiveTerm,
-}) {
+function TagsField({ form, languageId, onSetActiveTerm }) {
   const {
     handleKeydown,
     handleInputChange,
@@ -32,16 +26,9 @@ function TagsField({
     inputRightSection,
     combobox,
     search,
-    values,
     options,
     suggestions,
-  } = useInitializeTagsField(
-    form,
-    languageId,
-    tags,
-    onSetActiveTerm,
-    activeTermText
-  );
+  } = useInitializeTagsField(form, languageId, onSetActiveTerm);
 
   return (
     <Combobox
@@ -51,7 +38,7 @@ function TagsField({
       <Combobox.DropdownTarget>
         <PillsInput rightSection={inputRightSection}>
           <Pill.Group gap={4}>
-            {values.map((item) => (
+            {form.getValues().parents.map((item) => (
               <Pill
                 key={item}
                 style={{ cursor: "pointer" }}
@@ -82,7 +69,7 @@ function TagsField({
                 <Combobox.Option
                   value={JSON.stringify(item)}
                   key={item.suggestion}
-                  active={values.includes(item.suggestion)}>
+                  active={form.getValues().parents.includes(item.suggestion)}>
                   <span>{item.suggestion}</span>
                 </Combobox.Option>
               ))}
@@ -101,23 +88,16 @@ function TagsField({
   );
 }
 
-function useInitializeTagsField(
-  form,
-  languageId,
-  tags,
-  onSetActiveTerm,
-  activeTermText
-) {
+function useInitializeTagsField(form, languageId, onSetActiveTerm) {
   let suggestions;
   const [search, setSearch] = useState("");
-  const [values, setValues] = useState(tags);
 
   const { data, isFetching } = useQuery(
     termSuggestionsQuery(search, languageId)
   );
 
   if (data) {
-    suggestions = buildSuggestionsList(activeTermText, data);
+    suggestions = buildSuggestionsList(form.getValues().originalText, data);
   }
 
   const options = suggestions
@@ -126,7 +106,7 @@ function useInitializeTagsField(
         .filter((item) =>
           item.suggestion.toLowerCase().includes(search.trim().toLowerCase())
         )
-        .filter((item) => !values.includes(item.value))
+        .filter((item) => !form.getValues().parents.includes(item.value))
     : [];
 
   const combobox = useCombobox({
@@ -144,20 +124,22 @@ function useInitializeTagsField(
   //   );
 
   const handleValueAdd = (val) => {
-    val && val !== " " && setValues((current) => [...current, val]);
+    if (val && val !== " ") {
+      const currentParents = form.getValues().parents;
+      form.setFieldValue("parents", [...currentParents, val]);
+    }
   };
 
-  const handleValueRemove = (val) =>
-    setValues((current) => {
-      const newValues = current.filter((v) => v !== val);
-      form.setFieldValue("parents", newValues);
-      return newValues;
-    });
+  const handleValueRemove = (val) => {
+    const newValues = form.getValues().parents.filter((v) => v !== val);
+    form.setFieldValue("parents", newValues);
+  };
 
   function handleKeydown(event) {
     if (event.key === "Backspace" && search.length === 0) {
       event.preventDefault();
-      handleValueRemove(values[values.length - 1]);
+      const parents = form.getValues().parents;
+      handleValueRemove(parents[parents.length - 1]);
     }
 
     if (event.key === "Enter") {
@@ -191,19 +173,16 @@ function useInitializeTagsField(
 
   function handleOptionSubmit(val) {
     const obj = JSON.parse(val);
-    const v = obj.value;
-    setValues((current) => {
-      const newValues = [...current, v];
-      const singleParent = newValues.length === 1;
 
-      if (singleParent) {
-        form.setFieldValue("status", String(obj.status));
-      }
-      form.setFieldValue("syncStatus", singleParent);
-      form.setFieldValue("parents", newValues);
+    const newValues = [...form.getValues().parents, obj.value];
+    const singleParent = newValues.length === 1;
 
-      return newValues;
-    });
+    if (singleParent) {
+      form.setFieldValue("status", String(obj.status));
+    }
+    form.setFieldValue("syncStatus", singleParent);
+    form.setFieldValue("parents", newValues);
+
     setSearch("");
 
     combobox.closeDropdown();
@@ -215,11 +194,11 @@ function useInitializeTagsField(
     setSearch("");
   }
 
-  const inputRightSection = values.length ? (
+  const inputRightSection = form.getValues().parents.length ? (
     <CloseButton
       size="sm"
       onMouseDown={(event) => event.preventDefault()}
-      onClick={() => setValues([])}
+      onClick={() => form.setFieldValue("parents", [])}
       aria-label="Clear value"
     />
   ) : (
@@ -236,7 +215,6 @@ function useInitializeTagsField(
     inputRightSection,
     combobox,
     search,
-    values,
     options,
     suggestions,
   };
