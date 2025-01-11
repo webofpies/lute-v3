@@ -9,8 +9,10 @@ import {
   Divider,
   Group,
   NativeSelect,
+  Select,
   Stack,
   Table,
+  Text,
   useMantineColorScheme,
 } from "@mantine/core";
 import { settingsQuery } from "../../queries/settings";
@@ -50,7 +52,7 @@ function getRootElement(scheme) {
   return document.querySelector(`:root[data-mantine-color-scheme="${scheme}"]`);
 }
 
-function ThemeForm() {
+function ThemeForm({ onClose }) {
   const { colorScheme } = useMantineColorScheme();
   const { data: settings } = useQuery(settingsQuery);
   const root = getRootElement(colorScheme);
@@ -91,12 +93,26 @@ function ThemeForm() {
   } = useThemeForm(form, root, settings, colorScheme);
 
   return (
-    <Stack gap={0} wrap="nowrap" align="flex-end">
-      <CloseButton />
+    <Stack gap={0} wrap="nowrap">
+      <Group justify="space-between">
+        <Text component="h2" fw={600}>
+          Theme Customizer
+        </Text>
+        <CloseButton onClick={onClose} />
+      </Group>
       <form>
         <Box>
+          <Select
+            size="xs"
+            label="Presets"
+            withCheckIcon={false}
+            allowDeselect={false}
+            defaultValue="default"
+            data={["default", "LWT", "LinQ"]}
+          />
           <Group wrap="nowrap" mb={10}>
             <NativeSelect
+              size="xs"
               flex={1}
               label="Text font"
               data={[
@@ -106,6 +122,7 @@ function ThemeForm() {
               ]}
             />
             <ColorInput
+              size="xs"
               flex={1}
               label="Body color"
               popoverProps={{ position: "bottom" }}
@@ -123,6 +140,7 @@ function ThemeForm() {
               }
             />
             <ColorInput
+              size="xs"
               flex={1}
               label="Primary scheme color"
               popoverProps={{ position: "bottom" }}
@@ -144,9 +162,9 @@ function ThemeForm() {
               highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Name</Table.Th>
-                  <Table.Th>Color</Table.Th>
-                  <Table.Th>Highlight</Table.Th>
+                  <Table.Th fw={500}>Name</Table.Th>
+                  <Table.Th fw={500}>Color</Table.Th>
+                  <Table.Th fw={500}>Highlight</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -172,12 +190,12 @@ function ThemeForm() {
                           format="hex"
                           popoverProps={{ position: "bottom" }}
                           fixOnBlur
-                          // size="xs"
+                          size="xs"
                         />
                       </Table.Td>
                       <Table.Td>
                         <NativeSelect
-                          // size="xs"
+                          size="xs"
                           data={[
                             { label: "Background", value: "bg" },
                             { label: "Text", value: "text" },
@@ -201,7 +219,7 @@ function ThemeForm() {
                   <Table.Td></Table.Td>
                   <Table.Td>
                     <NativeSelect
-                      // size="xs"
+                      size="xs"
                       data={[
                         { label: "-", value: "-" },
                         { label: "Background", value: "bg" },
@@ -229,9 +247,8 @@ function ThemeForm() {
               highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
-                  <Table.Th>Name</Table.Th>
-                  <Table.Th>Color</Table.Th>
-                  {/* <Table.Th>Type</Table.Th> */}
+                  <Table.Th fw={500}>Name</Table.Th>
+                  <Table.Th fw={500}>Color</Table.Th>
                 </Table.Tr>
               </Table.Thead>
               <Table.Tbody>
@@ -242,7 +259,7 @@ function ThemeForm() {
                     </Table.Td>
                     <Table.Td>
                       <ColorInput
-                        // size="xs"
+                        size="xs"
                         {...form.getInputProps(
                           `highlights.general.${index}.color`
                         )}
@@ -270,7 +287,7 @@ function ThemeForm() {
         </Box>
         <Group justify="flex-end" mt="sm" gap="xs">
           <Button type="submit">Save</Button>
-          <Button>Cancel</Button>
+          <Button variant="subtle">Cancel</Button>
         </Group>
       </form>
     </Stack>

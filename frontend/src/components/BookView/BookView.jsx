@@ -98,7 +98,7 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
             {showThemeForm && (
               <Group justify="center" align="center" h="100%" p={10}>
                 <Suspense fallback={<Loader />}>
-                  <ThemeForm />
+                  <ThemeForm onClose={() => onThemeFormOpen(false)} />
                 </Suspense>
               </Group>
             )}
