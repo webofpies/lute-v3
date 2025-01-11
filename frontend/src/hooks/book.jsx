@@ -79,8 +79,15 @@ function useInitialize(book, language, setActiveTerm, onThemeFormOpen) {
   }, [book.title]);
 
   useEffect(() => {
+    function ignoreKeydown(e) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const inEditMode = searchParams.get("edit") === "true";
+      const isTyping = e.target.matches("input, textarea");
+      return inEditMode || isTyping;
+    }
+
     function setupKeydownEvents(e) {
-      if (e.target.matches("input, textarea")) return;
+      if (ignoreKeydown(e)) return;
 
       let selected;
 
