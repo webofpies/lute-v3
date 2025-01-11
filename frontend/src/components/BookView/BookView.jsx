@@ -29,7 +29,7 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
   const { data: language } = useQuery(definedLangInfoQuery(book.languageId));
-  const { data: term } = useQuery(termDataQuery(key));
+  const { data: term, isFetching, isLoading } = useQuery(termDataQuery(key));
 
   const [state, dispatch] = useInitialize(
     book,
@@ -37,8 +37,10 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
     setActiveTerm,
     onThemeFormOpen
   );
-
-  const showTranslationPane = activeTerm.data && term && !themeFormOpen;
+  // need to check for fetching status.
+  // otherwise previous active term is seen before the form updates
+  const showTranslationPane =
+    activeTerm.data && !isFetching && !isLoading && term && !themeFormOpen;
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
