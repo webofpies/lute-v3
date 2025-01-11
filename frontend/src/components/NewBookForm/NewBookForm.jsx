@@ -8,6 +8,7 @@ import {
   FileInput,
   Group,
   NumberInput,
+  Select,
   Stack,
   TagsInput,
   Text,
@@ -42,6 +43,7 @@ function NewBookForm({ openDrawer }) {
     mode: "uncontrolled",
     initialValues: {
       wordsPerPage: 250,
+      splitBy: "paragraphs",
     },
   });
 
@@ -122,6 +124,19 @@ function NewBookForm({ openDrawer }) {
           </Group>
         </Stack>
       </Fieldset>
+
+      <Select
+        label="Split by"
+        data={[
+          { value: "paragraphs", label: "Paragraphs" },
+          { value: "sentences", label: "Sentences" },
+        ]}
+        withCheckIcon={false}
+        searchable={false}
+        allowDeselect={false}
+        key={form.key("splitBy")}
+        {...form.getInputProps("splitBy")}
+      />
 
       <NumberInput
         label="Words per page"
