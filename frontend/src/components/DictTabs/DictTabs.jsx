@@ -10,19 +10,30 @@ import classes from "./DictTabs.module.css";
 import { sentencesQuery } from "../../queries/sentences";
 import { getLookupURL } from "../../misc/utils";
 import DictDropdown from "./DictDropdown";
+import { useUncontrolled } from "@mantine/hooks";
 
 const MAX_VISIBLE_DICT_TABS = 5;
 
-function DictTabs({ language, term, translationFieldRef = {} }) {
+function DictTabs({
+  language,
+  term,
+  activeTab,
+  onSetActiveTab,
+  translationFieldRef = {},
+}) {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("0");
   const [activeDropdownUrl, setActiveDropdownUrl] = useState("");
+  const [tabValue, setTabValue] = useUncontrolled({
+    value: activeTab,
+    defaultValue: "0",
+    onChange: onSetActiveTab,
+  });
 
   function handleFocus() {
     setTimeout(() => {
-      const input = translationFieldRef.current;
-      input.focus();
-      input.setSelectionRange(input.value.length, input.value.length);
+      const input = translationFieldRef?.current;
+      input?.focus();
+      input?.setSelectionRange(input.value.length, input.value.length);
     }, 0);
   }
 
@@ -35,7 +46,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
   return (
     <Tabs
       dir="ltr"
-      value={activeTab}
+      value={tabValue}
       classNames={{ root: classes.tabs }}
       styles={{
         tab: { paddingBlock: "xs" },
@@ -61,7 +72,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
                   dict={dict}
                   value={String(index)}
                   onClick={() => {
-                    setActiveTab(String(index));
+                    setTabValue(String(index));
                     handleFocus();
                   }}
                   component={Tabs.Tab}
@@ -75,7 +86,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
           term={term}
           dicts={dropdownDicts}
           onClick={(url) => {
-            setActiveTab("dropdownTab");
+            setTabValue("dropdownTab");
             setActiveDropdownUrl(url);
             handleFocus();
           }}
@@ -90,7 +101,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
               queryClient.prefetchQuery(sentencesQuery(language.id, term))
             }
             onClick={() => {
-              setActiveTab("sentencesTab");
+              setTabValue("sentencesTab");
               handleFocus();
             }}>
             <Text size="sm" style={{ overflow: "hidden" }}>
@@ -103,7 +114,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
             id="imagesTab"
             value="imagesTab"
             onClick={() => {
-              setActiveTab("imagesTab");
+              setTabValue("imagesTab");
               handleFocus();
             }}>
             <IconPhoto size={24} />
@@ -143,7 +154,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
         id="sentencesTab"
         value="sentencesTab"
         key="sentencesTab">
-        {activeTab === "sentencesTab" && (
+        {tabValue === "sentencesTab" && (
           <Sentences langId={language.id} termId={term} />
         )}
       </Tabs.Panel>

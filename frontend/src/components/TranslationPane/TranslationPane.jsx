@@ -7,7 +7,13 @@ import { paneResizeStorage } from "../../misc/utils";
 import { useTermForm } from "../../hooks/term";
 import classes from "../BookView/BookView.module.css";
 
-function TranslationPane({ term, language, onSetActiveTerm }) {
+function TranslationPane({
+  term,
+  language,
+  onSetActiveTerm,
+  onSetActiveTab,
+  activeTab,
+}) {
   const termPanelRef = useRef();
   const translationFieldRef = useRef();
 
@@ -62,6 +68,8 @@ function TranslationPane({ term, language, onSetActiveTerm }) {
             term={term.text}
             language={language}
             translationFieldRef={translationFieldRef}
+            onSetActiveTab={onSetActiveTab}
+            activeTab={activeTab}
           />
         </Panel>
       </PanelGroup>

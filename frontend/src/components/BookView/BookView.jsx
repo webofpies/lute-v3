@@ -20,6 +20,7 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const editMode = params.get("edit") === "true";
 
   const [activeTerm, setActiveTerm] = useState({ data: null, type: "single" });
+  const [activeTab, setActiveTab] = useState("0");
 
   const key =
     activeTerm && activeTerm.type === "multi"
@@ -90,6 +91,8 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
               <TranslationPane
                 term={term}
                 language={language}
+                activeTab={activeTab}
+                onSetActiveTab={setActiveTab}
                 onSetActiveTerm={setActiveTerm}
               />
             )}
