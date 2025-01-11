@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { Group, Pill, PillGroup, Text, ThemeIcon } from "@mantine/core";
 import { IconArchiveFilled, IconCircleCheckFilled } from "@tabler/icons-react";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 import StatsBar from "../StatsBar/StatsBar";
 
 const columnDefinition = (languageChoices, tagChoices) => [
@@ -69,6 +72,16 @@ const columnDefinition = (languageChoices, tagChoices) => [
     mantineFilterTextInputProps: {
       placeholder: "Filter by Unknown %",
     },
+  },
+  {
+    header: "Last read",
+    id: "lastRead",
+    accessorKey: "lastRead",
+    columnFilterModeOptions: false,
+    enableColumnFilter: false,
+    Cell: ({ row }) => (
+      <span>{row.lastRead == null ? "" : dayjs(row.lastRead).fromNow()}</span>
+    ),
   },
   {
     header: "Tags",

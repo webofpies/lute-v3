@@ -54,6 +54,7 @@ def get_all_books():
             BkTitle,
             CASE WHEN currtext.TxID IS null then 1 else currtext.TxOrder END AS PageNum,
             textcounts.pagecount AS PageCount,
+            booklastopened.lastopeneddate AS LastOpenedDate,
             BkArchived,
             tags.taglist AS TagList,
             textcounts.wc AS WordCount,
@@ -69,6 +70,10 @@ def get_all_books():
         INNER JOIN languages ON LgID = books.BkLgID
 
         LEFT OUTER JOIN texts currtext ON currtext.TxID = BkCurrentTxID
+
+        INNER JOIN (
+            select TxBkID, max(TxStartDate) as lastopeneddate from texts group by TxBkID
+        ) booklastopened on booklastopened.TxBkID = books.BkID
 
         INNER JOIN (
             SELECT TxBkID, SUM(TxWordCount) AS wc, COUNT(TxID) AS pagecount
@@ -221,6 +226,7 @@ def get_all_books():
                 "isCompleted": row.IsCompleted,
                 "unknownPercent": row.UnknownPercent,
                 "isArchived": row.BkArchived,
+                "lastRead": row.LastOpenedDate
                 # "DistinctCount": row.DistinctCount,
                 # "UnknownCount": row.UnknownCount,
             }
