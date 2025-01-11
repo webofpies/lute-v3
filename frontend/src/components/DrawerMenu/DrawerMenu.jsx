@@ -59,7 +59,7 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
                   onClose();
                 }}
                 size="lg"
-                variant="default">
+                variant="subtle">
                 <IconPalette size="90%" />
               </ActionIcon>
             </Group>
