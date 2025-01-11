@@ -1,6 +1,6 @@
 // lute\templates\read\termpopup.html
 
-import { Group, Pill, PillGroup, Tooltip } from "@mantine/core";
+import { Group, Pill, PillGroup, Text, Tooltip } from "@mantine/core";
 import PopupDataSection from "./PopupDataSection";
 import classes from "./PopupData.module.css";
 
@@ -9,9 +9,7 @@ export default function PopupData({ data }) {
     data && (
       <div className={classes.container}>
         <Group gap={5} wrap="nowrap">
-          <span className={classes.term}>
-            {data.term.text} {data.parentTerms && `(${data.parentTerms})`}
-          </span>
+          <span className={classes.term}>{data.text}</span>
           {data.tags.length > 0 && (
             <PillGroup gap={4}>
               {data.tags.map((tag) => (
@@ -20,7 +18,9 @@ export default function PopupData({ data }) {
             </PillGroup>
           )}
         </Group>
-        {data.term.romanization && <em>{data.term.romanization}</em>}
+
+        {data.pronunciation && <em>{data.pronunciation}</em>}
+
         {Object.entries(data.images).map(([img, tooltip]) => (
           <Tooltip key={img} label={tooltip}>
             <img
@@ -29,18 +29,24 @@ export default function PopupData({ data }) {
             />
           </Tooltip>
         ))}
+
         {data.translation && (
-          <p className={classes.translation}>{data.translation}</p>
+          <p
+            className={classes.translation}
+            dangerouslySetInnerHTML={{
+              __html: data.translation,
+            }}
+          />
         )}
 
-        {data.parentData.length > 0 && (
-          <PopupDataSection data={data.parentData} />
-        )}
+        {data.parents.length > 0 && <PopupDataSection data={data.parents} />}
 
-        {data.componentData.length > 0 && (
+        {data.components.length > 0 && (
           <>
-            <p>Components</p>
-            <PopupDataSection data={data.componentData} />
+            <Text component="p" mt="sm" fs="italic">
+              Components
+            </Text>
+            <PopupDataSection data={data.components} />
           </>
         )}
       </div>

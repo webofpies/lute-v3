@@ -2,20 +2,31 @@ import { Group, Pill, PillGroup } from "@mantine/core";
 import classes from "./PopupData.module.css";
 
 function PopupDataSection({ data }) {
-  return data.map((p, index) => (
+  return data.map((d, index) => (
     <div key={index} className={classes.section}>
       <Group gap={5} wrap="nowrap">
-        <span className={classes.term}>{p.term}</span>
-        {p.roman && <em>({p.roman})</em>}
-        {p.tags.length > 0 && (
+        <span
+          className={classes.term}
+          dangerouslySetInnerHTML={{
+            __html: d.text,
+          }}
+        />
+        {d.pronunciation && <em>({d.pronunciation})</em>}
+        {d.tags.length > 0 && (
           <PillGroup gap={4}>
-            {p.tags.map((tag) => (
+            {d.tags.map((tag) => (
               <Pill key={tag}>{tag}</Pill>
             ))}
           </PillGroup>
         )}
       </Group>
-      <span>{p.trans}</span>
+      {d.translation && (
+        <span
+          dangerouslySetInnerHTML={{
+            __html: d.translation,
+          }}
+        />
+      )}
     </div>
   ));
 }

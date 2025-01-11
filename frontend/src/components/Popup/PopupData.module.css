@@ -4,7 +4,7 @@
 }
 
 .section {
-  margin-top: 1rem;
+  margin-top: 0.3rem;
 }
 
 .term {
@@ -13,7 +13,6 @@
 
 .translation {
   margin-top: 0.3rem;
-  white-space: break-spaces;
 }
 
 .image {

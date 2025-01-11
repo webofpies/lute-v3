@@ -307,18 +307,35 @@ def popup_content(termid):
     """
     service = ReadService(db.session)
     d = service.get_popup_data(termid)
+
     if d is None:
         return jsonify(None)
 
     return jsonify(
         {
-            "term": {"text": d["term"].text, "romanization": d["term"].romanization},
-            "translation": d["term_translation"],
-            "tags": d["term_tags"],
-            "images": d["term_images"],
-            "parentData": d["parentdata"],
-            "parentTerms": d["parentterms"],
-            "componentData": d["components"],
+            "text": d.term_and_parents_text(),
+            "parents": [
+                {
+                    "text": item.term_text,
+                    "translation": item.translation,
+                    "pronunciation": item.romanization,
+                    "tags": item.tags,
+                }
+                for item in d.parents
+            ],
+            "components": [
+                {
+                    "text": item.term_text,
+                    "translation": item.translation,
+                    "pronunciation": item.romanization,
+                    "tags": item.tags,
+                }
+                for item in d.components
+            ],
+            "pronunciation": d.romanization,
+            "translation": d.translation,
+            "tags": d.tags,
+            "images": d.popup_image_data,
         }
     )
 
