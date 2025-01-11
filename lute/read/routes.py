@@ -16,7 +16,7 @@ from lute.db import db
 bp = Blueprint("read", __name__, url_prefix="/read")
 
 
-def _render_book_page(book, pagenum):
+def _render_book_page(book, pagenum, track_page_open=True):
     """
     Render a particular book page.
     """
@@ -36,6 +36,7 @@ def _render_book_page(book, pagenum):
         page_count=book.page_count,
         show_highlights=show_highlights,
         lang_id=lang.id,
+        track_page_open=track_page_open,
         term_dicts=term_dicts,
     )
 
@@ -71,8 +72,6 @@ def read(bookid):
 def read_page(bookid, pagenum):
     """
     Read a particular page of a book.
-
-    Called from term Sentences link.
     """
     book = _find_book(bookid)
     if book is None:
@@ -81,6 +80,20 @@ def read_page(bookid, pagenum):
 
     pagenum = book.page_in_range(pagenum)
     return _render_book_page(book, pagenum)
+
+
+@bp.route("/<int:bookid>/peek/<int:pagenum>", methods=["GET"])
+def peek_page(bookid, pagenum):
+    """
+    Peek at a page; i.e. render it, but don't set the current text or start date.
+    """
+    book = _find_book(bookid)
+    if book is None:
+        flash(f"No book matching id {bookid}")
+        return redirect("/", 302)
+
+    pagenum = book.page_in_range(pagenum)
+    return _render_book_page(book, pagenum, track_page_open=False)
 
 
 @bp.route("/page_done", methods=["post"])
@@ -159,15 +172,27 @@ def save_player_data():
     return jsonify("ok")
 
 
-@bp.route("/renderpage/<int:bookid>/<int:pagenum>", methods=["GET"])
-def render_page(bookid, pagenum):
-    "Method called by ajax, render the given page."
+@bp.route("/start_reading/<int:bookid>/<int:pagenum>", methods=["GET"])
+def start_reading(bookid, pagenum):
+    "Called by ajax.  Update the text.start_date, and render page."
     book = _find_book(bookid)
     if book is None:
         flash(f"No book matching id {bookid}")
         return redirect("/", 302)
     service = Service(db.session)
     paragraphs = service.start_reading(book, pagenum)
+    return render_template("read/page_content.html", paragraphs=paragraphs)
+
+
+@bp.route("/refresh_page/<int:bookid>/<int:pagenum>", methods=["GET"])
+def refresh_page(bookid, pagenum):
+    "Refreshes the page content, but doesn't set the text's start_date."
+    book = _find_book(bookid)
+    if book is None:
+        flash(f"No book matching id {bookid}")
+        return redirect("/", 302)
+    service = Service(db.session)
+    paragraphs = service.get_paragraphs(book, pagenum)
     return render_template("read/page_content.html", paragraphs=paragraphs)
 
 
@@ -240,14 +265,7 @@ def term_popup(termid):
         return ""
     return render_template(
         "read/termpopup.html",
-        term=d["term"],
-        flashmsg=d["flashmsg"],
-        term_tags=d["term_tags"],
-        term_translation=d["term_translation"],
-        term_images=d["term_images"],
-        parentdata=d["parentdata"],
-        parentterms=d["parentterms"],
-        componentdata=d["components"],
+        data=d,
     )
 
 

@@ -221,13 +221,18 @@ function _hide_dictionaries() {
   $('.dictcontainer').hide();
 }
 
-/* Hide word editing form if present. */
+/* Hide word editing form. */
 function _hide_term_edit_form() {
+  $('#wordframeid').attr('src', '/read/empty');
+  // NOTE: checking for specific URLs or fragments in the location.href
+  // causes security errors in some cases.
+  /*
   const hide_me = ['read/edit_term', 'read/term_bulk_edit_form', 'read/termform'];
   const c = top.frames.wordframe.location.href;
   if (hide_me.some(path => c.includes(path))) {
     $('#wordframeid').attr('src', '/read/empty');
   }
+  */
 }
 
 function show_multiword_term_edit_form(selected) {
@@ -604,6 +609,18 @@ let handle_edit_page = function() {
   edit_current_page();
 }
 
+let handle_mark_read_hotkey = function() {
+  // Function defined in read/index.html ... yuck, need to reorganize this js code.
+  // TODO javascript: reorganize
+  handle_page_done(false, 1);
+}
+
+let handle_mark_read_well_known_hotkey = function() {
+  // Function defined in read/index.html ... yuck, need to reorganize this js code.
+  // TODO javascript: reorganize
+  handle_page_done(true, 1);
+}
+
 /** Copy the text of the textitemspans to the clipboard, and add a
  * color flash. */
 let handle_copy = function(span_attribute) {
@@ -933,6 +950,13 @@ function handle_keydown (e) {
     "hotkey_StatusIgnore": () => update_status_for_marked_elements(98),
     "hotkey_StatusWellKnown": () => update_status_for_marked_elements(99),
     "hotkey_DeleteTerm": () => update_status_for_marked_elements(0),
+
+    // Functions defined in read/index.html, or refer to them
+    // TODO javascript_hotkeys: fix javascript sprawl
+    "hotkey_MarkRead": () => handle_mark_read_hotkey(),
+    "hotkey_MarkReadWellKnown": () => handle_mark_read_well_known_hotkey(),
+    "hotkey_PreviousPage": () => goto_relative_page(-1),
+    "hotkey_NextPage": () => goto_relative_page(1),
   }
 
   if (hotkey_name in map) {
@@ -1006,7 +1030,7 @@ function post_bulk_update(updates) {
   let reload_text_div = function() {
     const bookid = $('#book_id').val();
     const pagenum = $('#page_num').val();
-    const url = `/read/renderpage/${bookid}/${pagenum}`;
+    const url = `/read/refresh_page/${bookid}/${pagenum}`;
     const repel = $('#thetext');
     repel.load(url, re_mark_selected_ids);
   };

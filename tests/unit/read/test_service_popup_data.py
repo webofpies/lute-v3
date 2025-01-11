@@ -4,6 +4,7 @@ Term popup data tests.
 
 import pytest
 from lute.models.term import Term, TermTag, Status
+from lute.models.repositories import UserSettingRepository
 from lute.read.service import Service
 from lute.db import db
 
@@ -36,7 +37,7 @@ def test_popup_data_shown_if_have_tag(spanish, app_context, service):
     db.session.commit()
     d = service.get_popup_data(t.id)
     assert d is not None, "Have tag, show popup"
-    assert d["term_tags"] == ["animal"]
+    assert d.tags == ["animal"]
 
 
 def test_popup_shown_if_parent_exists_even_if_no_other_data(
@@ -79,8 +80,8 @@ def test_term_with_no_parents(spanish, app_context, service):
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["parentdata"] == [], "no parents"
-    assert d["parentterms"] == "", "no parents"
+    assert d.parents == [], "no parents"
+    assert d.parents_text == "", "no parents"
 
 
 def test_parent_not_shown_if_has_no_useful_data(spanish, app_context, service):
@@ -93,14 +94,14 @@ def test_parent_not_shown_if_has_no_useful_data(spanish, app_context, service):
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["term_translation"] == "cat", "trans promoted"
-    assert len(d["parentdata"]) == 0, "no data"
+    assert d.translation == "cat", "trans promoted"
+    assert len(d.parents) == 0, "no data"
 
     p.romanization = "hello"
     db.session.add(p)
     db.session.commit()
     d = service.get_popup_data(t.id)
-    assert len(d["parentdata"]) == 1, "some data"
+    assert len(d.parents) == 1, "some data"
 
 
 def test_images_combined_in_popup(spanish, app_context, service):
@@ -113,22 +114,22 @@ def test_images_combined_in_popup(spanish, app_context, service):
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["term_images"] == {"gato.jpg": "gato"}
+    assert d.popup_image_data == {"gato.jpg": "gato"}
 
     p.set_current_image("perro.jpg")
     db.session.add(p)
     db.session.commit()
     d = service.get_popup_data(t.id)
-    assert d["term_images"] == {"gato.jpg": "gato", "perro.jpg": "perro"}
+    assert d.popup_image_data == {"gato.jpg": "gato", "perro.jpg": "perro"}
 
     p.set_current_image("gato.jpg")
     db.session.add(p)
     db.session.commit()
     d = service.get_popup_data(t.id)
-    assert d["term_images"] == {"gato.jpg": "gato, perro"}
+    assert d.popup_image_data == {"gato.jpg": "gato, perro"}
 
 
-def test_single_parent_translation_moved_to_term_if_term_translation_blank(
+def test_single_parent_translation_can_be_promoted_to_term_if_term_translation_blank(
     spanish, app_context, service
 ):
     "No need for dup data"
@@ -141,11 +142,19 @@ def test_single_parent_translation_moved_to_term_if_term_translation_blank(
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["term_translation"] == "cat", "trans promoted"
-    assert d["parentdata"][0]["trans"] == "", "moved up"
+    assert d.translation == "cat", "trans promoted"
+    assert d.parents[0].translation == "", "moved up"
+
+    repo = UserSettingRepository(db.session)
+    repo.set_value("term_popup_promote_parent_translation", False)
+    db.session.commit()
+
+    d = service.get_popup_data(t.id)
+    assert d.translation == "", "trans not promoted"
+    assert d.parents[0].translation == "cat", "translation left with parent"
 
 
-def test_single_parent_translation_removed_if_same_as_child(
+def test_single_parent_translation_may_be_removed_if_same_as_child(
     spanish, app_context, service
 ):
     "No need for dup data"
@@ -159,8 +168,16 @@ def test_single_parent_translation_removed_if_same_as_child(
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["term_translation"] == "cat", "trans promoted"
-    assert d["parentdata"][0]["trans"] == "", "moved up"
+    assert d.translation == "cat", "trans promoted"
+    assert d.parents[0].translation == "", "moved up"
+
+    repo = UserSettingRepository(db.session)
+    repo.set_value("term_popup_promote_parent_translation", False)
+    db.session.commit()
+
+    d = service.get_popup_data(t.id)
+    assert d.translation == "cat", "trans left"
+    assert d.parents[0].translation == "cat", "translation also left with parent"
 
 
 def test_multiple_parents_translations_left_alone_even_if_blank(
@@ -178,8 +195,8 @@ def test_multiple_parents_translations_left_alone_even_if_blank(
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["term_translation"] == "", "still blank"
-    assert d["parentdata"][0]["trans"] == "cat", "not moved up"
+    assert d.translation == "", "still blank"
+    assert d.parents[0].translation == "cat", "not moved up"
 
 
 def test_parent_data_returned(spanish, app_context, service):
@@ -193,14 +210,12 @@ def test_parent_data_returned(spanish, app_context, service):
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    expected_p_data = {
-        "term": "perro",
-        "roman": "",
-        "trans": "kitty",
-        "tags": [],
-    }
-    assert d["parentdata"] == [expected_p_data], "extra parent data added"
-    assert d["parentterms"] == "perro", "one parent"
+    p = d.parents[0]
+    assert p.term_text == "perro"
+    assert p.romanization == ""
+    assert p.translation == "kitty"
+    assert p.tags == []
+    assert d.parents_text == "perro", "one parent"
 
 
 def test_parent_data_always_added_if_multiple_parents(spanish, app_context, service):
@@ -217,11 +232,8 @@ def test_parent_data_always_added_if_multiple_parents(spanish, app_context, serv
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    expected_p1_data = {"term": "perro", "roman": "", "trans": "kitty", "tags": []}
-    expected_p2_data = {"term": "hombre", "roman": "", "trans": "kitteh", "tags": []}
-    expected = [expected_p1_data, expected_p2_data]
-    assert d["parentdata"] == expected, "extra parent data added"
-    assert d["parentterms"] == "perro, hombre", "parents"
+    assert len(d.parents) == 2, "extra parent data added"
+    assert d.parents_text == "perro, hombre", "parents"
 
 
 ## Component term checks.
@@ -239,11 +251,11 @@ def assert_components(d, expected, msg=""):
     "Check components."
 
     def _c_to_string(c):
-        s = "; ".join([c["term"], c["trans"]])
+        s = "; ".join([c.term_text, c.translation])
         zws = chr(0x200B)
         return s.replace(zws, "")
 
-    actual = [_c_to_string(c) for c in d["components"]]
+    actual = [_c_to_string(c) for c in d.components]
     assert actual == expected, msg
 
 
@@ -255,7 +267,7 @@ def test_single_term_not_included_in_own_components(spanish, app_context, servic
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert d["components"] == [], "no components"
+    assert d.components == [], "no components"
 
 
 def test_component_without_useful_data_not_returned(spanish, app_context, service):
@@ -268,15 +280,14 @@ def test_component_without_useful_data_not_returned(spanish, app_context, servic
     db.session.commit()
 
     d = service.get_popup_data(t.id)
-    assert len(d["components"]) == 0, "no component data"
+    assert len(d.components) == 0, "no component data"
 
     g.translation = "something"
     db.session.add(g)
     db.session.commit()
     d = service.get_popup_data(t.id)
-    assert len(d["components"]) == 1, "have data"
-    expected = {"roman": "", "tags": [], "term": "gato", "trans": "something"}
-    assert d["components"][0] == expected, "check"
+    assert len(d.components) == 1, "have data"
+    assert d.components[0].translation == "something", "check"
 
 
 def test_component_word_with_translation_returned(spanish, app_context, service):
@@ -291,7 +302,9 @@ def test_component_word_with_translation_returned(spanish, app_context, service)
     assert_components(d, ["gato; cat"], "one component")
 
 
-def test_nested_multiword_components(spanish, app_context, service):
+def test_nested_multiword_components_returned_depending_on_setting(
+    spanish, app_context, service
+):
     "Complete components are returned."
     t = Term(spanish, "un gato gordo")
     t.translation = "a fat cat"
@@ -301,6 +314,13 @@ def test_nested_multiword_components(spanish, app_context, service):
 
     d = service.get_popup_data(t.id)
     assert_components(d, ["un gato; a cat", "gato; cat"], "components")
+
+    repo = UserSettingRepository(db.session)
+    repo.set_value("term_popup_show_components", False)
+    db.session.commit()
+
+    d = service.get_popup_data(t.id)
+    assert_components(d, [], "no components shown")
 
 
 def test_multiword_components_returned_in_order_of_appearance(

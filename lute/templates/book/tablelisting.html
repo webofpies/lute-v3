@@ -15,6 +15,7 @@
       <th style="text-align: left">Statuses
         <a href="/refresh_all_stats" class="refresh" title="Refresh stats for all books"></a>
       </th>
+      <th style="text-align: left">Last read</th>
       <th style="text-align: left">Actions</th>
     </tr>
   </thead>
@@ -35,6 +36,28 @@
 {# Hidden form for archive, unarchive, delete. #}
 <form id="actionposter" method="post" action="">
 </form>
+
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/dayjs/dayjs.min.js') }}" charset="utf-8"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/dayjs/relativeTime.js') }}" charset="utf-8"></script>
+<script>
+  var thresholds = [
+  { l: 's', r: 1 },
+  { l: 'm', r: 1 },
+  { l: 'mm', r: 55, d: 'minute' },
+  { l: 'h', r: 1 },
+  { l: 'hh', r: 22, d: 'hour' },
+  { l: 'd', r: 1 },
+  { l: 'dd', r: 25, d: 'day' },
+  { l: 'M', r: 1 },
+  { l: 'MM', r: 11, d: 'month' },
+  { l: 'y', r: 1 },
+  { l: 'yy', d: 'year' }
+  ];
+  var config = {
+    thresholds: thresholds
+  }
+  dayjs.extend(dayjs_plugin_relativeTime, config);
+</script>
 
 <script>
 
@@ -94,6 +117,7 @@
         { name: "TagList", width: "10%", data: "TagList" },
         { name: "WordCount", width: "10%", data: "WordCount" },
         { name: "UnknownPercent", "searchable": false, render: render_book_stats_graph_placeholder },
+        { name: "LastOpenedDate", "searchable": false, render: render_last_opened_date },
         { width: "8%", "searchable": false, "orderable": false, render: render_book_actions },
       ],
       createdRow: function(row, data, dataIndex) { ajax_in_book_stats(row, data, dataIndex); },
@@ -284,6 +308,15 @@
     return ret;
   };
 
+  let render_last_opened_date = function ( data, type, row, meta ) {
+    const dt = row["LastOpenedDate"];
+    if (dt == null) {
+      return '';
+    }
+    const djs = dayjs(dt);
+    const txt = djs.fromNow();
+    return `<span title="${dt}">${txt}</span>`;
+  };
 
   let render_book_actions = function ( data, type, row, meta ) {
     // TODO zzfuture fix: security - add CSRF token

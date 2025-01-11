@@ -1,4 +1,40 @@
 
+# 3.9.2 (2025-01-09)
+
+* Issue #475: allow split by sentences or by paragraphs.
+* Issue #555: add page navigation hotkeys.
+
+Back end changes:
+
+* Refactor book creation, break dependency on http/forms
+
+
+# 3.9.1 (2025-01-07)
+
+* Fix mobile javascript bug
+* Add ci for checking mobile
+
+
+# 3.9.0 (2025-01-04)
+
+Feature changes:
+
+* Add black and white theme.  By @Christhomas17 in #557.
+* #543: track starting reading of each page, show in book listing.
+* #530: add 'peek' route to display page without tracking it, use for sentence lookups.
+
+
+# 3.8.1 (2024-12-26)
+
+Tweaks:
+
+* #547: add some basic "Term Popup" settings.
+
+Fixes:
+
+* #550: fix Bing sentence lookup.
+
+
 # 3.8.0 (2024-12-24)
 
 Tweaks:

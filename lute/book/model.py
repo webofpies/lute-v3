@@ -2,12 +2,58 @@
 Book domain objects.
 """
 
-from lute.models.book import Book as DBBook, BookTag
+from lute.models.book import BookTag, Book as DBBook, Text as DBText
 from lute.models.repositories import (
     BookRepository,
     BookTagRepository,
     LanguageRepository,
 )
+
+
+def token_group_generator(tokens, group_type, threshold=500):
+    """
+    A generator that yields groups of ParsedTokens grouped by sentence or paragraph
+    with each group containing at least the threshold number of tokens.
+    """
+    current_group = []
+    buff = []
+
+    def trim_paras(tok_array):
+        "Remove para tokens from beginning and end."
+        while tok_array and tok_array[0].is_end_of_paragraph:
+            tok_array.pop(0)
+        while tok_array and tok_array[-1].is_end_of_paragraph:
+            tok_array.pop()
+        return tok_array
+
+    def _matches_group_delimiter(tok):
+        if group_type == "sentences":
+            return tok.is_end_of_sentence
+        if group_type == "paragraphs":
+            return tok.is_end_of_paragraph
+        raise RuntimeError("Unhandled type " + group_type)
+
+    for token in tokens:
+        buff.append(token)
+        if _matches_group_delimiter(token):
+            current_group.extend(buff)
+            # pylint: disable=consider-using-generator
+            current_count = sum([1 for t in current_group if t.is_word])
+            buff = []
+
+            # Yield if threshold exceeded.
+            # Remove the final paragreph marker if it's there, it's not needed.
+            if current_count > threshold:
+                current_group = trim_paras(current_group)
+                yield current_group
+                current_group = []
+
+    # Add any remaining tokens
+    if buff:
+        current_group.extend(buff)
+    current_group = trim_paras(current_group)
+    if current_group:
+        yield current_group
 
 
 class Book:  # pylint: disable=too-many-instance-attributes
@@ -25,12 +71,27 @@ class Book:  # pylint: disable=too-many-instance-attributes
         self.language_name = None
         self.title = None
         self.text = None
-        self.max_page_tokens = 250
         self.source_uri = None
         self.audio_filename = None
         self.audio_current_pos = None
         self.audio_bookmarks = None
         self.book_tags = []
+
+        self.threshold_page_tokens = 250
+        self.split_by = "paragraphs"
+
+        # The source file used for the book text.
+        # Overrides the self.text if not None.
+        self.text_source_path = None
+
+        self.text_stream = None
+        self.text_stream_filename = None
+
+        # The source file used for audio.
+        self.audio_source_path = None
+
+        self.audio_stream = None
+        self.audio_stream_filename = None
 
     def __repr__(self):
         return f"<Book (id={self.id}, title='{self.title}')>"
@@ -92,6 +153,37 @@ class Repository:
         """
         self.session.commit()
 
+    def _split_text_at_page_breaks(self, txt):
+        "Break fulltext manually at lines consisting of '---' only."
+        # Tried doing this with a regex without success.
+        segments = []
+        current_segment = ""
+        for line in txt.split("\n"):
+            if line.strip() == "---":
+                segments.append(current_segment.strip())
+                current_segment = ""
+            else:
+                current_segment += line + "\n"
+        if current_segment:
+            segments.append(current_segment.strip())
+        return segments
+
+    def _split_pages(self, book, language):
+        "Split fulltext into pages, respecting sentences."
+
+        pages = []
+        for segment in self._split_text_at_page_breaks(book.text):
+            tokens = language.parser.get_parsed_tokens(segment, language)
+            for toks in token_group_generator(
+                tokens, book.split_by, book.threshold_page_tokens
+            ):
+                s = "".join([t.token for t in toks])
+                s = s.replace("\r", "").replace("¶", "\n")
+                pages.append(s.strip())
+        pages = [p for p in pages if p.strip() != ""]
+
+        return pages
+
     def _build_db_book(self, book):
         "Convert a book business object to a DBBook."
 
@@ -107,9 +199,13 @@ class Repository:
 
         b = None
         if book.id is None:
-            b = DBBook.create_book(book.title, lang, book.text, book.max_page_tokens)
+            pages = self._split_pages(book, lang)
+            b = DBBook(book.title, lang)
+            for index, page in enumerate(pages):
+                _ = DBText(b, page, index + 1)
         else:
             b = self.book_repo.find(book.id)
+
         b.title = book.title
         b.source_uri = book.source_uri
         b.audio_filename = book.audio_filename

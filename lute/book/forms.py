@@ -9,7 +9,14 @@ from wtforms import ValidationError
 from wtforms.validators import DataRequired, Length, NumberRange
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from lute.book.service import Service
+
+
+def _tag_values(field_data):
+    "Convert field data to array."
+    ret = []
+    if field_data:
+        ret = [h["value"] for h in json.loads(field_data)]
+    return ret
 
 
 class NewBookForm(FlaskForm):
@@ -35,9 +42,12 @@ class NewBookForm(FlaskForm):
             )
         ],
     )
-    max_page_tokens = IntegerField(
+    split_by = SelectField(
+        "Split by", choices=[("paragraphs", "Paragraphs"), ("sentences", "Sentences")]
+    )
+    threshold_page_tokens = IntegerField(
         "Words per page",
-        validators=[NumberRange(min=10, max=1500)],
+        validators=[NumberRange(min=1, max=1500)],
         default=250,
     )
     source_uri = StringField("Text source", validators=[Length(max=1000)])
@@ -68,22 +78,15 @@ class NewBookForm(FlaskForm):
     def populate_obj(self, obj):
         "Call the populate_obj method from the parent class, then mine."
         super().populate_obj(obj)
-
-        def _values(field_data):
-            "Convert field data to array."
-            ret = []
-            if field_data:
-                ret = [h["value"] for h in json.loads(field_data)]
-            return ret
-
-        obj.book_tags = _values(self.book_tags.data)
-
-        service = Service()
-        if self.textfile.data:
-            obj.text = service.get_file_content(self.textfile.data)
-        f = self.audiofile.data
-        if f:
-            obj.audio_filename = service.save_audio_file(f)
+        obj.book_tags = _tag_values(self.book_tags.data)
+        tfd = self.textfile.data
+        if tfd:
+            obj.text_stream = tfd.stream
+            obj.text_stream_filename = tfd.filename
+        afd = self.audiofile.data
+        if afd:
+            obj.audio_stream = afd.stream
+            obj.audio_stream_filename = afd.filename
 
     def validate_language_id(self, field):  # pylint: disable=unused-argument
         "Language must be set."
@@ -139,19 +142,11 @@ class EditBookForm(FlaskForm):
     def populate_obj(self, obj):
         "Call the populate_obj method from the parent class, then mine."
         super().populate_obj(obj)
+        obj.book_tags = _tag_values(self.book_tags.data)
 
-        def _values(field_data):
-            "Convert field data to array."
-            ret = []
-            if field_data:
-                ret = [h["value"] for h in json.loads(field_data)]
-            return ret
-
-        obj.book_tags = _values(self.book_tags.data)
-
-        f = self.audiofile.data
-        service = Service()
-        if f:
-            obj.audio_filename = service.save_audio_file(f)
+        afd = self.audiofile.data
+        if afd:
+            obj.audio_stream = afd.stream
+            obj.audio_stream_filename = afd.filename
             obj.audio_bookmarks = None
             obj.audio_current_pos = None

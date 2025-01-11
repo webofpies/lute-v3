@@ -7,13 +7,69 @@ from datetime import datetime
 import functools
 from lute.models.term import Term, Status
 from lute.models.book import Text, WordsRead
-from lute.models.repositories import BookRepository
+from lute.models.repositories import BookRepository, UserSettingRepository
 from lute.book.stats import Service as StatsService
 from lute.read.render.service import Service as RenderService
 from lute.read.render.calculate_textitems import get_string_indexes
 from lute.term.model import Repository
 
 # from lute.utils.debug_helpers import DebugTimer
+
+
+class TermPopup:
+    "Popup data for a term."
+
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self, term):
+        self.term = term
+        self.term_text = self._clean(term.text)
+        self.parents_text = ", ".join([self._clean(p.text) for p in term.parents])
+        self.translation = self._clean(term.translation)
+        self.romanization = self._clean(term.romanization)
+        self.tags = [tt.text for tt in term.term_tags]
+        self.flash = self._clean(term.get_flash_message())
+        self.image = term.get_current_image()
+        self.popup_image_data = self._get_popup_image_data()
+
+        # Final data to include in popup.
+        self.parents = []
+        self.components = []
+
+    def _clean(self, t):
+        "Clean text for popup usage."
+        zws = "\u200B"
+        ret = (t or "").strip()
+        ret = ret.replace(zws, "")
+        ret = ret.replace("\n", "<br />")
+        return ret
+
+    @property
+    def show(self):
+        "Calc if should show.  Must be deferred as values can be changed."
+        checks = [self.romanization != "", self.translation != "", len(self.tags) > 0]
+        return len([b for b in checks if b]) > 0
+
+    def term_and_parents_text(self):
+        "Return term text with parents if any."
+        ret = self.term_text
+        if self.parents_text != "":
+            ret = f"{ret} ({self.parents_text})"
+        return ret
+
+    def _get_popup_image_data(self):
+        "Get images"
+        # Don't include component images in the hover for now,
+        # it can get confusing!
+        # ref https://github.com/LuteOrg/lute-v3/issues/355
+        terms = [self.term, *self.term.parents]
+        images = [
+            (t.get_current_image(), t.text) for t in terms if t.get_current_image()
+        ]
+        imageresult = defaultdict(list)
+        for key, value in images:
+            imageresult[key].append(self._clean(value))
+        # Convert lists to comma-separated strings
+        return {k: ", ".join(v) for k, v in imageresult.items()}
 
 
 class Service:
@@ -29,6 +85,7 @@ class Service:
         text = book.text_at_page(pagenum)
         d = datetime.now()
         text.read_date = d
+
         w = WordsRead(text, d, text.word_count)
         self.session.add(text)
         self.session.add(w)
@@ -93,15 +150,17 @@ class Service:
             self.session.add(ti.term)
         self.session.commit()
 
-    def start_reading(self, dbbook, pagenum):
-        "Start reading a page in the book, getting paragraphs."
-
+    def _get_reading_data(self, dbbook, pagenum, track_page_open=False):
+        "Get paragraphs, set text.start_date if needed."
         text = dbbook.text_at_page(pagenum)
         text.load_sentences()
-
         svc = StatsService(self.session)
         svc.mark_stale(dbbook)
-        dbbook.current_tx_id = text.id
+
+        if track_page_open:
+            text.start_date = datetime.now()
+            dbbook.current_tx_id = text.id
+
         self.session.add(dbbook)
         self.session.add(text)
         self.session.commit()
@@ -113,19 +172,13 @@ class Service:
 
         return paragraphs
 
-    def _get_popup_image_data(self, terms):
-        "Get images"
-        # Don't include component images in the hover for now,
-        # it can get confusing!
-        # ref https://github.com/LuteOrg/lute-v3/issues/355
-        images = [
-            (t.get_current_image(), t.text) for t in terms if t.get_current_image()
-        ]
-        imageresult = defaultdict(list)
-        for key, value in images:
-            imageresult[key].append(value)
-        # Convert lists to comma-separated strings
-        return {k: ", ".join(v) for k, v in imageresult.items()}
+    def get_paragraphs(self, dbbook, pagenum):
+        "Get the paragraphs for the book."
+        return self._get_reading_data(dbbook, pagenum, False)
+
+    def start_reading(self, dbbook, pagenum):
+        "Start reading a page in the book, getting paragraphs."
+        return self._get_reading_data(dbbook, pagenum, True)
 
     def _sort_components(self, term, components):
         "Sort components by min position in string and length."
@@ -156,61 +209,44 @@ class Service:
     def get_popup_data(self, termid):
         "Get popup data, or None if popup shouldn't be shown."
         term = self.session.get(Term, termid)
-        rs = RenderService(self.session)
-        components = [
-            c
-            for c in rs.find_all_Terms_in_string(term.text, term.language)
-            if c.id != term.id and c.status != Status.UNKNOWN
-        ]
-
-        def has_popup_data(cterm):
-            return (
-                (cterm.translation or "").strip() != ""
-                or (cterm.romanization or "").strip() != ""
-                or cterm.get_current_image() is not None
-                or len(cterm.term_tags) != 0
-            )
-
-        if not has_popup_data(term) and len(term.parents) == 0 and len(components) == 0:
+        if term is None:
             return None
 
-        translation = (term.translation or "").strip()
+        repo = UserSettingRepository(self.session)
+        show_components = int(repo.get_value("term_popup_show_components")) == 1
+        components = []
+        if show_components:
+            rs = RenderService(self.session)
+            components = [
+                c
+                for c in rs.find_all_Terms_in_string(term.text, term.language)
+                if c.id != term.id and c.status != Status.UNKNOWN
+            ]
 
-        def make_array(t):
-            ret = {
-                "term": t.text,
-                "roman": (t.romanization or "").strip(),
-                "trans": (t.translation or "").strip(),
-                "tags": [tt.text for tt in t.term_tags],
-            }
-            return ret
+        t = TermPopup(term)
+        if (
+            t.show is False
+            and t.image is None
+            and len(term.parents) == 0
+            and len(components) == 0
+        ):
+            # Nothing to show."
+            return None
 
-        parent_data = [make_array(p) for p in term.parents]
+        parent_data = [TermPopup(p) for p in term.parents]
 
-        if len(parent_data) == 1:
-            ptrans = parent_data[0]["trans"]
-            if translation == "":
-                translation = ptrans
-            if translation == ptrans:
-                parent_data[0]["trans"] = ""
+        promote_parent_trans = int(
+            repo.get_value("term_popup_promote_parent_translation")
+        )
+        if (promote_parent_trans == 1) and len(term.parents) == 1:
+            ptrans = parent_data[0].translation
+            if t.translation == "":
+                t.translation = ptrans
+            if t.translation == ptrans:
+                parent_data[0].translation = ""
 
-        component_data = [
-            make_array(c) for c in self._sort_components(term, components)
-        ]
+        component_data = [TermPopup(c) for c in self._sort_components(term, components)]
 
-        def arr_has_popup_data(arr):
-            checks = [arr["roman"] != "", arr["trans"] != "", len(arr["tags"]) > 0]
-            return len([b for b in checks if b]) > 0
-
-        ret = {
-            "term": term,
-            "flashmsg": term.get_flash_message(),
-            "term_tags": [tt.text for tt in term.term_tags],
-            "term_translation": translation,
-            "term_images": self._get_popup_image_data([term, *term.parents]),
-            "parentdata": [p for p in parent_data if arr_has_popup_data(p)],
-            "parentterms": ", ".join([p.text for p in term.parents]),
-            "components": [c for c in component_data if arr_has_popup_data(c)],
-        }
-        # print(ret, flush=True)
-        return ret
+        t.parents = [p for p in parent_data if p.show]
+        t.components = [c for c in component_data if c.show]
+        return t
