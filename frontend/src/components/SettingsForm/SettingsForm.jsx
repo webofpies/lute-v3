@@ -81,7 +81,7 @@ function SettingsForm() {
           }}>
           <Stack gap={5} align="flex-start">
             <Checkbox
-              label="Open popup in new tab"
+              label="Open translation popup in new tab"
               key={form.key("open_popup_in_new_tab")}
               {...form.getInputProps("open_popup_in_new_tab", {
                 type: "checkbox",
@@ -99,6 +99,32 @@ function SettingsForm() {
               leftSection={<IconNotes />}
               key={form.key("stats_calc_sample_size")}
               {...form.getInputProps("stats_calc_sample_size")}
+            />
+          </Stack>
+        </Fieldset>
+        <Fieldset
+          variant="filled"
+          legend="Term popups"
+          styles={{
+            legend: {
+              fontSize: fieldsetFz,
+              fontWeight: 500,
+            },
+          }}>
+          <Stack gap={5} align="flex-start">
+            <Checkbox
+              label="Promote parent translation if possible"
+              key={form.key("term_popup_promote_parent_translation")}
+              {...form.getInputProps("term_popup_promote_parent_translation", {
+                type: "checkbox",
+              })}
+            />
+            <Checkbox
+              label="Show component terms"
+              key={form.key("term_popup_show_components")}
+              {...form.getInputProps("term_popup_show_components", {
+                type: "checkbox",
+              })}
             />
           </Stack>
         </Fieldset>
