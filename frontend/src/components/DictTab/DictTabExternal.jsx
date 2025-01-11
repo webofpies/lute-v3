@@ -1,21 +1,20 @@
-import { Button, rem } from "@mantine/core";
 import DictFavicon from "../DictTabs/DictFavicon";
 import { IconExternalLink } from "@tabler/icons-react";
 import { getLookupURL } from "../../misc/utils";
 
-function DictTabExternal({ dict, term, innerRef }) {
+function DictTabExternal({ dict, term, innerRef, component: Component }) {
   return (
-    <Button
+    <Component
       ref={innerRef}
       component="a"
-      ml={rem(2)}
       variant="default"
       fw="normal"
+      ml={2}
       leftSection={<DictFavicon hostname={dict.hostname} />}
       rightSection={<IconExternalLink size={16} stroke={1.6} />}
       onClick={() => handleExternal(getLookupURL(dict.url, term))}>
       {dict.label}
-    </Button>
+    </Component>
   );
 }
 

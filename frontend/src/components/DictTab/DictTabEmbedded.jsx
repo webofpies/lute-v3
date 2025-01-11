@@ -1,29 +1,26 @@
-import { Tabs, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import classes from "../DictTabs/DictTabs.module.css";
 import DictFavicon from "../DictTabs/DictFavicon";
 
 function DictTabEmbedded({
   dict,
   value,
-  onSetActiveTab,
-  onHandleFocus,
   innerRef,
+  onClick,
+  component: Component,
 }) {
   return (
-    <Tabs.Tab
-      ref={innerRef}
-      onClick={() => {
-        onSetActiveTab();
-        onHandleFocus();
-      }}
+    <Component
       className={classes.flex}
+      ref={innerRef}
       id={value}
       value={value}
+      onClick={onClick}
       leftSection={<DictFavicon hostname={dict.hostname} />}>
       <Text size="sm" style={{ overflow: "hidden" }}>
         {dict.label}
       </Text>
-    </Tabs.Tab>
+    </Component>
   );
 }
 

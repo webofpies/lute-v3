@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Tabs, Text, Tooltip } from "@mantine/core";
+import { Button, Tabs, Text, Tooltip } from "@mantine/core";
 import { IconPhoto } from "@tabler/icons-react";
 import Iframe from "./Iframe";
 import Sentences from "../Sentences/Sentences";
@@ -9,10 +9,14 @@ import DictTabExternal from "../DictTab/DictTabExternal";
 import classes from "./DictTabs.module.css";
 import { sentencesQuery } from "../../queries/sentences";
 import { getLookupURL } from "../../misc/utils";
+import DictDropdown from "./DictDropdown";
+
+const MAX_VISIBLE_DICT_TABS = 5;
 
 function DictTabs({ language, term, translationFieldRef = {} }) {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("0");
+  const [activeDropdownUrl, setActiveDropdownUrl] = useState("");
 
   function handleFocus() {
     setTimeout(() => {
@@ -21,6 +25,12 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
       input.setSelectionRange(input.value.length, input.value.length);
     }, 0);
   }
+
+  const visibleDicts = language.dictionaries.term.slice(
+    0,
+    MAX_VISIBLE_DICT_TABS
+  );
+  const dropdownDicts = language.dictionaries.term.slice(MAX_VISIBLE_DICT_TABS);
 
   return (
     <Tabs
@@ -36,27 +46,41 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
           style={{
             display: "grid",
             alignItems: "center",
-            gridTemplateColumns: `repeat(${language.dictionaries.term.length}, minmax(3rem, 8rem))`,
+            gridTemplateColumns: `repeat(${visibleDicts.length}, minmax(3rem, 8rem))`,
           }}>
-          {language.dictionaries.term.map((dict, index) => (
+          {visibleDicts.map((dict, index) => (
             <Tooltip
               key={dict.label}
               label={dict.label}
               openDelay={150}
               refProp="innerRef">
               {dict.isExternal ? (
-                <DictTabExternal dict={dict} term={term} />
+                <DictTabExternal dict={dict} term={term} component={Button} />
               ) : (
                 <DictTabEmbedded
                   dict={dict}
                   value={String(index)}
-                  onSetActiveTab={() => setActiveTab(String(index))}
-                  onHandleFocus={handleFocus}
+                  onClick={() => {
+                    setActiveTab(String(index));
+                    handleFocus();
+                  }}
+                  component={Tabs.Tab}
                 />
               )}
             </Tooltip>
           ))}
         </div>
+
+        <DictDropdown
+          term={term}
+          dicts={dropdownDicts}
+          onClick={(url) => {
+            setActiveTab("dropdownTab");
+            setActiveDropdownUrl(url);
+            handleFocus();
+          }}
+        />
+
         <div style={{ display: "flex" }}>
           <Tabs.Tab
             className={classes.flex}
@@ -87,7 +111,7 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
         </div>
       </Tabs.List>
 
-      {language.dictionaries.term.map((dict, index) => {
+      {visibleDicts.map((dict, index) => {
         return (
           !dict.isExternal && (
             <Tabs.Panel
@@ -103,6 +127,17 @@ function DictTabs({ language, term, translationFieldRef = {} }) {
           )
         );
       })}
+
+      <Tabs.Panel
+        style={{ height: "100%" }}
+        key="dropdownTab"
+        id="dropdownTab"
+        value="dropdownTab">
+        <Iframe
+          src={getLookupURL(activeDropdownUrl, term)}
+          onHandleFocus={handleFocus}
+        />
+      </Tabs.Panel>
       <Tabs.Panel
         style={{ overflowY: "auto", flexGrow: 1 }}
         id="sentencesTab"
