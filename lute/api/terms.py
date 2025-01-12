@@ -412,12 +412,12 @@ def _term_to_dict(term):
         term.status = 1
 
     return {
-        "text": term.text,
-        "textLC": term.text_lc,
-        "originalText": term.original_text,
+        "text": term.text or "",
+        "textLC": term.text_lc or "",
+        "originalText": term.original_text or "",
         "status": term.status,
-        "translation": term.translation,
-        "romanization": term.romanization,
+        "translation": term.translation or "",
+        "romanization": term.romanization or "",
         "syncStatus": term.sync_status,
         "termTags": term.term_tags,
         "parents": term.parents,

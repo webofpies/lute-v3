@@ -1,10 +1,9 @@
-import { memo, useEffect, useRef } from "react";
+import { memo, useRef } from "react";
 import { Box, Stack } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import DictTabs from "../DictTabs/DictTabs";
 import TermForm from "../TermForm/TermForm";
 import { paneResizeStorage } from "../../misc/utils";
-import { useTermForm } from "../../hooks/term";
 import classes from "../BookView/BookView.module.css";
 
 function TranslationPane({
@@ -17,17 +16,6 @@ function TranslationPane({
   const termPanelRef = useRef();
   const translationFieldRef = useRef();
 
-  const form = useTermForm(term);
-
-  useEffect(() => {
-    form.setValues({
-      ...term,
-      status: String(term.status),
-      translation: term.translation ?? undefined,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [term]);
-
   return (
     <Stack gap={0} dir="column" className={classes.translationContainer}>
       <PanelGroup
@@ -39,7 +27,7 @@ function TranslationPane({
           <Box p={20}>
             <TermForm
               key={term.text}
-              form={form}
+              term={term}
               language={language}
               translationFieldRef={translationFieldRef}
               onSetActiveTerm={onSetActiveTerm}

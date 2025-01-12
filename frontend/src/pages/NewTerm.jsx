@@ -1,58 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
-import { ActionIcon, Box, Group, Paper, Text, Tooltip } from "@mantine/core";
-import { IconVocabulary } from "@tabler/icons-react";
+import { Box, Group, Paper, Text } from "@mantine/core";
+
 import DictTabs from "../components/DictTabs/DictTabs";
 import LanguageCards from "../components/LanguageCards/LanguageCards";
 import PageContainer from "../components/PageContainer/PageContainer";
 import PageTitle from "../components/PageTitle/PageTitle";
 import TermForm from "../components/TermForm/TermForm";
 import { definedLangInfoQuery } from "../queries/language";
-import { useTermForm } from "../hooks/term";
-
-const term = {
-  text: "",
-  textLC: "",
-  originalText: "",
-  status: "1",
-  translation: "",
-  romanization: "",
-  syncStatus: "",
-  termTags: [],
-  parents: [],
-  currentImg: "",
-};
 
 function NewTerm() {
   const [newTerm, setNewTerm] = useState("");
   const [params] = useSearchParams();
   const langId = params.get("id");
   const { data: language } = useQuery(definedLangInfoQuery(langId));
-
-  const form = useTermForm(term);
-
-  function handleLoadDictionaries() {
-    const text = form.getValues().text;
-    text !== "" && setNewTerm(text);
-  }
-
-  const loadDictsButton = (
-    <Tooltip label="Load dictionaries with the term">
-      <ActionIcon
-        disabled={form.getValues().text === ""}
-        variant="default"
-        onClick={handleLoadDictionaries}>
-        <IconVocabulary />
-      </ActionIcon>
-    </Tooltip>
-  );
-
-  useEffect(() => {
-    if (form.getValues.text === "") {
-      setNewTerm("");
-    }
-  }, [form.getValues.text]);
 
   return (
     <PageContainer width="90%">
@@ -68,14 +30,10 @@ function NewTerm() {
           align="flex-start"
           dir={language.isRightToLeft ? "rtl" : "ltr"}>
           <Box flex={0.3}>
-            <TermForm
-              form={form}
-              language={language}
-              loadDictsButton={loadDictsButton}
-            />
+            <TermForm language={language} onSetTerm={setNewTerm} />
           </Box>
           <Box flex={0.7} h={600}>
-            {newTerm && form.getValues().text !== "" ? (
+            {newTerm ? (
               <DictTabs language={language} term={newTerm} />
             ) : (
               <Placeholder

@@ -205,6 +205,11 @@ function buildSuggestionsList(currentTermText, suggestions) {
     .filter((item) => item.value != currentTermText);
 }
 
+function moveCursorToEnd(e) {
+  const input = e.target;
+  input.setSelectionRange(input.value.length, input.value.length);
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -220,4 +225,5 @@ export {
   convertSecsToDisplayString,
   getLookupURL,
   buildSuggestionsList,
+  moveCursorToEnd,
 };

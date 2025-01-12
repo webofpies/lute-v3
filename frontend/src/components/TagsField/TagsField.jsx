@@ -15,7 +15,14 @@ import { buildSuggestionsList } from "../../misc/utils";
 
 const MAX_SUGGESTION_COUNT = 15;
 
-function TagsField({ form, languageId, onSetActiveTerm }) {
+function TagsField({
+  termText,
+  languageId,
+  onSetActiveTerm,
+  values,
+  onSetValues,
+  onSubmitParent,
+}) {
   const {
     handleKeydown,
     handleInputChange,
@@ -28,7 +35,14 @@ function TagsField({ form, languageId, onSetActiveTerm }) {
     search,
     options,
     suggestions,
-  } = useInitializeTagsField(form, languageId, onSetActiveTerm);
+  } = useInitializeTagsField(
+    termText,
+    languageId,
+    onSetActiveTerm,
+    values,
+    onSetValues,
+    onSubmitParent
+  );
 
   return (
     <Combobox
@@ -38,7 +52,7 @@ function TagsField({ form, languageId, onSetActiveTerm }) {
       <Combobox.DropdownTarget>
         <PillsInput rightSection={inputRightSection}>
           <Pill.Group gap={4}>
-            {form.getValues().parents.map((item) => (
+            {values.map((item) => (
               <Pill
                 key={item}
                 style={{ cursor: "pointer" }}
@@ -69,7 +83,7 @@ function TagsField({ form, languageId, onSetActiveTerm }) {
                 <Combobox.Option
                   value={JSON.stringify(item)}
                   key={item.suggestion}
-                  active={form.getValues().parents.includes(item.suggestion)}>
+                  active={values.includes(item.suggestion)}>
                   <span>{item.suggestion}</span>
                 </Combobox.Option>
               ))}
@@ -88,58 +102,47 @@ function TagsField({ form, languageId, onSetActiveTerm }) {
   );
 }
 
-function useInitializeTagsField(form, languageId, onSetActiveTerm) {
-  let suggestions;
+function useInitializeTagsField(
+  termText,
+  languageId,
+  onSetActiveTerm,
+  values,
+  onSetValues,
+  onSubmitParent
+) {
   const [search, setSearch] = useState("");
-
-  const { data, isFetching } = useQuery(
-    termSuggestionsQuery(search, languageId)
-  );
-
-  if (data) {
-    suggestions = buildSuggestionsList(form.getValues().originalText, data);
-  }
-
-  const options = suggestions
-    ? suggestions
-        .slice(0, MAX_SUGGESTION_COUNT)
-        .filter((item) =>
-          item.suggestion.toLowerCase().includes(search.trim().toLowerCase())
-        )
-        .filter((item) => !form.getValues().parents.includes(item.value))
-    : [];
-
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
   });
+  const { data, isFetching } = useQuery(
+    termSuggestionsQuery(search, languageId)
+  );
 
-  // console.log(suggestions);
+  const suggestions = data ? buildSuggestionsList(termText, data) : [];
 
-  // const handleValueSelect = (val) =>
-  //   setValue((current) =>
-  //     current.includes(val)
-  //       ? current.filter((v) => v !== val)
-  //       : [...current, val]
-  //   );
+  const options = suggestions
+    .slice(0, MAX_SUGGESTION_COUNT)
+    .filter((item) =>
+      item.suggestion.toLowerCase().includes(search.trim().toLowerCase())
+    )
+    .filter((item) => !values.includes(item.value));
 
-  const handleValueAdd = (val) => {
+  function handleValueAdd(val) {
     if (val && val !== " ") {
-      const currentParents = form.getValues().parents;
-      form.setFieldValue("parents", [...currentParents, val]);
+      onSetValues([...values, val]);
     }
-  };
+  }
 
-  const handleValueRemove = (val) => {
-    const newValues = form.getValues().parents.filter((v) => v !== val);
-    form.setFieldValue("parents", newValues);
-  };
+  function handleValueRemove(val) {
+    const newValues = values.filter((v) => v !== val);
+    onSetValues(newValues);
+  }
 
   function handleKeydown(event) {
     if (event.key === "Backspace" && search.length === 0) {
       event.preventDefault();
-      const parents = form.getValues().parents;
-      handleValueRemove(parents[parents.length - 1]);
+      handleValueRemove(values[values.length - 1]);
     }
 
     if (event.key === "Enter") {
@@ -172,19 +175,8 @@ function useInitializeTagsField(form, languageId, onSetActiveTerm) {
   }
 
   function handleOptionSubmit(val) {
-    const obj = JSON.parse(val);
-
-    const newValues = [...form.getValues().parents, obj.value];
-    const singleParent = newValues.length === 1;
-
-    if (singleParent) {
-      form.setFieldValue("status", String(obj.status));
-    }
-    form.setFieldValue("syncStatus", singleParent);
-    form.setFieldValue("parents", newValues);
-
+    onSubmitParent(val);
     setSearch("");
-
     combobox.closeDropdown();
   }
 
@@ -194,11 +186,11 @@ function useInitializeTagsField(form, languageId, onSetActiveTerm) {
     setSearch("");
   }
 
-  const inputRightSection = form.getValues().parents.length ? (
+  const inputRightSection = values.length ? (
     <CloseButton
       size="sm"
       onMouseDown={(event) => event.preventDefault()}
-      onClick={() => form.setFieldValue("parents", [])}
+      onClick={() => onSetValues([])}
       aria-label="Clear value"
     />
   ) : (
