@@ -8,13 +8,13 @@ import classes from "../LanguageCard/LanguageCard.module.css";
 function LanguageCards({ label, description }) {
   const { data: languages } = useQuery(definedListQuery);
   const [params, setParams] = useSearchParams();
-  const currentId = params.get("id");
+  const currentId = params.get("langId");
 
   function handleLanguageChange(id) {
     if (id === currentId) {
       return;
     }
-    setParams({ id: id });
+    setParams({ langId: id });
   }
 
   return (
@@ -24,7 +24,7 @@ function LanguageCards({ label, description }) {
       description={description}
       name="langs"
       value={currentId}
-      onChange={(event) => handleLanguageChange(event)}>
+      onChange={(id) => handleLanguageChange(id)}>
       <ScrollArea type="scroll" offsetScrollbars="x">
         <Group gap={2} wrap="nowrap" align="stretch">
           {languages

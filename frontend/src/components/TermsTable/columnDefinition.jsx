@@ -49,7 +49,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
     enableClickToCopy: false,
     Cell: ({ row }) => (
       <Link
-        to={`/terms/new`}
+        to={`/terms/term?termId=${row.original.id}&langId=${row.original.languageId}`}
         style={{ color: "inherit", textDecoration: "none" }}>
         <Text size="sm" lineClamp={1}>
           {row.original.text}

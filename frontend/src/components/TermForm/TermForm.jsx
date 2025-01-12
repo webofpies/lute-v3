@@ -42,7 +42,7 @@ function TermForm({
       status: String(term.status),
     },
     enhanceGetInputProps: ({ form, field }) => {
-      if (!term) return;
+      if (!form.initialized) return;
 
       if (field === "syncStatus") {
         const parentsCount = form.getValues().parents.length;

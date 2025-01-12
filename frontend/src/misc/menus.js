@@ -38,7 +38,7 @@ const menu = {
     },
     new: {
       label: "Create New",
-      action: "/terms/new",
+      action: "/terms/term",
     },
     tags: {
       label: "Tags",

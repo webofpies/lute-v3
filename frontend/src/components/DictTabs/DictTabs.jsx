@@ -6,10 +6,10 @@ import Iframe from "./Iframe";
 import Sentences from "../Sentences/Sentences";
 import DictTabEmbedded from "../DictTab/DictTabEmbedded";
 import DictTabExternal from "../DictTab/DictTabExternal";
+import DictDropdown from "./DictDropdown";
 import classes from "./DictTabs.module.css";
 import { sentencesQuery } from "../../queries/sentences";
 import { getLookupURL } from "../../misc/utils";
-import DictDropdown from "./DictDropdown";
 import { useUncontrolled } from "@mantine/hooks";
 
 const MAX_VISIBLE_DICT_TABS = 5;
@@ -82,15 +82,17 @@ function DictTabs({
           ))}
         </div>
 
-        <DictDropdown
-          term={term}
-          dicts={dropdownDicts}
-          onClick={(url) => {
-            setTabValue("dropdownTab");
-            setActiveDropdownUrl(url);
-            handleFocus();
-          }}
-        />
+        {dropdownDicts.length > 0 && (
+          <DictDropdown
+            term={term}
+            dicts={dropdownDicts}
+            onClick={(url) => {
+              setTabValue("dropdownTab");
+              setActiveDropdownUrl(url);
+              handleFocus();
+            }}
+          />
+        )}
 
         <div style={{ display: "flex" }}>
           <Tabs.Tab

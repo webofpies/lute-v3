@@ -40,7 +40,7 @@ function LanguageForm() {
   const { pathname } = useLocation();
   const [params] = useSearchParams();
   const openedFromLanguages = pathname === "/languages";
-  const langId = params.get("id");
+  const langId = params.get("langId");
   const predefinedSelected = langId === "0";
   const predefSettingsQuery = useQuery(
     predefFormSettingsQuery(params.get("name", null))

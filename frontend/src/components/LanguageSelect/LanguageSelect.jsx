@@ -32,7 +32,7 @@ function LanguageSelect({ form, languages }) {
     setValue(null);
     form.reset();
     params.delete("name");
-    params.delete("id");
+    params.delete("langId");
     setParams(params);
   }
 
@@ -53,7 +53,7 @@ function LanguageSelect({ form, languages }) {
     } else {
       setValue(val);
       setSearch(val);
-      setParams({ id: 0, name: val });
+      setParams({ langId: 0, name: val });
     }
 
     combobox.closeDropdown();
@@ -73,7 +73,7 @@ function LanguageSelect({ form, languages }) {
 
   useEffect(() => {
     const lang = params.get("name");
-    const id = params.get("id");
+    const id = params.get("langId");
     const openedFromLanguages = pathname === "/languages";
 
     if (lang && openedFromLanguages) {

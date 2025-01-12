@@ -37,7 +37,7 @@ const Statistics = lazy(() => import("./pages/Statistics"));
 const Settings = lazy(() => import("./pages/Settings"));
 const Backups = lazy(() => import("./pages/Backups"));
 const Terms = lazy(() => import("./pages/Terms"));
-const NewTerm = lazy(() => import("./pages/NewTerm"));
+const Term = lazy(() => import("./pages/Term"));
 const Tags = lazy(() => import("./pages/Tags"));
 const Book = lazy(() => import("./pages/Book"));
 
@@ -81,10 +81,10 @@ const router = createBrowserRouter([
         loader: termsLoader(queryClient),
       },
       {
-        path: "/terms/new",
+        path: "/terms/term",
         element: (
           <Suspense fallback={<PageSpinner />}>
-            <NewTerm />
+            <Term />
           </Suspense>
         ),
         loader: termsLoader(queryClient),

@@ -9,32 +9,48 @@ import PageContainer from "../components/PageContainer/PageContainer";
 import PageTitle from "../components/PageTitle/PageTitle";
 import TermForm from "../components/TermForm/TermForm";
 import { definedLangInfoQuery } from "../queries/language";
+import { termDataQuery } from "../queries/term";
 
-function NewTerm() {
+function Term() {
   const [newTerm, setNewTerm] = useState("");
   const [params] = useSearchParams();
-  const langId = params.get("id");
+  const langId = params.get("langId");
+  const termId = params.get("termId");
   const { data: language } = useQuery(definedLangInfoQuery(langId));
+  const { data: term } = useQuery(termDataQuery(termId));
+
+  const editMode = termId && language && term;
 
   return (
     <PageContainer width="90%">
-      <PageTitle>Create new term</PageTitle>
-      <LanguageCards
-        label="My languages"
-        description="Pick a language to add the new term"
-      />
+      <PageTitle>{termId ? "Edit term" : "Create new term"}</PageTitle>
+      {!termId && (
+        <LanguageCards
+          label="My languages"
+          description="Pick a language to add the new term"
+        />
+      )}
 
-      {language ? (
+      {language || editMode ? (
         <Group
           justify="center"
           align="flex-start"
           dir={language.isRightToLeft ? "rtl" : "ltr"}>
           <Box flex={0.3}>
-            <TermForm language={language} onSetTerm={setNewTerm} />
+            <TermForm
+              key={term}
+              term={termId ? term : null}
+              language={language}
+              onSetTerm={setNewTerm}
+            />
           </Box>
           <Box flex={0.7} h={600}>
-            {newTerm ? (
-              <DictTabs language={language} term={newTerm} />
+            {newTerm || editMode ? (
+              <DictTabs
+                key={termId ? term.text : newTerm}
+                language={language}
+                term={termId ? term.text : newTerm}
+              />
             ) : (
               <Placeholder
                 label="Type term text and click the lookup button to load dictionaries"
@@ -44,10 +60,12 @@ function NewTerm() {
           </Box>
         </Group>
       ) : (
-        <Placeholder
-          label="Select a language to show the term form"
-          height={600}
-        />
+        !termId && (
+          <Placeholder
+            label="Select a language to show the term form"
+            height={600}
+          />
+        )
       )}
     </PageContainer>
   );
@@ -72,4 +90,4 @@ function Placeholder({ label, height }) {
   );
 }
 
-export default NewTerm;
+export default Term;
