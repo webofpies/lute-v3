@@ -29,7 +29,9 @@ const columnDefinition = (languageChoices, tagChoices) => [
           <Link
             to={`/books/${row.original.id}/pages/${currentPage}`}
             style={{ color: "inherit", textDecoration: "none" }}>
-            <Text lineClamp={1}>{title}</Text>
+            <Text size="sm" lineClamp={1}>
+              {title}
+            </Text>
           </Link>
           {currentPage > 1 && (
             <Text component="span" size="sm" c="dimmed">

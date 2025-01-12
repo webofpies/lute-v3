@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Group,
   Image,
@@ -45,6 +46,16 @@ const columnDefinition = (languageChoices, tagChoices) => [
     accessorKey: "text",
     minSize: 300,
     columnFilterModeOptions: ["contains", "startsWith", "endsWith"],
+    enableClickToCopy: false,
+    Cell: ({ row }) => (
+      <Link
+        to={`/terms/new`}
+        style={{ color: "inherit", textDecoration: "none" }}>
+        <Text size="sm" lineClamp={1}>
+          {row.original.text}
+        </Text>
+      </Link>
+    ),
   },
   {
     header: "Parent",

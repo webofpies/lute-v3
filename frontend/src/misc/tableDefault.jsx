@@ -2,7 +2,7 @@ import { MRT_ShowHideColumnsButton } from "mantine-react-table";
 
 const tableDefault = {
   initialState: {
-    density: 8,
+    density: 6,
     showGlobalFilter: true,
     showColumnFilters: true,
   },
