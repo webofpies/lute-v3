@@ -53,21 +53,11 @@ const tagsQuery = {
 
 function loader(queryClient) {
   return async () => {
-    const defListData =
-      queryClient.getQueryData(definedListQuery.queryKey) ??
-      (await queryClient.fetchQuery(definedListQuery));
-
+    const defListData = await queryClient.ensureQueryData(definedListQuery);
     const tagSuggestionsData =
-      queryClient.getQueryData(tagSuggestionsQuery.queryKey) ??
-      (await queryClient.fetchQuery(tagSuggestionsQuery));
-
-    const tagsData =
-      queryClient.getQueryData(tagsQuery.queryKey) ??
-      (await queryClient.fetchQuery(tagsQuery));
-
-    const initialData =
-      queryClient.getQueryData(initialQuery.queryKey) ??
-      (await queryClient.fetchQuery(initialQuery));
+      await queryClient.ensureQueryData(tagSuggestionsQuery);
+    const tagsData = await queryClient.ensureQueryData(tagsQuery);
+    const initialData = await queryClient.ensureQueryData(initialQuery);
 
     return { defListData, initialData, tagsData, tagSuggestionsData };
   };

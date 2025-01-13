@@ -72,25 +72,13 @@ const loadSampleStoriesQuery = (language) => ({
 function loader(queryClient) {
   return async () => {
     const predefListData =
-      queryClient.getQueryData(predefinedListQuery.queryKey) ??
-      (await queryClient.fetchQuery(predefinedListQuery));
-
-    const defListData =
-      queryClient.getQueryData(definedListQuery.queryKey) ??
-      (await queryClient.fetchQuery(definedListQuery));
-
-    const parsersData =
-      queryClient.getQueryData(parsersQuery.queryKey) ??
-      (await queryClient.fetchQuery(parsersQuery));
-
-    const initialData =
-      queryClient.getQueryData(initialQuery.queryKey) ??
-      (await queryClient.fetchQuery(initialQuery));
-
-    const predefinedSettingsQ = predefFormSettingsQuery(null);
-    const predefinedSettingsData =
-      queryClient.getQueryData(predefinedSettingsQ.queryKey) ??
-      (await queryClient.fetchQuery(predefinedSettingsQ));
+      await queryClient.ensureQueryData(predefinedListQuery);
+    const defListData = await queryClient.ensureQueryData(definedListQuery);
+    const parsersData = await queryClient.ensureQueryData(parsersQuery);
+    const initialData = await queryClient.ensureQueryData(initialQuery);
+    const predefinedSettingsData = await queryClient.ensureQueryData(
+      predefFormSettingsQuery(null)
+    );
 
     return {
       predefListData,

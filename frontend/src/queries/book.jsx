@@ -34,30 +34,17 @@ const bookStatsQuery = (id) => ({
 
 function loader(queryClient) {
   return async ({ params }) => {
-    const bq = bookQuery(params.id);
-    const pq = pageQuery(params.id, params.page);
-
-    const bookData =
-      queryClient.getQueryData(bq.queryKey) ??
-      (await queryClient.fetchQuery(bq));
-
-    const pageData =
-      queryClient.getQueryData(pq.queryKey) ??
-      (await queryClient.fetchQuery(pq));
-
-    const settingsData =
-      queryClient.getQueryData(settingsQuery.queryKey) ??
-      (await queryClient.fetchQuery(settingsQuery));
-
-    const languageQ = definedLangInfoQuery(bookData?.languageId);
-    const languageData =
-      queryClient.getQueryData(languageQ.queryKey) ??
-      (await queryClient.fetchQuery(languageQ));
-
-    const bookmarksQ = bookmarksQuery(params.id);
-    const bookmarksData =
-      queryClient.getQueryData(bookmarksQ.queryKey) ??
-      (await queryClient.fetchQuery(bookmarksQ));
+    const bookData = await queryClient.ensureQueryData(bookQuery(params.id));
+    const pageData = await queryClient.ensureQueryData(
+      pageQuery(params.id, params.page)
+    );
+    const settingsData = await queryClient.ensureQueryData(settingsQuery);
+    const languageData = await queryClient.ensureQueryData(
+      definedLangInfoQuery(bookData?.languageId)
+    );
+    const bookmarksData = await queryClient.ensureQueryData(
+      bookmarksQuery(params.id)
+    );
 
     return { bookData, pageData, settingsData, languageData, bookmarksData };
   };

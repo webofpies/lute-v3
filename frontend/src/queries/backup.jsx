@@ -8,9 +8,7 @@ const backupsQuery = {
 
 function loader(queryClient) {
   return async () => {
-    const backupsData =
-      queryClient.getQueryData(backupsQuery.queryKey) ??
-      (await queryClient.fetchQuery(backupsQuery));
+    const backupsData = await queryClient.ensureQueryData(backupsQuery);
 
     return backupsData;
   };

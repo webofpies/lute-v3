@@ -2,9 +2,7 @@ import { shortcutsQuery } from "./settings";
 
 function loader(queryClient) {
   return async () => {
-    const shortcutsData =
-      queryClient.getQueryData(shortcutsQuery.queryKey) ??
-      (await queryClient.fetchQuery(shortcutsQuery));
+    const shortcutsData = await queryClient.ensureQueryData(shortcutsQuery);
 
     return { shortcutsData };
   };

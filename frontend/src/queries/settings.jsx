@@ -50,9 +50,7 @@ const deactivateDemoQuery = {
 
 function loader(queryClient) {
   return async () => {
-    const settingsData =
-      queryClient.getQueryData(settingsQuery.queryKey) ??
-      (await queryClient.fetchQuery(settingsQuery));
+    const settingsData = await queryClient.ensureQueryData(settingsQuery);
 
     return settingsData;
   };
