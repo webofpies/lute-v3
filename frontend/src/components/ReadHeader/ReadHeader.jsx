@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigation, useParams, useSearchParams } from "react-router-dom";
 import {
   ActionIcon,
@@ -13,7 +14,8 @@ import {
 } from "@mantine/core";
 import { IconEdit, IconMenu2 } from "@tabler/icons-react";
 import ReadSlider from "./ReadSlider";
-import PageActionsMenu from "./PageActionsMenu";
+import BookmarksButton from "./BookmarksButton";
+import BookmarksMenu from "./BookmarksMenu";
 import FocusSwitch from "./FocusSwitch";
 import HighlightsSwitch from "./HighlightsSwitch";
 import BookSourceButton from "./BookSourceButton";
@@ -22,6 +24,7 @@ import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
 import { resetFocusActiveSentence } from "../../lute";
+import { bookmarksQuery } from "../../queries/bookmark";
 
 function ReadHeader({
   onDrawerOpen,
@@ -36,6 +39,7 @@ function ReadHeader({
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
   const [, setSearchParams] = useSearchParams();
+  const { data: bookmarks } = useQuery(bookmarksQuery(params.id));
 
   function handleActivateEdit() {
     onSetActiveTerm({ data: null });
@@ -46,6 +50,7 @@ function ReadHeader({
   return (
     <Paper
       classNames={{ root: "readpage" }}
+      h={80}
       radius={0}
       shadow="sm"
       styles={{ root: { position: "relative", zIndex: 2 } }}>
@@ -93,7 +98,11 @@ function ReadHeader({
             </div>
 
             <Group gap={0} wrap="nowrap">
-              <PageActionsMenu />
+              {bookmarks ? (
+                <BookmarksMenu data={bookmarks} />
+              ) : (
+                <BookmarksButton disabled={true} />
+              )}
               <MarkRestAsKnownButton />
             </Group>
           </div>

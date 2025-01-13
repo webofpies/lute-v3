@@ -210,6 +210,13 @@ function moveCursorToEnd(e) {
   input.setSelectionRange(input.value.length, input.value.length);
 }
 
+function scrollSentenceIntoView(id) {
+  const textitems = document.querySelectorAll(`[data-sentence-id="${id}"]`);
+  textitems[0].scrollIntoView({ behavior: "smooth" });
+
+  return textitems;
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -226,4 +233,5 @@ export {
   getLookupURL,
   buildSuggestionsList,
   moveCursorToEnd,
+  scrollSentenceIntoView,
 };

@@ -118,3 +118,13 @@ body,
     color: var(--lute-text-color-flash);
   }
 }
+
+[data-sentence-id]:first-child {
+  scroll-margin-top: 80px;
+}
+
+.bookmarked {
+  background-color: var(--mantine-color-red-4) !important;
+  color: var(--mantine-color-dark-7);
+  border-radius: 0;
+}

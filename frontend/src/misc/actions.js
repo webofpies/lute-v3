@@ -186,14 +186,12 @@ function handleBookmarkSentence(textitem) {
   addFlash(matched);
   removeFlash();
 
+  // all_bookmarks = {
+  //   book_id: {
+  //     page_num: [{ sentence_id: 0, bookmark_description: "" }],
+  //   },
+  // };
   console.log(`POST sentence id: ${sentenceId} to db`);
-  // pagenum: [sentenceId, sentenceId, sentenceId]
-  // {
-  //   2: [2, 6, 8, 12, 23],
-  //   9: [2, 6, 8, 12, 23],
-  //   24: [2, 6, 8, 12, 23],
-  //   86: [2, 6, 8, 12, 23],
-  // }
 }
 
 function handleShowBookmark(sentenceId) {

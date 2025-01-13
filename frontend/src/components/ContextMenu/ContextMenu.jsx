@@ -50,8 +50,10 @@ function ContextMenu({ forwardedRef }) {
   async function handleRightClick(item) {
     const textItemSelection = await item.action(selectedTextItemRef.current);
 
-    addFlash(textItemSelection);
-    setTimeout(() => removeFlash(), 1000);
+    if (textItemSelection) {
+      addFlash(textItemSelection);
+      setTimeout(() => removeFlash(), 1000);
+    }
   }
 
   function disableScroll(e) {

@@ -1,12 +1,12 @@
+import { bookmarksQuery } from "./bookmark";
 import { definedLangInfoQuery } from "./language";
 import { settingsQuery } from "./settings";
 
 const bookQuery = (id) => ({
   queryKey: ["bookData", id],
   queryFn: async () => {
-    const bookResponse = await fetch(`http://localhost:5001/api/books/${id}`);
-    const book = await bookResponse.json();
-    return book;
+    const response = await fetch(`http://localhost:5001/api/books/${id}`);
+    return await response.json();
   },
   refetchOnWindowFocus: false,
 });
@@ -14,11 +14,10 @@ const bookQuery = (id) => ({
 const pageQuery = (bookId, pageNum) => ({
   queryKey: ["pageData", bookId, pageNum],
   queryFn: async () => {
-    const pageResponse = await fetch(
+    const response = await fetch(
       `http://localhost:5001/api/books/${bookId}/pages/${pageNum}`
     );
-    const pageData = await pageResponse.json();
-    return pageData;
+    return await response.json();
   },
   refetchOnWindowFocus: false,
   refetchOnMount: false,
@@ -55,7 +54,12 @@ function loader(queryClient) {
       queryClient.getQueryData(languageQ.queryKey) ??
       (await queryClient.fetchQuery(languageQ));
 
-    return { bookData, pageData, settingsData, languageData };
+    const bookmarksQ = bookmarksQuery(params.id);
+    const bookmarksData =
+      queryClient.getQueryData(bookmarksQ.queryKey) ??
+      (await queryClient.fetchQuery(bookmarksQ));
+
+    return { bookData, pageData, settingsData, languageData, bookmarksData };
   };
 }
 
