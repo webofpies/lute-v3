@@ -8,7 +8,7 @@ import {
   TextInput,
   Tooltip,
 } from "@mantine/core";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconCheck, IconEdit, IconTrash } from "@tabler/icons-react";
 import { scrollSentenceIntoView } from "../../misc/utils";
 
 function BookmarkButton({ page, id, description }) {
@@ -70,7 +70,11 @@ function BookmarkButton({ page, id, description }) {
           size="xs"
           variant="subtle"
           onClick={() => setEditMode((v) => !v)}>
-          <IconEdit />
+          {isEditMode ? (
+            <IconCheck color="var(--mantine-color-green-6)" />
+          ) : (
+            <IconEdit />
+          )}
         </ActionIcon>
         <ActionIcon size="xs" variant="subtle" color="red.6">
           <IconTrash />
