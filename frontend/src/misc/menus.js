@@ -32,18 +32,20 @@ const menu = {
     action: "/terms",
     icon: IconBracketsContain,
 
-    all: {
-      label: "All Terms",
-      action: "/terms",
-    },
-    new: {
-      label: "Create New",
-      action: "/terms/term",
-    },
-    tags: {
-      label: "Tags",
-      action: "/terms/tags",
-    },
+    children: [
+      {
+        label: "All Terms",
+        action: "/terms",
+      },
+      {
+        label: "Create New",
+        action: "/terms/term",
+      },
+      {
+        label: "Tags",
+        action: "/terms/tags",
+      },
+    ],
   },
 
   settings: {
@@ -51,14 +53,13 @@ const menu = {
     action: "/",
     icon: IconSettings,
 
-    general: {
-      label: "General",
-      action: "/settings",
-    },
-    shortcuts: {
-      label: "Keyboard shortcuts",
-      action: "/settings/shortcuts",
-    },
+    children: [
+      { label: "General", action: "/settings" },
+      {
+        label: "Keyboard shortcuts",
+        action: "/settings/shortcuts",
+      },
+    ],
   },
 
   backup: {
@@ -66,14 +67,16 @@ const menu = {
     action: "/",
     icon: IconDeviceFloppy,
 
-    backups: {
-      label: "Backups",
-      action: "/backups",
-    },
-    new: {
-      label: "Create backup",
-      action: "/backup/backup?type=manual",
-    },
+    children: [
+      {
+        label: "Backups",
+        action: "/backups",
+      },
+      {
+        label: "Create backup",
+        action: "/backup/backup?type=manual",
+      },
+    ],
   },
 
   about: {

@@ -1,6 +1,6 @@
 import { bookmarksQuery } from "./bookmark";
 import { definedLangInfoQuery } from "./language";
-import { settingsQuery } from "./settings";
+import { settingsQuery, softwareInfoQuery } from "./settings";
 
 const bookQuery = (id) => ({
   queryKey: ["bookData", id],
@@ -45,8 +45,17 @@ function loader(queryClient) {
     const bookmarksData = await queryClient.ensureQueryData(
       bookmarksQuery(params.id)
     );
+    const softwareInfoData =
+      await queryClient.ensureQueryData(softwareInfoQuery);
 
-    return { bookData, pageData, settingsData, languageData, bookmarksData };
+    return {
+      bookData,
+      pageData,
+      settingsData,
+      languageData,
+      bookmarksData,
+      softwareInfoData,
+    };
   };
 }
 

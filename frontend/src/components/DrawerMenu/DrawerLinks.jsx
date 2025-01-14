@@ -16,78 +16,42 @@ import classes from "./DrawerMenu.module.css";
 
 function DrawerLinks() {
   return (
-    <nav className={classes.linksInner}>
+    <nav className={classes.nav}>
       <ul>
-        <UnstyledButton
-          component={Link}
-          to={menu.home.action}
-          className={classes.control}>
-          <Section label={menu.home.label} icon={menu.home.icon} />
-        </UnstyledButton>
+        {[menu.home, menu.book, menu.languages].map((menu) => (
+          <UnstyledButton
+            key={menu.label}
+            component={Link}
+            to={menu.action}
+            className={classes.control}>
+            <Section label={menu.label} icon={menu.icon} />
+          </UnstyledButton>
+        ))}
 
-        <UnstyledButton
-          component={Link}
-          to={menu.book.action}
-          className={classes.control}>
-          <Section label={menu.book.label} icon={menu.book.icon} />
-        </UnstyledButton>
+        {[menu.terms, menu.backup, menu.settings].map((menu) => (
+          <CollapsingMenu key={menu.label} section={menu} />
+        ))}
 
-        <UnstyledButton
-          component={Link}
-          to={menu.languages.action}
-          className={classes.control}>
-          <Section label={menu.languages.label} icon={menu.languages.icon} />
-        </UnstyledButton>
-
-        <UnstyledButton
-          component={Link}
-          to={menu.terms.action}
-          className={classes.control}>
-          <Section label={menu.terms.label} icon={menu.terms.icon} />
-        </UnstyledButton>
-
-        <CollapsingMenu section={menu.backup}>{backupsLinks}</CollapsingMenu>
-
-        <CollapsingMenu section={menu.settings}>{settingsLinks}</CollapsingMenu>
-
-        <CollapsingMenu section={menu.about}>{aboutLinks}</CollapsingMenu>
+        <CollapsingMenu section={menu.about}>{aboutMenuItems}</CollapsingMenu>
       </ul>
     </nav>
   );
 }
 
-const settingsLinks = (
-  <>
-    <Link className={classes.link} to={menu.settings.general.action}>
-      {menu.settings.general.label}
-    </Link>
-    <Link className={classes.link} to={menu.settings.shortcuts.action}>
-      {menu.settings.shortcuts.label}
-    </Link>
-  </>
+const makeLink = (child) => (
+  <Link key={child.label} className={classes.link} to={child.action}>
+    {child.label}
+  </Link>
 );
 
-const backupsLinks = (
-  <>
-    <Link className={classes.link} to={menu.backup.backups.action}>
-      {menu.backup.backups.label}
-    </Link>
-    <Link className={classes.link} to={menu.backup.new.action}>
-      {menu.backup.new.label}
-    </Link>
-  </>
-);
-
-const aboutLinks = (
+const aboutMenuItems = (
   <>
     <UnstyledButton
       className={classes.link}
       onClick={() => modals.openContextModal(softwareInfo)}>
       {menu.about.info.label}
     </UnstyledButton>
-    <Link className={classes.link} to={menu.about.stats.action}>
-      {menu.about.stats.label}
-    </Link>
+    {makeLink(menu.about.stats)}
     <a className={classes.link} href={menu.about.docs.action} target="_blank">
       {menu.about.docs.label}
     </a>
@@ -114,7 +78,9 @@ function CollapsingMenu({ section, children }) {
           icon={section.icon}
         />
       </UnstyledButton>
-      <Collapse in={opened}>{children}</Collapse>
+      <Collapse in={opened}>
+        {children ?? section.children.map((link) => makeLink(link))}
+      </Collapse>
     </>
   );
 }

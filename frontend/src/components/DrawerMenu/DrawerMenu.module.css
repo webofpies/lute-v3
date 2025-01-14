@@ -13,7 +13,7 @@
   flex: 1;
 }
 
-.linksInner {
+.nav {
   padding-top: 3rem;
   padding-bottom: var(--mantine-spacing-xl);
 }

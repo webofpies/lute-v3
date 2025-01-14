@@ -29,37 +29,18 @@ function MainMenuBar({ settings }) {
         <h1 className={classes.heading}>Lute</h1>
       </Group>
       <Group component="nav" gap={5} visibleFrom="sm" wrap="nowrap" ml="auto">
-        <NavLink to={menu.home.action} className={classes.link}>
-          {menu.home.label}
-        </NavLink>
-
-        <NavLink to={menu.book.action} className={classes.link}>
-          {menu.book.label}
-        </NavLink>
-
-        <NavLink to={menu.languages.action} className={classes.link}>
-          {menu.languages.label}
-        </NavLink>
+        {[menu.home, menu.book, menu.languages].map((menu) => (
+          <NavLink key={menu.label} to={menu.action} className={classes.link}>
+            {menu.label}
+          </NavLink>
+        ))}
 
         <MenuSection label={menu.terms.label}>
-          <Menu.Item component={NavLink} to={menu.terms.all.action}>
-            {menu.terms.all.label}
-          </Menu.Item>
-          <Menu.Item component={NavLink} to={menu.terms.new.action}>
-            {menu.terms.new.label}
-          </Menu.Item>
-          <Menu.Item component={NavLink} to={menu.terms.tags.action}>
-            {menu.terms.tags.label}
-          </Menu.Item>
+          {menu.terms.children.map((child) => makeLink(child))}
         </MenuSection>
 
         <MenuSection label={menu.settings.label}>
-          <Menu.Item component={NavLink} to={menu.settings.general.action}>
-            {menu.settings.general.label}
-          </Menu.Item>
-          <Menu.Item component={NavLink} to={menu.settings.shortcuts.action}>
-            {menu.settings.shortcuts.label}
-          </Menu.Item>
+          {menu.settings.children.map((child) => makeLink(child))}
         </MenuSection>
 
         {createBackupMenu && (
@@ -77,12 +58,7 @@ function MainMenuBar({ settings }) {
                 </Menu.Label>
               </>
             )}
-            <Menu.Item component={NavLink} to={menu.backup.backups.action}>
-              {menu.backup.backups.label}
-            </Menu.Item>
-            <Menu.Item component={NavLink} to={menu.backup.new.action}>
-              {menu.backup.new.label}
-            </Menu.Item>
+            {menu.backup.children.map((child) => makeLink(child))}
           </MenuSection>
         )}
 
@@ -113,10 +89,16 @@ function MainMenuBar({ settings }) {
   );
 }
 
+const makeLink = (child) => (
+  <Menu.Item key={child.label} component={NavLink} to={child.action}>
+    {child.label}
+  </Menu.Item>
+);
+
 function MenuSection({ label, children }) {
   return (
     <Menu
-      // for active style selectors to work: keepMounted and not withinPortal
+      // for active style selectors to work: keepMounted and outside withinPortal
       keepMounted
       withinPortal={false}
       trigger="hover"
