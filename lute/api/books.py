@@ -189,6 +189,10 @@ def get_all_books():
                 sort_clauses.append(f"BkTitle {'DESC' if desc_order else 'ASC'}")
             elif field == "status":
                 sort_clauses.append(f"UnknownPercent {'DESC' if desc_order else 'ASC'}")
+            elif field == "lastRead":
+                sort_clauses.append(
+                    f"LastOpenedDate {'DESC' if desc_order else 'ASC'} NULLS LAST"
+                )
 
         # Add the ORDER BY clause
         if sort_clauses:
@@ -226,7 +230,7 @@ def get_all_books():
                 "isCompleted": row.IsCompleted,
                 "unknownPercent": row.UnknownPercent,
                 "isArchived": row.BkArchived,
-                "lastRead": row.LastOpenedDate
+                "lastRead": row.LastOpenedDate,
                 # "DistinctCount": row.DistinctCount,
                 # "UnknownCount": row.UnknownCount,
             }

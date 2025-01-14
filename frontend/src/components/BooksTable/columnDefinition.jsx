@@ -68,7 +68,7 @@ const columnDefinition = (languageChoices, tagChoices) => [
   {
     header: "Status",
     id: "status",
-    accessorFn: (row) => row.unknownPercent,
+    accessorKey: "unknownPercent",
     Cell: ({ row }) => <StatsBar id={row.original.id} />,
     columnFilterModeOptions: ["equals", "greaterThan", "lessThan", "notEquals"],
     mantineFilterTextInputProps: {
@@ -81,9 +81,10 @@ const columnDefinition = (languageChoices, tagChoices) => [
     accessorKey: "lastRead",
     columnFilterModeOptions: false,
     enableColumnFilter: false,
-    Cell: ({ row }) => (
-      <span>{row.lastRead == null ? "" : dayjs(row.lastRead).fromNow()}</span>
-    ),
+    Cell: ({ row }) =>
+      row.original.lastRead && (
+        <span>{dayjs(row.original.lastRead).fromNow()}</span>
+      ),
   },
   {
     header: "Tags",
