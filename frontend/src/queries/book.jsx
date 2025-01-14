@@ -85,4 +85,11 @@ function loader(queryClient) {
   };
 }
 
-export { loader, bookQuery, pageQuery, bookStatsQuery, allBooksQuery };
+export {
+  loader,
+  bookQuery,
+  pageQuery,
+  bookStatsQuery,
+  allBooksQuery,
+  bookmarksQuery,
+};

@@ -57,7 +57,7 @@ const tagSuggestionsQuery = {
 };
 
 const tagsQuery = {
-  queryKey: keys.termTags,
+  queryKey: keys.tags,
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/terms/tags`);
     return await response.json();
