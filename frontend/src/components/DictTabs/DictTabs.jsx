@@ -8,7 +8,7 @@ import DictTabEmbedded from "../DictTab/DictTabEmbedded";
 import DictTabExternal from "../DictTab/DictTabExternal";
 import DictDropdown from "./DictDropdown";
 import classes from "./DictTabs.module.css";
-import { sentencesQuery } from "../../queries/sentences";
+import { sentencesQuery } from "../../queries/term";
 import { getLookupURL } from "../../misc/utils";
 import { useUncontrolled } from "@mantine/hooks";
 

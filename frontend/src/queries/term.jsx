@@ -2,8 +2,21 @@ import { keepPreviousData } from "@tanstack/react-query";
 import { definedListQuery } from "./language";
 import { initialQuery } from "./settings";
 
+const keys = {
+  term: (id) => ["term", id],
+  popup: (id) => ["popup", id],
+  termSuggestions: (searchText, langId) => [
+    "termSuggestions",
+    searchText,
+    langId,
+  ],
+  tagSuggestions: ["termTagSuggestions"],
+  tags: ["termTags"],
+  sentences: (termId, langId) => ["termSentences", termId, langId],
+};
+
 const termDataQuery = (id) => ({
-  queryKey: ["termData", id],
+  queryKey: keys.term(id),
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/terms/${id}`);
     return await response.json();
@@ -14,7 +27,7 @@ const termDataQuery = (id) => ({
 });
 
 const popupQuery = (id) => ({
-  queryKey: ["popupData", id],
+  queryKey: keys.popup(id),
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/terms/${id}/popup`);
     return await response.json();
@@ -22,19 +35,19 @@ const popupQuery = (id) => ({
   enabled: id !== null,
 });
 
-const termSuggestionsQuery = (searchText, langid) => ({
-  queryKey: ["termSuggestions", searchText, langid],
+const termSuggestionsQuery = (searchText, langId) => ({
+  queryKey: keys.termSuggestions(searchText, langId),
   queryFn: async () => {
     const response = await fetch(
-      `http://localhost:5001/api/terms/${langid}/${searchText}`
+      `http://localhost:5001/api/terms/${langId}/${searchText}`
     );
     return await response.json();
   },
-  enabled: searchText !== "" && langid != null,
+  enabled: searchText !== "" && langId != null,
 });
 
 const tagSuggestionsQuery = {
-  queryKey: ["tagSuggestions"],
+  queryKey: keys.tagSuggestions,
   queryFn: async () => {
     const response = await fetch(
       `http://localhost:5001/api/terms/tags/suggestions`
@@ -44,12 +57,23 @@ const tagSuggestionsQuery = {
 };
 
 const tagsQuery = {
-  queryKey: ["termTags"],
+  queryKey: keys.termTags,
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/terms/tags`);
     return await response.json();
   },
 };
+
+const sentencesQuery = (langId, termId) => ({
+  queryKey: keys.sentences(termId, langId),
+  queryFn: async () => {
+    const response = await fetch(
+      `http://localhost:5001/api/terms/${termId}/${langId}/sentences`
+    );
+    return await response.json();
+  },
+  staleTime: Infinity,
+});
 
 function loader(queryClient) {
   return async () => {
@@ -69,5 +93,6 @@ export {
   termSuggestionsQuery,
   tagSuggestionsQuery,
   tagsQuery,
+  sentencesQuery,
   loader,
 };

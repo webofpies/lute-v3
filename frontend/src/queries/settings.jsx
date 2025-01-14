@@ -1,5 +1,14 @@
+const keys = {
+  settings: ["settings"],
+  shortcuts: ["shortcuts"],
+  version: ["version"],
+  initial: ["initial"],
+  wipeDB: ["wipeDB"],
+  deactivateDemo: ["deactivateDemo"],
+};
+
 const settingsQuery = {
-  queryKey: ["settings"],
+  queryKey: keys.settings,
   queryFn: async () => {
     const res = await fetch("http://localhost:5001/api/settings");
     return await res.json();
@@ -7,7 +16,7 @@ const settingsQuery = {
 };
 
 const shortcutsQuery = {
-  queryKey: ["shortcuts"],
+  queryKey: keys.shortcuts,
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/shortcuts`);
     return await response.json();
@@ -15,7 +24,7 @@ const shortcutsQuery = {
 };
 
 const softwareInfoQuery = {
-  queryKey: ["version"],
+  queryKey: keys.version,
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/appinfo`);
     return await response.json();
@@ -24,7 +33,7 @@ const softwareInfoQuery = {
 };
 
 const initialQuery = {
-  queryKey: ["initialQuery"],
+  queryKey: keys.initial,
   queryFn: async () => {
     const response = await fetch(`http://localhost:5001/api/initial`);
     return await response.json();
@@ -33,7 +42,7 @@ const initialQuery = {
 };
 
 const wipeDemoDBQuery = {
-  queryKey: ["wipeDatabase"],
+  queryKey: keys.wipeDB,
   queryFn: async () => {
     const res = await fetch(`http://localhost:5001/api/wipe-database`);
     return await res.text();
@@ -41,7 +50,7 @@ const wipeDemoDBQuery = {
 };
 
 const deactivateDemoQuery = {
-  queryKey: ["deactivateDemo"],
+  queryKey: keys.deactivateDemo,
   queryFn: async () => {
     const res = await fetch(`http://localhost:5001/api/deactivate-demo`);
     return await res.text();

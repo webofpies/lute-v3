@@ -24,7 +24,7 @@ import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
 import { resetFocusActiveSentence } from "../../lute";
-import { bookmarksQuery } from "../../queries/bookmark";
+import { bookmarksQuery } from "../../queries/book";
 
 function ReadHeader({
   onDrawerOpen,

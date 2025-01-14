@@ -1,7 +1,7 @@
 import { LoadingOverlay } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import NoSentences from "./NoSentences";
-import { sentencesQuery } from "../../queries/sentences";
+import { sentencesQuery } from "../../queries/term";
 import classes from "./Sentences.module.css";
 
 function Sentences({ langId, termId }) {

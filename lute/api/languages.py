@@ -125,7 +125,7 @@ def get_parsers():
     return jsonify([{"value": a[0], "label": a[1].name()} for a in supported_parsers()])
 
 
-@bp.route("/sample/<langname>", methods=["GET"])
+@bp.route("/<langname>/sample", methods=["GET"])
 def load_predefined_stories(langname):
     "Load a predefined language and its stories."
     service = LangService(db.session)

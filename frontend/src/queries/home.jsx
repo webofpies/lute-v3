@@ -1,4 +1,4 @@
-import { allBooksQuery } from "./books";
+import { allBooksQuery } from "./book";
 import { initialQuery, settingsQuery, softwareInfoQuery } from "./settings";
 
 function loader(queryClient) {
