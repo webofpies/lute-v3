@@ -4,7 +4,6 @@ import {
   ActionIconGroup,
   Group,
   Paper,
-  rem,
   Slider,
   Text,
 } from "@mantine/core";
@@ -76,16 +75,16 @@ function Player({ book }) {
         pr="2rem"
         pt="0.3rem"
         pb="0.3rem">
-        <Group gap={rem(8)} wrap="nowrap">
+        <Group gap={8} wrap="nowrap">
           {/* SKIP BACK BUTTON */}
           <ActionIcon
             onClick={() => (audio.currentTime = 0)}
             radius="50%"
-            size={rem(22)}>
+            size={22}>
             <IconPlayerSkipBackFilled size="60%" />
           </ActionIcon>
 
-          <ActionIcon onClick={handlePlayPause} radius="50%" size={rem(26)}>
+          <ActionIcon onClick={handlePlayPause} radius="50%" size={26}>
             {state.playing ? (
               <IconPlayerPauseFilled size="60%" />
             ) : (
@@ -97,24 +96,20 @@ function Player({ book }) {
             <ActionIcon
               onClick={() => handleForwardRewind(-Number(state.skipAmount))}
               radius="50%"
-              size={rem(22)}>
+              size={22}>
               <IconPlayerTrackPrevFilled size="60%" />
             </ActionIcon>
             <ActionIcon
               onClick={() => handleForwardRewind(Number(state.skipAmount))}
               radius="50%"
-              size={rem(22)}>
+              size={22}>
               <IconPlayerTrackNextFilled size="60%" />
             </ActionIcon>
           </ActionIconGroup>
         </Group>
 
-        <Group justify="space-between" flex={1} wrap="nowrap" gap={rem(5)}>
-          <Text
-            fz="xs"
-            component="span"
-            miw={rem(50)}
-            style={{ textAlign: "center" }}>
+        <Group justify="space-between" flex={1} wrap="nowrap" gap={5}>
+          <Text fz="xs" component="span" miw={50} ta="center">
             {convertSecsToDisplayString(state.time)}
           </Text>
           {/* TIME SLIDER */}
@@ -134,13 +129,9 @@ function Player({ book }) {
               thumb: { borderWidth: "2px" },
             }}
             size="md"
-            thumbSize={rem(12)}
+            thumbSize={12}
           />
-          <Text
-            fz="xs"
-            component="span"
-            miw={rem(50)}
-            style={{ textAlign: "center" }}>
+          <Text fz="xs" component="span" miw={50} ta="center">
             {convertSecsToDisplayString(state.duration)}
           </Text>
         </Group>
@@ -156,7 +147,7 @@ function Player({ book }) {
         />
         <PlayerMenu audio={audio} dispatch={dispatch} state={state}>
           <ActionIcon
-            size={rem(24)}
+            size={24}
             p={0}
             variant="transparent"
             styles={{ root: { border: "none" } }}>

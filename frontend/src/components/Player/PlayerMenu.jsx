@@ -1,13 +1,13 @@
 import {
   ActionIcon,
   ActionIconGroup,
+  ActionIconGroupSection,
   Divider,
   Menu,
-  Paper,
-  rem,
   Select,
   Stack,
   Text,
+  Tooltip,
   UnstyledButton,
 } from "@mantine/core";
 import {
@@ -62,96 +62,85 @@ function PlayerMenu({ children, audio, state, dispatch }) {
   }
 
   return (
-    <Menu position="bottom" offset={0}>
+    <Menu position="bottom" offset={0} shadow="md">
       <Menu.Target>{children}</Menu.Target>
 
-      <Menu.Dropdown p={0}>
-        {/* PLAYBACK RATE */}
-        <Paper shadow="md">
-          <Stack gap={rem(5)} pt={rem(8)} pb={rem(8)}>
-            <Stack gap={rem(3)} pl="sm" pr="sm" align="center">
-              <Text fz={rem(12)}>Playback rate</Text>
-              <ActionIconGroup style={{ alignItems: "center" }}>
-                <ActionIcon
-                  onClick={() => handlePlaybackRateChange(-0.1)}
-                  style={{ borderRadius: "50%" }}
-                  size="xs">
-                  <IconMinus size="80%" />
-                </ActionIcon>
+      <Menu.Dropdown p={10}>
+        <Stack gap={5} align="center">
+          <Text fz="xs">Playback rate</Text>
+          <ActionIconGroup>
+            <ActionIcon
+              onClick={() => handlePlaybackRateChange(-0.1)}
+              size="xs">
+              <IconMinus size="80%" />
+            </ActionIcon>
+            <ActionIconGroupSection size="xs" variant="transparent">
+              <Tooltip label="Click to reset" fz="xs">
                 <UnstyledButton
-                  style={{
-                    minWidth: "30px",
-                    textAlign: "center",
-                    lineHeight: 1,
-                  }}
+                  miw={20}
+                  fz="xs"
+                  ta="center"
                   onClick={handlePlaybackRateReset}>
-                  <Text fz="xs" component="span">
-                    {state.rate.toFixed(1)}
-                  </Text>
+                  {state.rate.toFixed(1)}
                 </UnstyledButton>
-                <ActionIcon
-                  onClick={() => handlePlaybackRateChange(0.1)}
-                  style={{ borderRadius: "50%" }}
-                  size="xs">
-                  <IconPlus size="80%" />
-                </ActionIcon>
-              </ActionIconGroup>
-            </Stack>
-            <Divider />
-            <Stack gap={rem(3)} pl="sm" pr="sm" align="center">
-              <Text fz={rem(12)}>Bookmarks</Text>
-              <ActionIconGroup style={{ alignItems: "center", gap: "4px" }}>
-                <ActionIcon
-                  size={rem(24)}
-                  p={0}
-                  variant="transparent"
-                  onClick={handleSaveRemoveBookmark}
-                  styles={{ root: { border: "none" } }}>
-                  {state.bookmarkActive ? (
-                    <IconBookmarkFilled />
-                  ) : (
-                    <IconBookmark />
-                  )}
-                </ActionIcon>
-                <ActionIconGroup>
-                  <ActionIcon
-                    onClick={() => handleSkipToBookmark("prev")}
-                    radius="50%"
-                    size="sm">
-                    <IconChevronLeft />
-                  </ActionIcon>
-                  <ActionIcon
-                    onClick={() => handleSkipToBookmark("next")}
-                    radius="50%"
-                    size="sm">
-                    <IconChevronRight />
-                  </ActionIcon>
-                </ActionIconGroup>
-              </ActionIconGroup>
-            </Stack>
-            <Divider />
-            <Stack gap={rem(3)} pl="sm" pr="sm" align="center">
-              <Text fz={rem(12)}>Skip amount</Text>
-              <Select
-                onChange={(_value, option) =>
-                  dispatch({ type: "skipAmount", payload: option.value })
-                }
-                allowDeselect={false}
-                styles={{ root: { width: "5rem" } }}
-                checkIconPosition="right"
-                size="xs"
-                value={state.skipAmount}
-                data={[
-                  { value: "3", label: "3 sec" },
-                  { value: "5", label: "5 sec" },
-                  { value: "10", label: "10 sec" },
-                  { value: "30", label: "30 sec" },
-                  { value: "60", label: "60 sec" },
-                ]}
-              />
-            </Stack>
-          </Stack>
-        </Paper>
+              </Tooltip>
+            </ActionIconGroupSection>
+            <ActionIcon onClick={() => handlePlaybackRateChange(0.1)} size="xs">
+              <IconPlus size="80%" />
+            </ActionIcon>
+          </ActionIconGroup>
+
+          <Divider w="100%" />
+
+          <Text fz="xs">Bookmarks</Text>
+          <ActionIconGroup style={{ alignItems: "center", gap: "4px" }}>
+            <ActionIcon
+              size={24}
+              p={0}
+              variant="transparent"
+              onClick={handleSaveRemoveBookmark}
+              styles={{ root: { border: "none" } }}>
+              {state.bookmarkActive ? <IconBookmarkFilled /> : <IconBookmark />}
+            </ActionIcon>
+            <ActionIconGroup>
+              <ActionIcon
+                disabled={state.bookmarks.length === 0}
+                onClick={() => handleSkipToBookmark("prev")}
+                radius="50%"
+                size="sm">
+                <IconChevronLeft />
+              </ActionIcon>
+              <ActionIcon
+                disabled={state.bookmarks.length === 0}
+                onClick={() => handleSkipToBookmark("next")}
+                radius="50%"
+                size="sm">
+                <IconChevronRight />
+              </ActionIcon>
+            </ActionIconGroup>
+          </ActionIconGroup>
+
+          <Divider w="100%" />
+
+          <Text fz="xs">Skip amount</Text>
+          <Select
+            onChange={(_value, option) =>
+              dispatch({ type: "skipAmount", payload: option.value })
+            }
+            allowDeselect={false}
+            styles={{ root: { width: "5rem" } }}
+            checkIconPosition="right"
+            size="xs"
+            value={state.skipAmount}
+            data={[
+              { value: "3", label: "3 sec" },
+              { value: "5", label: "5 sec" },
+              { value: "10", label: "10 sec" },
+              { value: "30", label: "30 sec" },
+              { value: "60", label: "60 sec" },
+            ]}
+          />
+        </Stack>
       </Menu.Dropdown>
     </Menu>
   );
