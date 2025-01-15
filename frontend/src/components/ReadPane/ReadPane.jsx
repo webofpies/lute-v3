@@ -29,7 +29,7 @@ function ReadPane({
 
   const textContainerClass = `textcontainer
                               ${state.highlights ? "highlight" : ""}
-                              ${activeTerm.data ? "term-active" : ""}`;
+                              ${activeTerm.data && activeTerm.type !== "shift" ? "term-active" : ""}`;
 
   const textContainerStyle = {
     "--lute-text-font-size": `${state.fontSize}rem`,

@@ -2,9 +2,9 @@ import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import TermsBulkEditForm from "./TermsBulkEditForm";
+import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import EmptyRow from "../EmptyRow/EmptyRow";
-import TopToolbarActions from "./TopToolbarActions";
+import Actions from "./Actions";
 import tableDefault from "../../misc/tableDefault";
 import columnDefinition from "./columnDefinition";
 
@@ -94,6 +94,8 @@ function TermsTable({ languageChoices, tagChoices }) {
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
 
+    getRowId: (originalRow) => originalRow.id,
+
     renderEmptyRowsFallback: ({ table }) => {
       const language = table.getColumn("language").getFilterValue();
       const isLanguageFiltered = language?.length > 0;
@@ -106,7 +108,7 @@ function TermsTable({ languageChoices, tagChoices }) {
       ) : null;
     },
     renderTopToolbarCustomActions: ({ table }) => (
-      <TopToolbarActions
+      <Actions
         table={table}
         onSetShowParentsOnly={setShowParentsOnly}
         onSetEditModalOpened={setEditModalOpened}
@@ -124,7 +126,7 @@ function TermsTable({ languageChoices, tagChoices }) {
         onClose={() => setEditModalOpened(false)}
         title="Edit term(s)"
         withCloseButton>
-        <TermsBulkEditForm />
+        <BulkTermForm termIds={Object.keys(table.getState().rowSelection)} />
       </Modal>
     </>
   );

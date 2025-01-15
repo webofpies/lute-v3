@@ -11,6 +11,7 @@ import { termDataQuery } from "../../queries/term";
 import { useInitialize } from "../../hooks/book";
 import { paneResizeStorage } from "../../misc/utils";
 import classes from "./BookView.module.css";
+import BulkTermForm from "../BulkTermForm/BulkTermForm";
 
 const ThemeForm = lazy(() => import("../ThemeForm/ThemeForm"));
 
@@ -23,9 +24,11 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const [activeTab, setActiveTab] = useState("0");
 
   const key =
-    activeTerm && activeTerm.type === "multi"
+    activeTerm &&
+    activeTerm.type !== "shift" &&
+    (activeTerm.type === "multi"
       ? `${activeTerm.data}/${activeTerm.langID}`
-      : activeTerm.data;
+      : activeTerm.data);
 
   const { data: book } = useQuery(bookQuery(id));
   const { data: page } = useQuery(pageQuery(id, pageNum));
@@ -38,9 +41,10 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
     setActiveTerm,
     onThemeFormOpen
   );
-  // need to check for fetching status.
-  // otherwise previous active term is seen before the form updates
-  const showTranslationPane = activeTerm.data && term && !themeFormOpen;
+
+  const showTranslationPane =
+    activeTerm.data && activeTerm.type !== "shift" && term && !themeFormOpen;
+  const showBulkTermForm = activeTerm.type === "shift";
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
@@ -95,6 +99,7 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
                 onSetActiveTerm={setActiveTerm}
               />
             )}
+            {showBulkTermForm && <BulkTermForm termIds={activeTerm.data} />}
             {showThemeForm && (
               <Group justify="center" align="center" h="100%" p={10}>
                 <Suspense fallback={<Loader />}>

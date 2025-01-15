@@ -9,7 +9,7 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 
-function TopToolbarActions({
+function Actions({
   table,
   showParentsOnly,
   onSetEditModalOpened,
@@ -91,4 +91,4 @@ function TopToolbarActions({
   );
 }
 
-export default TopToolbarActions;
+export default Actions;

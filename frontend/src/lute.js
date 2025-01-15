@@ -100,6 +100,8 @@ function singleWordClicked(e) {
     return { data: null };
   }
 
+  e.target.classList.add("kwordmarked");
+
   // Normal click without Shift
   if (!e.shiftKey) {
     removeAllContainingClass("kwordmarked");
@@ -110,10 +112,18 @@ function singleWordClicked(e) {
       type: "single",
       textitems: [e.target],
     };
+  } else {
+    // shift clicking multiple words
+    const marked = document.querySelectorAll(".kwordmarked");
+    if (marked.length > 0) {
+      return {
+        data: Array.from(marked).map((item) => parseInt(item.dataset.wid)),
+        type: "shift",
+        textitems: marked,
+      };
+    }
   }
 
-  // add mark for Shift click
-  e.target.classList.add("kwordmarked");
   // Shift click. returns null so term form doesn't do anything
   return null;
 }

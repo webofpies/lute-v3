@@ -33,8 +33,8 @@ function TheText({ paragraphs, onSetActiveTerm }) {
     // do nothing with the form
     if (!termData || termData.type === "copy") return;
     onSetActiveTerm(termData);
-
-    termData.data
+    // do not focus sentence when in bulk edit(shift) mode
+    termData.data && termData.type !== "shift"
       ? focusActiveSentence(termData.textitems)
       : resetFocusActiveSentence();
   }
@@ -61,6 +61,7 @@ function TheText({ paragraphs, onSetActiveTerm }) {
                       onMouseUp={(e) => {
                         if (e.button !== 0) return;
                         const termData = handleMouseUp(e);
+                        console.log(termData);
                         if (!termData) return;
                         handleSetTerm(termData);
                         handleCopyText(termData);
