@@ -14,10 +14,7 @@ import "mantine-react-table/styles.css";
 import "./index.css";
 import "./highlight.css";
 
-import Layout from "./pages/Layout";
-import Homepage from "./pages/Homepage";
 import SoftwareInfo from "./components/Modals/SoftwareInfo";
-import Error from "./components/Error/Error";
 import PageSpinner from "./components/PageSpinner/PageSpinner";
 
 import { loader as homeLoader } from "./queries/home";
@@ -30,118 +27,79 @@ import { loader as termsLoader } from "./queries/term";
 
 const queryClient = new QueryClient();
 
-const NewBook = lazy(() => import("./pages/NewBook"));
-const Languages = lazy(() => import("./pages/Languages"));
-const Shortcuts = lazy(() => import("./pages/Shortcuts"));
-const Statistics = lazy(() => import("./pages/Statistics"));
-const Settings = lazy(() => import("./pages/Settings"));
-const Backups = lazy(() => import("./pages/Backups"));
-const Terms = lazy(() => import("./pages/Terms"));
-const Term = lazy(() => import("./pages/Term"));
-const Tags = lazy(() => import("./pages/Tags"));
-const Book = lazy(() => import("./pages/Book"));
-
 const theme = createTheme({
   fontFamily: "Poppins, sans-serif",
 });
 
+const lazyImport = (fn) => {
+  const Component = lazy(fn);
+  return (
+    <Suspense fallback={<PageSpinner />}>
+      <Component />
+    </Suspense>
+  );
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
-    errorElement: <Error />,
+    element: lazyImport(() => import("./components/Layout/Layout")),
+    errorElement: lazyImport(() => import("./pages/Error/Error")),
     loader: homeLoader(queryClient),
     children: [
-      { index: true, element: <Homepage /> },
+      {
+        index: true,
+        element: lazyImport(() => import("./pages/Homepage")),
+      },
       {
         path: "/books/new",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <NewBook />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/NewBook")),
         loader: languagesLoader(queryClient),
       },
       {
         path: "/languages",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Languages />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Languages")),
         loader: languagesLoader(queryClient),
       },
       {
         path: "/terms",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Terms />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Terms")),
         loader: termsLoader(queryClient),
       },
       {
         path: "/terms/term",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Term />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Term")),
         loader: termsLoader(queryClient),
       },
       {
         path: "/terms/tags",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Tags />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Tags")),
         loader: termsLoader(queryClient),
       },
       {
         path: "/settings/",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Settings />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Settings")),
         loader: settingsLoader(queryClient),
       },
       {
         path: "/backups",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Backups />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Backups")),
         loader: backupsLoader(queryClient),
       },
       {
         path: "/settings/shortcuts",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Shortcuts />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Shortcuts")),
         loader: shortcutsLoader(queryClient),
       },
       {
         path: "/stats",
-        element: (
-          <Suspense fallback={<PageSpinner />}>
-            <Statistics />
-          </Suspense>
-        ),
+        element: lazyImport(() => import("./pages/Statistics")),
       },
     ],
   },
   {
     path: "/books/:id/pages/:page",
-    element: (
-      <Suspense fallback={<PageSpinner />}>
-        <Book />
-      </Suspense>
-    ),
+    element: lazyImport(() => import("./pages/Book")),
     loader: bookLoader(queryClient),
   },
 ]);
