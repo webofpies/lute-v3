@@ -11,6 +11,9 @@ import {
   Collapse,
   ActionIcon,
   Tooltip,
+  Popover,
+  UnstyledButton,
+  Image,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import {
@@ -21,7 +24,6 @@ import {
 } from "@tabler/icons-react";
 import StatusRadio from "./StatusRadio";
 import TagsField from "../TagsField/TagsField";
-import TermImage from "./TermImage";
 import { tagSuggestionsQuery } from "../../queries/term";
 import { moveCursorToEnd } from "../../misc/utils";
 import classes from "./TermForm.module.css";
@@ -235,6 +237,21 @@ function ToLowerCaseButton({ onClick }) {
         <IconLetterCaseLower />
       </ActionIcon>
     </Tooltip>
+  );
+}
+
+function TermImage({ src }) {
+  return (
+    <Popover position="left">
+      <Popover.Target>
+        <UnstyledButton>
+          <Image radius={5} w={50} h={50} src={src} />
+        </UnstyledButton>
+      </Popover.Target>
+      <Popover.Dropdown p={0}>
+        <Image mah="200px" src={src} />
+      </Popover.Dropdown>
+    </Popover>
   );
 }
 
