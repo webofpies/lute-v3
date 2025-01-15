@@ -23,7 +23,7 @@ import {
   IconCut,
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
-import LanguageSelect from "../LanguageSelect/LanguageSelect";
+import LanguageSelect from "./LanguageSelect";
 import DictionaryBar from "../DictionaryBar/DictionaryBar";
 import LanguageCards from "../LanguageCards/LanguageCards";
 import FormButtons from "../FormButtons/FormButtons";
