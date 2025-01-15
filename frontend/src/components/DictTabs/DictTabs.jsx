@@ -1,16 +1,24 @@
 import { memo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Button, Tabs, Text, Tooltip } from "@mantine/core";
-import { IconPhoto } from "@tabler/icons-react";
-import Iframe from "./Iframe";
+import {
+  ActionIcon,
+  Button,
+  Image,
+  Menu,
+  Tabs,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import { useUncontrolled } from "@mantine/hooks";
+import {
+  IconChevronDown,
+  IconExternalLink,
+  IconPhoto,
+} from "@tabler/icons-react";
 import Sentences from "../Sentences/Sentences";
-import DictTabEmbedded from "../DictTab/DictTabEmbedded";
-import DictTabExternal from "../DictTab/DictTabExternal";
-import DictDropdown from "./DictDropdown";
 import classes from "./DictTabs.module.css";
 import { sentencesQuery } from "../../queries/term";
-import { getLookupURL } from "../../misc/utils";
-import { useUncontrolled } from "@mantine/hooks";
+import { getLookupURL, handleExternalUrl } from "../../misc/utils";
 
 const MAX_VISIBLE_DICT_TABS = 5;
 
@@ -168,6 +176,103 @@ function DictTabs({
         IMAGES
       </Tabs.Panel>
     </Tabs>
+  );
+}
+
+function DictTabEmbedded({
+  dict,
+  value,
+  innerRef,
+  onClick,
+  component: Component,
+}) {
+  return (
+    <Component
+      className={classes.flex}
+      ref={innerRef}
+      id={value}
+      value={value}
+      onClick={onClick}
+      leftSection={<DictFavicon hostname={dict.hostname} />}>
+      <Text size="sm" style={{ overflow: "hidden" }}>
+        {dict.label}
+      </Text>
+    </Component>
+  );
+}
+
+function DictTabExternal({ dict, term, innerRef, component: Component }) {
+  return (
+    <Component
+      ref={innerRef}
+      component="a"
+      variant="default"
+      fw="normal"
+      ml={2}
+      leftSection={<DictFavicon hostname={dict.hostname} />}
+      rightSection={<IconExternalLink size={16} stroke={1.6} />}
+      onClick={() => handleExternalUrl(getLookupURL(dict.url, term))}>
+      {dict.label}
+    </Component>
+  );
+}
+
+function DictDropdown({ term, dicts, onClick }) {
+  return (
+    <Menu>
+      <Menu.Target>
+        <ActionIcon
+          variant="transparent"
+          mr="auto"
+          ml="xs"
+          style={{ alignSelf: "center" }}>
+          <IconChevronDown />
+        </ActionIcon>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {dicts.map((dict) =>
+          dict.isExternal ? (
+            <DictTabExternal
+              key={dict.label}
+              dict={dict}
+              term={term}
+              component={Menu.Item}
+            />
+          ) : (
+            <DictTabEmbedded
+              key={dict.label}
+              dict={dict}
+              value={String("dropdownTab")}
+              onClick={() => onClick(dict.url)}
+              component={Menu.Item}
+            />
+          )
+        )}
+      </Menu.Dropdown>
+    </Menu>
+  );
+}
+
+function Iframe({ src, onHandleFocus }) {
+  // lazy loading makes sure dict loads only on tab open. if not set all dicts load at the same time
+  return (
+    <iframe
+      onLoad={onHandleFocus}
+      style={{ border: "none" }}
+      width="100%"
+      height="100%"
+      src={src}
+      loading="lazy"></iframe>
+  );
+}
+
+function DictFavicon({ hostname }) {
+  return (
+    <Image
+      h={16}
+      w={16}
+      src={`http://www.google.com/s2/favicons?domain=${hostname}`}
+    />
   );
 }
 

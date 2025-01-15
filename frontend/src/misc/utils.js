@@ -217,6 +217,13 @@ function scrollSentenceIntoView(id) {
   return textitems;
 }
 
+function handleExternalUrl(url, inNewTab) {
+  let settings =
+    "width=800, height=600, scrollbars=yes, menubar=no, resizable=yes, status=no";
+  if (inNewTab) settings = null;
+  window.open(url, "otherwin", settings);
+}
+
 export {
   paneResizeStorage,
   getFromLocalStorage,
@@ -234,4 +241,5 @@ export {
   buildSuggestionsList,
   moveCursorToEnd,
   scrollSentenceIntoView,
+  handleExternalUrl,
 };
