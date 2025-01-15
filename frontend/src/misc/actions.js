@@ -451,7 +451,7 @@ function setTextColor(id, color, root) {
   root.style.setProperty(
     `--lute-text-color-${id}`,
     isLightColor(color)
-      ? "var(--mantine-color-black)"
+      ? "var(--mantine-color-dark-7)"
       : "var(--mantine-color-dark-0)"
   );
 }

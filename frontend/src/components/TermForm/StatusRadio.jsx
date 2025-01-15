@@ -39,6 +39,8 @@ const radios = [
 ];
 
 function StatusRadio({ form }) {
+  const statusColor = (id) => `var(--lute-color-highlight-status${id})`;
+  const iconColor = (id) => `var(--lute-text-color-status${id})`;
   return (
     <Radio.Group
       name="status"
@@ -48,10 +50,16 @@ function StatusRadio({ form }) {
         {radios.map((radio) => (
           <Radio
             style={{ "--radio-icon-size": rem(16) }}
+            styles={{
+              radio: {
+                backgroundColor: statusColor(radio.value),
+                border: "none",
+              },
+            }}
+            iconColor={iconColor(radio.value)}
+            color={statusColor(radio.value)}
             size="md"
-            iconColor="dark.4"
             key={radio.value}
-            color={`var(--lute-color-highlight-status${radio.value})`}
             icon={radio.icon}
             name={radio.value}
             value={radio.value}
