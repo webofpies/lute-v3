@@ -10,21 +10,26 @@ import {
   Paper,
   rem,
   Stack,
+  Switch,
   Text,
+  Tooltip,
 } from "@mantine/core";
-import { IconEdit, IconMenu2 } from "@tabler/icons-react";
-import ReadSlider from "./ReadSlider";
+import {
+  IconEdit,
+  IconFocus2,
+  IconHighlight,
+  IconLink,
+  IconMenu2,
+  IconRosetteDiscountCheckFilled,
+} from "@tabler/icons-react";
+import PageSlider from "./PageSlider";
 import BookmarksButton from "./BookmarksButton";
 import BookmarksMenu from "./BookmarksMenu";
-import FocusSwitch from "./FocusSwitch";
-import HighlightsSwitch from "./HighlightsSwitch";
-import BookSourceButton from "./BookSourceButton";
-import MarkRestAsKnownButton from "./MarkAsKnownButton";
-import PageCounter from "./PageCounter";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
 import { resetFocusActiveSentence } from "../../lute";
 import { bookmarksQuery } from "../../queries/book";
+import { handleSetFocusMode, handleSetHighlights } from "../../misc/actions";
 
 function ReadHeader({
   onDrawerOpen,
@@ -55,7 +60,7 @@ function ReadHeader({
       shadow="sm"
       styles={{ root: { position: "relative", zIndex: 2 } }}>
       <Group gap={5} wrap="nowrap" align="center" className={classes.header}>
-        <ActionIcon onClick={onDrawerOpen} size="md">
+        <ActionIcon onClick={onDrawerOpen} size="md" variant="subtle">
           <IconMenu2 />
         </ActionIcon>
 
@@ -77,22 +82,9 @@ function ReadHeader({
 
         <Stack w="100%" gap={0}>
           <div className={classes.titleFlex}>
-            <ActionIcon
-              onClick={handleActivateEdit}
-              size={24}
-              p={0}
-              variant="transparent"
-              styles={{ root: { border: "none" } }}>
-              <IconEdit size={rem(22)} />
-            </ActionIcon>
+            <EditButton onActivate={handleActivateEdit} />
             <div className={classes.titleFlex}>
-              <Text
-                component={page === 1 ? "h2" : "h1"}
-                fw="normal"
-                fz="inherit"
-                lineClamp={1}>
-                {book.title}
-              </Text>
+              <Title currentPage={page} title={book.title} />
               {book.source && <BookSourceButton source={book.source} />}
               <PageCounter currentPage={page} pageCount={book.pageCount} />
             </div>
@@ -107,10 +99,136 @@ function ReadHeader({
             </Group>
           </div>
 
-          <ReadSlider book={book} />
+          <PageSlider book={book} />
         </Stack>
       </Group>
     </Paper>
+  );
+}
+
+function Title({ currentPage, title }) {
+  return (
+    <Text
+      component={currentPage === 1 ? "h2" : "h1"}
+      fw="normal"
+      fz="inherit"
+      lineClamp={1}>
+      {title}
+    </Text>
+  );
+}
+
+function MarkRestAsKnownButton() {
+  return (
+    <Tooltip label="Mark rest as known" position="right">
+      <ActionIcon
+        color="green.6"
+        size={24}
+        variant="transparent"
+        styles={{
+          root: { border: "none", backgroundColor: "transparent" },
+        }}>
+        <IconRosetteDiscountCheckFilled />
+      </ActionIcon>
+    </Tooltip>
+  );
+}
+
+function EditButton({ onActivate }) {
+  return (
+    <ActionIcon
+      onClick={onActivate}
+      size={24}
+      p={0}
+      variant="transparent"
+      styles={{ root: { border: "none" } }}>
+      <IconEdit size={rem(22)} />
+    </ActionIcon>
+  );
+}
+
+function PageCounter({ currentPage, pageCount }) {
+  return (
+    <Text
+      component="span"
+      fw={500}
+      fz="inherit"
+      lh={1}
+      ml="auto"
+      miw={24}
+      style={{ flexShrink: 0 }}>
+      {`${currentPage}/${pageCount}`}
+    </Text>
+  );
+}
+
+function BookSourceButton({ source }) {
+  return (
+    <ActionIcon
+      styles={{ root: { border: "none" } }}
+      display="block"
+      component="a"
+      href={source}
+      target="_blank"
+      size={20}
+      p={0}
+      variant="transparent">
+      <IconLink />
+    </ActionIcon>
+  );
+}
+
+function FocusSwitch({ checked, dispatch }) {
+  return (
+    <Tooltip
+      label="Focus mode"
+      position="left"
+      openDelay={800}
+      refProp="rootRef">
+      <Switch
+        checked={checked}
+        onChange={(e) => {
+          handleSetFocusMode(Boolean(e.currentTarget.checked), dispatch);
+        }}
+        size="sm"
+        onLabel="ON"
+        offLabel="OFF"
+        thumbIcon={
+          <IconFocus2
+            style={{ width: rem(12), height: rem(12) }}
+            color="teal"
+            stroke={2}
+          />
+        }
+      />
+    </Tooltip>
+  );
+}
+
+function HighlightsSwitch({ checked, dispatch }) {
+  return (
+    <Tooltip
+      label="Term highlights"
+      position="left"
+      openDelay={800}
+      refProp="rootRef">
+      <Switch
+        checked={checked}
+        onChange={(e) => {
+          handleSetHighlights(Boolean(e.currentTarget.checked), dispatch);
+        }}
+        size="sm"
+        onLabel="ON"
+        offLabel="OFF"
+        thumbIcon={
+          <IconHighlight
+            style={{ width: rem(12), height: rem(12) }}
+            color="teal"
+            stroke={2}
+          />
+        }
+      />
+    </Tooltip>
   );
 }
 

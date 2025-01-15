@@ -1,18 +1,29 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ActionIcon, Group, rem, Slider } from "@mantine/core";
+import { ActionIcon, Group, Slider, Tooltip } from "@mantine/core";
 import {
+  IconSquareRoundedCheckFilled,
   IconSquareRoundedChevronLeftFilled,
   IconSquareRoundedChevronRightFilled,
 } from "@tabler/icons-react";
 import { clamp } from "../../misc/utils";
-import PageReadButton from "./PageReadButton";
 
 function ReadSlider({ book }) {
   const params = useParams();
   const page = Number(params.page);
   const navigate = useNavigate();
   const [changeVal, setChangeVal] = useState(page);
+
+  const pageReadLabel =
+    page === book.pageCount
+      ? "Mark page as read"
+      : "Mark page as read and go to next page";
+  const pageReadIcon =
+    page === book.pageCount ? (
+      <IconSquareRoundedCheckFilled />
+    ) : (
+      <IconSquareRoundedChevronRightFilled />
+    );
 
   function goToPage(num) {
     const clamped = clamp(num, 1, book.pageCount);
@@ -21,11 +32,12 @@ function ReadSlider({ book }) {
   }
 
   return (
-    <Group gap={rem(2)} wrap="no-wrap">
+    <Group gap={2} wrap="no-wrap">
+      {/* go to previous page */}
       <ActionIcon
         p={0}
         onClick={() => goToPage(page - 1)}
-        size={rem(24)}
+        size={24}
         variant="transparent"
         styles={{ root: { border: "none", backgroundColor: "transparent" } }}
         disabled={book.pageCount === 1 || page === 1}>
@@ -34,7 +46,7 @@ function ReadSlider({ book }) {
       <Slider
         style={{ flex: 1 }}
         size="md"
-        thumbSize={rem(16)}
+        thumbSize={16}
         value={changeVal}
         defaultValue={page}
         onChange={setChangeVal}
@@ -45,15 +57,29 @@ function ReadSlider({ book }) {
         showLabelOnHover={false}
       />
       <Group gap={0} wrap="nowrap">
+        {/* go to next page */}
         <ActionIcon
           onClick={() => goToPage(page + 1)}
-          size={rem(24)}
+          size={24}
           variant="transparent"
           styles={{ root: { border: "none", backgroundColor: "transparent" } }}
           disabled={book.pageCount === 1 || page === book.pageCount}>
           <IconSquareRoundedChevronRightFilled />
         </ActionIcon>
-        <PageReadButton book={book} onGoToPage={goToPage} />
+        {/* mark page as read */}
+        <Tooltip position="right" label={pageReadLabel}>
+          <ActionIcon
+            color="orange.4"
+            onClick={() => goToPage(page + 1)}
+            size={24}
+            variant="transparent"
+            styles={{
+              root: { border: "none", backgroundColor: "transparent" },
+            }}
+            disabled={book.pageCount === 1}>
+            {pageReadIcon}
+          </ActionIcon>
+        </Tooltip>
       </Group>
     </Group>
   );
