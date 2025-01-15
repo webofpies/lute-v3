@@ -8,6 +8,9 @@ import {
   FileInput,
   Group,
   NumberInput,
+  Paper,
+  Popover,
+  rem,
   Select,
   Stack,
   TagsInput,
@@ -21,12 +24,12 @@ import {
   IconHeading,
   IconHeadphones,
   IconLink,
+  IconQuestionMark,
   IconSquareRoundedPlusFilled,
   IconTags,
   IconWorldWww,
 } from "@tabler/icons-react";
 import LanguageCards from "../LanguageCards/LanguageCards";
-import ImportURLInfo from "./ImportURLInfo";
 import { defFormSettingsQuery } from "../../queries/language";
 import { initialQuery } from "../../queries/settings";
 import classes from "./NewBookForm.module.css";
@@ -161,9 +164,33 @@ function NewBookForm({ openDrawer }) {
         <Button type="submit" disabled>
           Save
         </Button>
-        <Button>Cancel</Button>
+        <Button variant="subtle">Cancel</Button>
       </Group>
     </form>
+  );
+}
+
+function ImportURLInfo() {
+  return (
+    <Popover position="top" withArrow shadow="sm">
+      <Popover.Target>
+        <ActionIcon variant="transparent">
+          <IconQuestionMark />
+        </ActionIcon>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <Paper maw={500} fz="sm">
+          <p style={{ marginBottom: rem(5) }}>
+            This import is very primitive -- it grabs <em>all</em> the headings
+            and text from an HTML page.
+          </p>
+          <p>
+            This will likely include stuff you don&apos;t want. You are able to
+            edit the resulting text
+          </p>
+        </Paper>
+      </Popover.Dropdown>
+    </Popover>
   );
 }
 
