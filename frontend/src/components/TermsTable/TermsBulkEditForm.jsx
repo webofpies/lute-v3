@@ -1,12 +1,6 @@
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Group,
-  Stack,
-  TagsInput,
-} from "@mantine/core";
+import { Checkbox, Divider, Group, Stack, TagsInput } from "@mantine/core";
 import StatusRadio from "../TermForm/StatusRadio";
+import FormButtons from "../FormButtons/FormButtons";
 import { useForm } from "@mantine/form";
 
 function TermsBulkEditForm() {
@@ -47,10 +41,8 @@ function TermsBulkEditForm() {
         <TagsInput placeholder="Tags to add" />
         <TagsInput placeholder="Tags to remove" />
       </Stack>
-      <Group justify="flex-end" mt="sm" gap="xs" wrap="nowrap">
-        <Button type="submit">Save</Button>
-        <Button variant="subtle">Cancel</Button>
-      </Group>
+
+      <FormButtons />
     </form>
   );
 }

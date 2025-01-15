@@ -1,7 +1,6 @@
 import { memo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Button,
   Group,
   TextInput,
   Textarea,
@@ -24,6 +23,7 @@ import {
 } from "@tabler/icons-react";
 import StatusRadio from "./StatusRadio";
 import TagsField from "../TagsField/TagsField";
+import FormButtons from "../FormButtons/FormButtons";
 import { tagSuggestionsQuery } from "../../queries/term";
 import { moveCursorToEnd } from "../../misc/utils";
 import classes from "./TermForm.module.css";
@@ -187,14 +187,8 @@ function TermForm({
           key={form.key("termTags")}
           {...form.getInputProps("termTags")}
         />
-        <Group justify="flex-end" mt="sm" gap={5} wrap="nowrap">
-          <Button type="submit">Save</Button>
-          {term && (
-            <Button variant="subtle" color="red.6">
-              Delete
-            </Button>
-          )}
-        </Group>
+
+        <FormButtons discardLabel={term ? "Delete" : null} />
       </div>
     </form>
   );

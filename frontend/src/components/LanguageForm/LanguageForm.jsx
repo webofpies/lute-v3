@@ -7,7 +7,6 @@ import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import {
   ActionIcon,
   Box,
-  Button,
   Checkbox,
   Divider,
   Fieldset,
@@ -24,6 +23,10 @@ import {
   IconCut,
   IconSquareRoundedPlusFilled,
 } from "@tabler/icons-react";
+import LanguageSelect from "../LanguageSelect/LanguageSelect";
+import DictionaryBar from "../DictionaryBar/DictionaryBar";
+import LanguageCards from "../LanguageCards/LanguageCards";
+import FormButtons from "../FormButtons/FormButtons";
 import {
   parsersQuery,
   predefinedListQuery,
@@ -31,9 +34,6 @@ import {
   predefFormSettingsQuery,
 } from "../../queries/language";
 import { initialQuery } from "../../queries/settings";
-import LanguageSelect from "../LanguageSelect/LanguageSelect";
-import DictionaryBar from "../DictionaryBar/DictionaryBar";
-import LanguageCards from "../LanguageCards/LanguageCards";
 import classes from "./LanguageForm.module.css";
 
 function LanguageForm() {
@@ -174,6 +174,7 @@ function LanguageForm() {
           leftSection={<IconAnalyzeFilled />}
           withCheckIcon={false}
           searchable={false}
+          allowDeselect={false}
           data={parsers}
           key={form.key("parser_type")}
           {...form.getInputProps("parser_type")}
@@ -208,12 +209,7 @@ function LanguageForm() {
           {...form.getInputProps("word_chars")}
         />
 
-        <Group justify="flex-end" mt="sm" gap="xs">
-          <Button type="submit" disabled>
-            Save
-          </Button>
-          <Button>Cancel</Button>
-        </Group>
+        <FormButtons />
       </Box>
     </form>
   );

@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "@mantine/form";
 import {
   Box,
-  Button,
   CloseButton,
   ColorInput,
   Divider,
@@ -15,6 +14,7 @@ import {
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
+import FormButtons from "../FormButtons/FormButtons";
 import { settingsQuery } from "../../queries/settings";
 import { addFlash, getMatchedTextItems, removeFlash } from "../../misc/utils";
 import { setTextColor } from "../../misc/actions";
@@ -285,10 +285,8 @@ function ThemeForm({ onClose }) {
             </Table>
           </Stack>
         </Box>
-        <Group justify="flex-end" mt="sm" gap="xs">
-          <Button type="submit">Save</Button>
-          <Button variant="subtle">Cancel</Button>
-        </Group>
+
+        <FormButtons />
       </form>
     </Stack>
   );

@@ -5,15 +5,21 @@ import {
   Checkbox,
   Fieldset,
   Group,
-  NativeSelect,
   NumberInput,
   rem,
+  Select,
   Stack,
   TextInput,
 } from "@mantine/core";
-import { IconDatabase, IconTorii, IconNotes } from "@tabler/icons-react";
+import {
+  IconDatabase,
+  IconTorii,
+  IconNotes,
+  IconSpeakerphone,
+} from "@tabler/icons-react";
 import MeCabInfo from "./MeCabInfo";
 import { settingsQuery } from "../../queries/settings";
+import FormButtons from "../FormButtons/FormButtons";
 
 function SettingsForm() {
   const { data: settings } = useQuery(settingsQuery);
@@ -146,7 +152,11 @@ function SettingsForm() {
               />
               <Button>Test my MeCab configuration</Button>
             </Group>
-            <NativeSelect
+            <Select
+              withCheckIcon={false}
+              searchable={false}
+              allowDeselect={false}
+              leftSection={<IconSpeakerphone />}
               styles={{ root: { alignSelf: "flex-start" } }}
               label="Pronunciation characters"
               data={[
@@ -160,10 +170,8 @@ function SettingsForm() {
           </Stack>
         </Fieldset>
       </Stack>
-      <Group justify="flex-end" mt="sm" gap="xs">
-        <Button type="submit">Save</Button>
-        <Button>Cancel</Button>
-      </Group>
+
+      <FormButtons />
     </form>
   );
 }

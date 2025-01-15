@@ -21,6 +21,7 @@ import {
 import {
   IconBookUpload,
   IconBracketsContain,
+  IconCut,
   IconHeading,
   IconHeadphones,
   IconLink,
@@ -30,6 +31,7 @@ import {
   IconWorldWww,
 } from "@tabler/icons-react";
 import LanguageCards from "../LanguageCards/LanguageCards";
+import FormButtons from "../FormButtons/FormButtons";
 import { defFormSettingsQuery } from "../../queries/language";
 import { initialQuery } from "../../queries/settings";
 import classes from "./NewBookForm.module.css";
@@ -134,6 +136,7 @@ function NewBookForm({ openDrawer }) {
           { value: "paragraphs", label: "Paragraphs" },
           { value: "sentences", label: "Sentences" },
         ]}
+        leftSection={<IconCut />}
         withCheckIcon={false}
         searchable={false}
         allowDeselect={false}
@@ -160,12 +163,7 @@ function NewBookForm({ openDrawer }) {
 
       <TagsInput label="Tags" leftSection={<IconTags />} />
 
-      <Group justify="flex-end" mt="sm" gap="xs">
-        <Button type="submit" disabled>
-          Save
-        </Button>
-        <Button variant="subtle">Cancel</Button>
-      </Group>
+      <FormButtons />
     </form>
   );
 }

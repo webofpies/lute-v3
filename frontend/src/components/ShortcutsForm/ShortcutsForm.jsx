@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { Button, CloseButton, Fieldset, Group, TextInput } from "@mantine/core";
+import { CloseButton, Fieldset, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import FormButtons from "../FormButtons/FormButtons";
 import { getPressedKeysAsString } from "../../misc/utils";
 
 function ShortcutsForm({ data }) {
@@ -96,10 +97,8 @@ function ShortcutsForm({ data }) {
             );
           })}
         </Group>
-        <Group justify="flex-end" mt="xl" gap="xs">
-          <Button>Cancel</Button>
-          <Button type="submit">Save</Button>
-        </Group>
+
+        <FormButtons />
       </form>
     </>
   );
