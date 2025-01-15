@@ -3,16 +3,22 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   ActionIcon,
+  Box,
   Center,
   Divider,
   Drawer,
   Group,
   Image,
   ScrollArea,
+  SegmentedControl,
   Text,
 } from "@mantine/core";
-import { IconPalette } from "@tabler/icons-react";
-import DrawerFooter from "./DrawerFooter";
+import {
+  IconCircleLetterAFilled,
+  IconDeviceDesktop,
+  IconDeviceMobile,
+  IconPalette,
+} from "@tabler/icons-react";
 import DrawerLinks from "./DrawerLinks";
 import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
 import { settingsQuery } from "../../queries/settings";
@@ -77,6 +83,34 @@ function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {
         </Drawer.Body>
       </Drawer.Content>
     </Drawer.Root>
+  );
+}
+
+function DrawerFooter() {
+  return (
+    <Box className={classes.footer}>
+      <SegmentedControl
+        fullWidth
+        styles={{
+          label: { padding: "0.2rem" },
+          innerLabel: { lineHeight: 0, display: "block" },
+        }}
+        size="xs"
+        withItemsBorders
+        color="blue"
+        data={[
+          {
+            value: "desktop",
+            label: <IconDeviceDesktop />,
+          },
+          { value: "mobile", label: <IconDeviceMobile /> },
+          {
+            value: "auto",
+            label: <IconCircleLetterAFilled />,
+          },
+        ]}
+      />
+    </Box>
   );
 }
 
