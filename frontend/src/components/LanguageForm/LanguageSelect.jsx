@@ -1,8 +1,8 @@
 import { useState, useEffect, memo } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import {
-  CloseButton,
   Combobox,
+  Input,
   InputBase,
   ScrollArea,
   useCombobox,
@@ -61,12 +61,7 @@ function LanguageSelect({ form, languages }) {
 
   const inputRightSection =
     value !== null ? (
-      <CloseButton
-        size="sm"
-        onMouseDown={(event) => event.preventDefault()}
-        onClick={handleClearField}
-        aria-label="Clear value"
-      />
+      <Input.ClearButton onClick={handleClearField} />
     ) : (
       <Combobox.Chevron />
     );

@@ -8,7 +8,7 @@ import {
   Text,
   Loader,
   ScrollArea,
-  CloseButton,
+  Input,
 } from "@mantine/core";
 import { termSuggestionsQuery } from "../../queries/term";
 import { buildSuggestionsList } from "../../misc/utils";
@@ -186,12 +186,7 @@ function useInitializeTagsField(
   }
 
   const inputRightSection = values.length ? (
-    <CloseButton
-      size="sm"
-      onMouseDown={(event) => event.preventDefault()}
-      onClick={() => onSetValues([])}
-      aria-label="Clear value"
-    />
+    <Input.ClearButton onClick={() => onSetValues([])} />
   ) : (
     isFetching && <Loader size="sm" />
   );

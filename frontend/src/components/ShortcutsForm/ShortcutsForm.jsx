@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { CloseButton, Fieldset, Group, TextInput } from "@mantine/core";
+import { Fieldset, Group, Input, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import FormButtons from "../FormButtons/FormButtons";
 import { getPressedKeysAsString } from "../../misc/utils";
@@ -77,8 +77,7 @@ function ShortcutsForm({ data }) {
                         label={shortcut.label}
                         readOnly
                         rightSection={
-                          <CloseButton
-                            aria-label="Clear input"
+                          <Input.ClearButton
                             onClick={() =>
                               form.setFieldValue(shortcut.description, "")
                             }
