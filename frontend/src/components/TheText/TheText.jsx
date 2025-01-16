@@ -61,7 +61,6 @@ function TheText({ paragraphs, onSetActiveTerm }) {
                       onMouseUp={(e) => {
                         if (e.button !== 0) return;
                         const termData = handleMouseUp(e);
-                        console.log(termData);
                         if (!termData) return;
                         handleSetTerm(termData);
                         handleCopyText(termData);

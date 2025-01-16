@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "@mantine/form";
 import {
-  Box,
   Checkbox,
   Divider,
   Group,
@@ -7,11 +8,13 @@ import {
   TagsInput,
   Text,
 } from "@mantine/core";
-import StatusRadio from "../TermForm/StatusRadio";
+import StatusRadio from "../StatusRadio/StatusRadio";
 import FormButtons from "../FormButtons/FormButtons";
-import { useForm } from "@mantine/form";
+import { tagSuggestionsQuery } from "../../queries/term";
 
-function BulkTermForm({ termIds }) {
+function BulkTermForm({ terms }) {
+  const { data: tags } = useQuery(tagSuggestionsQuery);
+
   const form = useForm({
     initialValues: {
       convertToLowerCase: false,
@@ -22,43 +25,62 @@ function BulkTermForm({ termIds }) {
       tagsAdd: [],
       tagsRemove: [],
     },
-    enhanceGetInputProps: ({ form, field }) => {
-      if (field === "status") {
-        const changeStatus = form.getValues().changeStatus;
-
-        if (!changeStatus)
-          return {
-            disabled: true,
-          };
-
-        return { disabled: false };
-      }
-    },
   });
+
   return (
-    <Box p={20}>
+    <>
       <Text
         fs="italic"
         mb={16}
         component="p"
-        size="sm">{`Updating ${termIds.length} term(s)`}</Text>
+        size="sm">{`Updating ${terms.length} term(s)`}</Text>
       <form>
         <Stack gap={5}>
-          <Checkbox label="Convert to lowercase" />
-          <Checkbox label="Remove parents" />
+          <Checkbox
+            label="Convert to lowercase"
+            key={form.key("convertToLowerCase")}
+            {...form.getInputProps("convertToLowerCase", { type: "checkbox" })}
+          />
+          <Checkbox
+            label="Remove parents"
+            key={form.key("removeParents")}
+            {...form.getInputProps("removeParents", { type: "checkbox" })}
+          />
           <Group>
-            <Checkbox label="Change status" />
-            <StatusRadio form={form} />
+            <Checkbox
+              label="Change status"
+              key={form.key("changeStatus")}
+              {...form.getInputProps("changeStatus", { type: "checkbox" })}
+            />
+            <StatusRadio
+              form={form}
+              disabled={!form.getValues().changeStatus}
+            />
           </Group>
           <Divider mt={5} mb={5} />
-          <TagsInput placeholder="Parent (Limit: one)" maxTags={1} />
-          <TagsInput placeholder="Tags to add" />
-          <TagsInput placeholder="Tags to remove" />
+          <TagsInput
+            placeholder="Parent (Limit: one)"
+            maxTags={1}
+            key={form.key("parent")}
+            {...form.getInputProps("parent")}
+          />
+          <TagsInput
+            placeholder="Tags to add"
+            data={tags || []}
+            key={form.key("tagsAdd")}
+            {...form.getInputProps("tagsAdd")}
+          />
+          <TagsInput
+            placeholder="Tags to remove"
+            data={tags || []}
+            key={form.key("tagsRemove")}
+            {...form.getInputProps("tagsRemove")}
+          />
         </Stack>
 
         <FormButtons />
       </form>
-    </Box>
+    </>
   );
 }
 

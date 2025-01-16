@@ -19,8 +19,7 @@ import Sentences from "../Sentences/Sentences";
 import classes from "./DictTabs.module.css";
 import { sentencesQuery } from "../../queries/term";
 import { getLookupURL, handleExternalUrl } from "../../misc/utils";
-
-const MAX_VISIBLE_DICT_TABS = 5;
+import { MAX_VISIBLE_DICT_TABS } from "../../misc/constants";
 
 function DictTabs({
   language,

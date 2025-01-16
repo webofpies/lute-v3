@@ -1,10 +1,10 @@
 import { memo, useMemo, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Modal } from "@mantine/core";
+import { Checkbox, Modal } from "@mantine/core";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
+import ActionsMenu from "./ActionsMenu";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import EmptyRow from "../EmptyRow/EmptyRow";
-import Actions from "./Actions";
 import getDefaultTableOptions from "../../misc/getDefaultTableOptions";
 import columnDefinition from "./columnDefinition";
 
@@ -47,11 +47,6 @@ function TermsTable({ languageChoices, tagChoices }) {
     createdOn: false,
     parentText: true,
   });
-
-  function handleShowParentsOnly(e) {
-    setColumnVisibility((v) => ({ ...v, parentText: !v.parentText }));
-    setShowParentsOnly(e.currentTarget.checked);
-  }
 
   url.searchParams.set("parentsOnly", showParentsOnly);
   url.searchParams.set(
@@ -127,12 +122,21 @@ function TermsTable({ languageChoices, tagChoices }) {
       ) : null;
     },
     renderTopToolbarCustomActions: ({ table }) => (
-      <Actions
-        table={table}
-        onSetEditModalOpened={setEditModalOpened}
-        showParentsOnly={showParentsOnly}
-        onShowParentsOnly={handleShowParentsOnly}
-      />
+      <>
+        <ActionsMenu table={table} onSetEditModalOpened={setEditModalOpened} />
+        <Checkbox
+          checked={showParentsOnly}
+          onChange={(e) => {
+            setColumnVisibility((v) => ({ ...v, parentText: !v.parentText }));
+            setShowParentsOnly(e.currentTarget.checked);
+          }}
+          label="Parent terms only"
+          size="sm"
+          ml="auto"
+          mr="xs"
+          style={{ alignSelf: "center" }}
+        />
+      </>
     ),
   });
 
@@ -145,7 +149,7 @@ function TermsTable({ languageChoices, tagChoices }) {
         onClose={() => setEditModalOpened(false)}
         title="Edit term(s)"
         withCloseButton>
-        <BulkTermForm termIds={Object.keys(table.getState().rowSelection)} />
+        <BulkTermForm terms={table.getSelectedRowModel().rows} />
       </Modal>
     </>
   );

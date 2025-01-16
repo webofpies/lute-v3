@@ -1,4 +1,3 @@
-import { Checkbox } from "@mantine/core";
 import { Button, FileButton, Menu, rem } from "@mantine/core";
 import {
   IconDownload,
@@ -9,12 +8,7 @@ import {
   IconUpload,
 } from "@tabler/icons-react";
 
-function Actions({
-  table,
-  onSetEditModalOpened,
-  showParentsOnly,
-  onShowParentsOnly,
-}) {
+function ActionsMenu({ table, onSetEditModalOpened }) {
   const iconSize = { width: rem(16), height: rem(16) };
   return (
     <>
@@ -77,27 +71,8 @@ function Actions({
           </FileButton>
         </Menu.Dropdown>
       </Menu>
-
-      <Checkbox
-        checked={showParentsOnly}
-        onChange={onShowParentsOnly}
-        label="Parent terms only"
-        size="sm"
-        ml="auto"
-        mr="xs"
-        style={{ alignSelf: "center" }}
-      />
-      {/* <Chip
-        checked={showParentsOnly}
-        onChange={onShowParentsOnly}
-        style={{ alignSelf: "center" }}
-        size="sm"
-        ml="auto"
-        mr="xs">
-        Parent terms only
-      </Chip> */}
     </>
   );
 }
 
-export default Actions;
+export default ActionsMenu;

@@ -1,7 +1,7 @@
 import { lazy, Suspense, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Group, Loader } from "@mantine/core";
+import { Box, Center, Group, Loader } from "@mantine/core";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import ReadPane from "../ReadPane/ReadPane";
 import TranslationPane from "../TranslationPane/TranslationPane";
@@ -11,9 +11,9 @@ import { termDataQuery } from "../../queries/term";
 import { useInitialize } from "../../hooks/book";
 import { paneResizeStorage } from "../../misc/utils";
 import classes from "./BookView.module.css";
-import BulkTermForm from "../BulkTermForm/BulkTermForm";
 
 const ThemeForm = lazy(() => import("../ThemeForm/ThemeForm"));
+const BulkTermForm = lazy(() => import("../BulkTermForm/BulkTermForm"));
 
 function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
   const { id, page: pageNum } = useParams();
@@ -44,7 +44,7 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
 
   const showTranslationPane =
     activeTerm.data && activeTerm.type !== "shift" && term && !themeFormOpen;
-  const showBulkTermForm = activeTerm.type === "shift";
+  const showBulkTermForm = activeTerm.type === "shift" && !themeFormOpen;
   const showThemeForm = themeFormOpen && !editMode;
 
   const paneRightRef = useRef(null);
@@ -99,7 +99,18 @@ function BookView({ themeFormOpen, onThemeFormOpen, onDrawerOpen }) {
                 onSetActiveTerm={setActiveTerm}
               />
             )}
-            {showBulkTermForm && <BulkTermForm termIds={activeTerm.data} />}
+            {showBulkTermForm && (
+              <Box p={20}>
+                <Suspense
+                  fallback={
+                    <Center>
+                      <Loader />
+                    </Center>
+                  }>
+                  <BulkTermForm terms={activeTerm.data} />
+                </Suspense>
+              </Box>
+            )}
             {showThemeForm && (
               <Group justify="center" align="center" h="100%" p={10}>
                 <Suspense fallback={<Loader />}>

@@ -1,5 +1,6 @@
 import { Group, Radio, rem, Text } from "@mantine/core";
 import { IconCheck, IconMinus } from "@tabler/icons-react";
+import classes from "./StatusRadio.module.css";
 
 const radioIcon = (label, props) => (
   <Text {...props} lh={1} ta="center">
@@ -38,7 +39,7 @@ const radios = [
   },
 ];
 
-function StatusRadio({ form }) {
+function StatusRadio({ form, disabled = false }) {
   const statusColor = (id) => `var(--lute-color-highlight-status${id})`;
   const iconColor = (id) => `var(--lute-text-color-status${id})`;
   return (
@@ -49,6 +50,8 @@ function StatusRadio({ form }) {
       <Group justify="flex-start" gap={2} wrap="nowrap">
         {radios.map((radio) => (
           <Radio
+            key={radio.value}
+            className={disabled ? classes.disabled : ""}
             style={{ "--radio-icon-size": rem(16) }}
             styles={{
               radio: {
@@ -56,13 +59,13 @@ function StatusRadio({ form }) {
                 border: "none",
               },
             }}
+            size="md"
+            disabled={disabled}
+            value={disabled ? "" : radio.value}
+            name={radio.value}
             iconColor={iconColor(radio.value)}
             color={statusColor(radio.value)}
-            size="md"
-            key={radio.value}
             icon={radio.icon}
-            name={radio.value}
-            value={radio.value}
             ml={radio.value === radios[radios.length - 1].value ? 10 : 0}
           />
         ))}

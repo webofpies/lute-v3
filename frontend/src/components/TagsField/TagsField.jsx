@@ -12,8 +12,7 @@ import {
 } from "@mantine/core";
 import { termSuggestionsQuery } from "../../queries/term";
 import { buildSuggestionsList } from "../../misc/utils";
-
-const MAX_SUGGESTION_COUNT = 15;
+import { MAX_PARENT_TAG_SUGGESTION_COUNT } from "../../misc/constants";
 
 function TagsField({
   termText,
@@ -89,7 +88,7 @@ function TagsField({
               ))}
             </ScrollArea.Autosize>
           </Combobox.Options>
-          {suggestions.length > MAX_SUGGESTION_COUNT && (
+          {suggestions.length > MAX_PARENT_TAG_SUGGESTION_COUNT && (
             <Combobox.Footer>
               <Text c="dimmed" size="xs" fs="italic">
                 (more items available, please refine your search.)
@@ -122,7 +121,7 @@ function useInitializeTagsField(
   const suggestions = data ? buildSuggestionsList(termText, data) : [];
 
   const options = suggestions
-    .slice(0, MAX_SUGGESTION_COUNT)
+    .slice(0, MAX_PARENT_TAG_SUGGESTION_COUNT)
     .filter((item) =>
       item.suggestion.toLowerCase().includes(search.trim().toLowerCase())
     )

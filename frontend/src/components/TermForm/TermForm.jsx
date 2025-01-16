@@ -21,7 +21,7 @@ import {
   IconSpeakerphone,
   IconVocabulary,
 } from "@tabler/icons-react";
-import StatusRadio from "./StatusRadio";
+import StatusRadio from "../StatusRadio/StatusRadio";
 import TagsField from "../TagsField/TagsField";
 import FormButtons from "../FormButtons/FormButtons";
 import { tagSuggestionsQuery } from "../../queries/term";
