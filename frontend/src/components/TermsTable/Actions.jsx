@@ -11,9 +11,9 @@ import {
 
 function Actions({
   table,
-  showParentsOnly,
   onSetEditModalOpened,
-  onSetShowParentsOnly,
+  showParentsOnly,
+  onShowParentsOnly,
 }) {
   const iconSize = { width: rem(16), height: rem(16) };
   return (
@@ -80,13 +80,22 @@ function Actions({
 
       <Checkbox
         checked={showParentsOnly}
-        onChange={(e) => onSetShowParentsOnly(e.currentTarget.checked)}
+        onChange={onShowParentsOnly}
         label="Parent terms only"
         size="sm"
         ml="auto"
         mr="xs"
         style={{ alignSelf: "center" }}
       />
+      {/* <Chip
+        checked={showParentsOnly}
+        onChange={onShowParentsOnly}
+        style={{ alignSelf: "center" }}
+        size="sm"
+        ml="auto"
+        mr="xs">
+        Parent terms only
+      </Chip> */}
     </>
   );
 }

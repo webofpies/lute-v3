@@ -25,7 +25,7 @@ const COLUMN_FILTER_FNS = {
 const COLUMN_FILTERS = [{ id: "status", value: [0, 6] }];
 
 //build the URL (start=0&size=10&filters=[]&globalFilter=&sorting=[])
-const fetchURL = new URL("/api/terms", "http://localhost:5001");
+const url = new URL("/api/terms", "http://localhost:5001");
 
 function TermsTable({ languageChoices, tagChoices }) {
   const columns = useMemo(
@@ -35,112 +35,23 @@ function TermsTable({ languageChoices, tagChoices }) {
 
   const [editModalOpened, setEditModalOpened] = useState(false);
 
-  const {
-    response,
-    setShowParentsOnly,
-    setSorting,
-    setPagination,
-    setGlobalFilter,
-    setColumnFilters,
-    setColumnFilterFns,
-    showParentsOnly,
-    sorting,
-    pagination,
-    globalFilter,
-    columnFilters,
-    columnFilterFns,
-  } = useTermsTable(fetchURL);
-
-  const data = response.data;
-  const table = useMantineReactTable({
-    ...defaultOptions,
-
-    columns: columns,
-    data: data?.data || [],
-    rowCount: data?.total,
-    localization: {
-      min: "From",
-      max: "To",
-    },
-
-    initialState: {
-      ...defaultOptions.initialState,
-
-      columnVisibility: {
-        tags: false,
-        createdOn: false,
-      },
-    },
-
-    state: {
-      columnFilterFns,
-      columnFilters,
-      globalFilter,
-      pagination,
-      sorting,
-      // columnVisibility: {
-      //   parentText: showParentsOnly ? false : true,
-      // },
-    },
-
-    enableClickToCopy: true,
-    enableRowSelection: true,
-    enableColumnFilterModes: true,
-
-    manualFiltering: true,
-    manualPagination: true,
-    manualSorting: true,
-    onColumnFilterFnsChange: setColumnFilterFns,
-    onColumnFiltersChange: setColumnFilters,
-    onGlobalFilterChange: setGlobalFilter,
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
-
-    getRowId: (originalRow) => originalRow.id,
-
-    renderEmptyRowsFallback: ({ table }) => {
-      const language = table.getColumn("language").getFilterValue();
-      const isLanguageFiltered = language?.length > 0;
-      return isLanguageFiltered ? (
-        <EmptyRow
-          tableName="terms"
-          language={language}
-          languageChoices={languageChoices}
-        />
-      ) : null;
-    },
-    renderTopToolbarCustomActions: ({ table }) => (
-      <Actions
-        table={table}
-        onSetShowParentsOnly={setShowParentsOnly}
-        onSetEditModalOpened={setEditModalOpened}
-        showParentsOnly={showParentsOnly}
-      />
-    ),
-  });
-
-  return (
-    <>
-      <MantineReactTable table={table} />
-      <Modal
-        trapFocus
-        opened={editModalOpened}
-        onClose={() => setEditModalOpened(false)}
-        title="Edit term(s)"
-        withCloseButton>
-        <BulkTermForm termIds={Object.keys(table.getState().rowSelection)} />
-      </Modal>
-    </>
-  );
-}
-
-function useTermsTable(url) {
   const [showParentsOnly, setShowParentsOnly] = useState(false);
   const [sorting, setSorting] = useState([]);
   const [pagination, setPagination] = useState(PAGINATION);
   const [globalFilter, setGlobalFilter] = useState("");
   const [columnFilters, setColumnFilters] = useState(COLUMN_FILTERS);
   const [columnFilterFns, setColumnFilterFns] = useState(COLUMN_FILTER_FNS);
+
+  const [columnVisibility, setColumnVisibility] = useState({
+    tags: false,
+    createdOn: false,
+    parentText: true,
+  });
+
+  function handleShowParentsOnly(e) {
+    setColumnVisibility((v) => ({ ...v, parentText: !v.parentText }));
+    setShowParentsOnly(e.currentTarget.checked);
+  }
 
   url.searchParams.set("parentsOnly", showParentsOnly);
   url.searchParams.set(
@@ -163,21 +74,81 @@ function useTermsTable(url) {
     staleTime: 30_000,
   });
 
-  return {
-    response,
-    setShowParentsOnly,
-    setSorting,
-    setPagination,
-    setGlobalFilter,
-    setColumnFilters,
-    setColumnFilterFns,
-    showParentsOnly,
-    sorting,
-    pagination,
-    globalFilter,
-    columnFilters,
-    columnFilterFns,
-  };
+  const data = response.data;
+  const table = useMantineReactTable({
+    ...defaultOptions,
+
+    columns: columns,
+    data: data?.data || [],
+    rowCount: data?.total,
+    localization: {
+      min: "From",
+      max: "To",
+    },
+
+    initialState: {
+      ...defaultOptions.initialState,
+    },
+
+    state: {
+      columnFilterFns,
+      columnFilters,
+      globalFilter,
+      pagination,
+      sorting,
+      columnVisibility,
+    },
+
+    enableClickToCopy: true,
+    enableRowSelection: true,
+    enableColumnFilterModes: true,
+
+    manualFiltering: true,
+    manualPagination: true,
+    manualSorting: true,
+    onColumnFilterFnsChange: setColumnFilterFns,
+    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: setPagination,
+    onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
+
+    getRowId: (originalRow) => originalRow.id,
+
+    renderEmptyRowsFallback: ({ table }) => {
+      const language = table.getColumn("language").getFilterValue();
+      const isLanguageFiltered = language?.length > 0;
+      return isLanguageFiltered ? (
+        <EmptyRow
+          tableName="terms"
+          language={language}
+          languageChoices={languageChoices}
+        />
+      ) : null;
+    },
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Actions
+        table={table}
+        onSetEditModalOpened={setEditModalOpened}
+        showParentsOnly={showParentsOnly}
+        onShowParentsOnly={handleShowParentsOnly}
+      />
+    ),
+  });
+
+  return (
+    <>
+      <MantineReactTable table={table} />
+      <Modal
+        trapFocus
+        opened={editModalOpened}
+        onClose={() => setEditModalOpened(false)}
+        title="Edit term(s)"
+        withCloseButton>
+        <BulkTermForm termIds={Object.keys(table.getState().rowSelection)} />
+      </Modal>
+    </>
+  );
 }
 
 export default memo(TermsTable);
