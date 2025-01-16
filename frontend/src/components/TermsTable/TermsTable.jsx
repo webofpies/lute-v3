@@ -5,8 +5,10 @@ import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import BulkTermForm from "../BulkTermForm/BulkTermForm";
 import EmptyRow from "../EmptyRow/EmptyRow";
 import Actions from "./Actions";
-import tableDefault from "../../misc/tableDefault";
+import getDefaultTableOptions from "../../misc/getDefaultTableOptions";
 import columnDefinition from "./columnDefinition";
+
+const defaultOptions = getDefaultTableOptions();
 
 const PAGINATION = {
   pageIndex: 0,
@@ -51,7 +53,7 @@ function TermsTable({ languageChoices, tagChoices }) {
 
   const data = response.data;
   const table = useMantineReactTable({
-    ...tableDefault,
+    ...defaultOptions,
 
     columns: columns,
     data: data?.data || [],
@@ -62,7 +64,7 @@ function TermsTable({ languageChoices, tagChoices }) {
     },
 
     initialState: {
-      ...tableDefault.initialState,
+      ...defaultOptions.initialState,
 
       columnVisibility: {
         tags: false,

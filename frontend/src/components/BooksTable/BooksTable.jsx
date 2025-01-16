@@ -26,9 +26,11 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import EmptyRow from "../EmptyRow/EmptyRow";
-import tableDefault from "../../misc/tableDefault";
+import getDefaultTableOptions from "../../misc/getDefaultTableOptions";
 import { definedLangInfoQuery } from "../../queries/language";
 import columnDefinition from "./columnDefinition";
+
+const defaultOptions = getDefaultTableOptions();
 
 const PAGINATION = {
   pageIndex: 0,
@@ -83,14 +85,14 @@ function BooksTable({ languageChoices, tagChoices }) {
   });
 
   const table = useMantineReactTable({
-    ...tableDefault,
+    ...defaultOptions,
 
     columns: columns,
     data: data?.data || [],
     rowCount: data?.total,
 
     initialState: {
-      ...tableDefault.initialState,
+      ...defaultOptions.initialState,
       columnVisibility: {
         tags: false,
       },

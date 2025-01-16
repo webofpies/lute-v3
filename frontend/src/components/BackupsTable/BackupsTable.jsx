@@ -1,7 +1,9 @@
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
 import { ActionIcon, Tooltip } from "@mantine/core";
 import { IconDownload } from "@tabler/icons-react";
-import tableDefault from "../../misc/tableDefault";
+import getDefaultTableOptions from "../../misc/getDefaultTableOptions";
+
+const defaultOptions = getDefaultTableOptions();
 
 const columns = [
   {
@@ -37,7 +39,7 @@ const columns = [
 
 function BackupsTable({ data }) {
   const table = useMantineReactTable({
-    ...tableDefault,
+    ...defaultOptions,
     columns,
     data,
 
@@ -45,7 +47,7 @@ function BackupsTable({ data }) {
       mah: 500,
     },
     mantineTableProps: {
-      ...tableDefault.mantineTableProps,
+      ...defaultOptions.mantineTableProps,
       highlightOnHover: false,
     },
 

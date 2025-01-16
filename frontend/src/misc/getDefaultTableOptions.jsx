@@ -1,6 +1,8 @@
 import { MRT_ShowHideColumnsButton } from "mantine-react-table";
 
-const tableDefault = {
+// just an object instead of factory function results in weird bugs
+// e.g actions column appears first, or flashes in the first column briefly
+const getDefaultTableOptions = () => ({
   initialState: {
     density: 6,
     showGlobalFilter: true,
@@ -60,6 +62,6 @@ const tableDefault = {
   renderToolbarInternalActions: ({ table }) => (
     <MRT_ShowHideColumnsButton table={table} />
   ),
-};
+});
 
-export default tableDefault;
+export default getDefaultTableOptions;

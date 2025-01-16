@@ -9,7 +9,9 @@ import {
 } from "@mantine/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { MantineReactTable, useMantineReactTable } from "mantine-react-table";
-import tableDefault from "../../misc/tableDefault";
+import getDefaultTableOptions from "../../misc/getDefaultTableOptions";
+
+const defaultOptions = getDefaultTableOptions();
 
 const columns = [
   {
@@ -32,13 +34,13 @@ function TagsTable({ data }) {
   const [openCreateTagModal, setOpenCreateTagModal] = useState(false);
 
   const table = useMantineReactTable({
-    ...tableDefault,
+    ...defaultOptions,
 
     columns: columns,
     data: data,
 
     initialState: {
-      ...tableDefault.initialState,
+      ...defaultOptions.initialState,
 
       columnFilterFns: {
         text: "contains",
