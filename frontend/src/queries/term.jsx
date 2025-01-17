@@ -64,11 +64,11 @@ const tagsQuery = {
   },
 };
 
-const sentencesQuery = (langId, termId) => ({
-  queryKey: keys.sentences(termId, langId),
+const sentencesQuery = (langId, termText) => ({
+  queryKey: keys.sentences(termText, langId),
   queryFn: async () => {
     const response = await fetch(
-      `http://localhost:5001/api/terms/${termId}/${langId}/sentences`
+      `http://localhost:5001/api/terms/${termText}/${langId}/sentences`
     );
     return await response.json();
   },

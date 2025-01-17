@@ -36,6 +36,10 @@ function DictTabs({
     onChange: onSetActiveTab,
   });
 
+  const allDicts = language.dictionaries.term;
+  const visibleDicts = allDicts.slice(0, MAX_VISIBLE_DICT_TABS);
+  const dropdownDicts = allDicts.slice(MAX_VISIBLE_DICT_TABS);
+
   function handleFocus() {
     setTimeout(() => {
       const input = translationFieldRef?.current;
@@ -43,12 +47,6 @@ function DictTabs({
       input?.setSelectionRange(input.value.length, input.value.length);
     }, 0);
   }
-
-  const visibleDicts = language.dictionaries.term.slice(
-    0,
-    MAX_VISIBLE_DICT_TABS
-  );
-  const dropdownDicts = language.dictionaries.term.slice(MAX_VISIBLE_DICT_TABS);
 
   return (
     <Tabs
@@ -164,7 +162,7 @@ function DictTabs({
         value="sentencesTab"
         key="sentencesTab">
         {tabValue === "sentencesTab" && (
-          <Sentences langId={language.id} termId={term} />
+          <Sentences langId={language.id} termText={term} />
         )}
       </Tabs.Panel>
       <Tabs.Panel
