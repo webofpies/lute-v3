@@ -48,16 +48,6 @@ const bookStatsQuery = (id) => ({
   enabled: id !== null,
 });
 
-const bookmarksQuery = (id) => ({
-  queryKey: keys.bookmarks(id),
-  queryFn: async () => {
-    const response = await fetch(`http://localhost:5001/api/bookmarks/${id}`);
-    return await response.json();
-  },
-  refetchOnWindowFocus: false,
-  enabled: !!id,
-});
-
 function loader(queryClient) {
   return async ({ params }) => {
     const bookData = await queryClient.ensureQueryData(bookQuery(params.id));
@@ -68,9 +58,6 @@ function loader(queryClient) {
     const languageData = await queryClient.ensureQueryData(
       definedLangInfoQuery(bookData?.languageId)
     );
-    const bookmarksData = await queryClient.ensureQueryData(
-      bookmarksQuery(params.id)
-    );
     const softwareInfoData =
       await queryClient.ensureQueryData(softwareInfoQuery);
 
@@ -79,17 +66,9 @@ function loader(queryClient) {
       pageData,
       settingsData,
       languageData,
-      bookmarksData,
       softwareInfoData,
     };
   };
 }
 
-export {
-  loader,
-  bookQuery,
-  pageQuery,
-  bookStatsQuery,
-  allBooksQuery,
-  bookmarksQuery,
-};
+export { loader, bookQuery, pageQuery, bookStatsQuery, allBooksQuery };

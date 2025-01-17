@@ -15,7 +15,7 @@ import {
   IconExternalLink,
   IconPhoto,
 } from "@tabler/icons-react";
-import Sentences from "../Sentences/Sentences";
+import Sentences from "./Sentences";
 import classes from "./DictTabs.module.css";
 import { sentencesQuery } from "../../queries/term";
 import { getLookupURL, handleExternalUrl } from "../../misc/utils";

@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useNavigation, useParams, useSearchParams } from "react-router-dom";
 import {
   ActionIcon,
@@ -28,7 +27,6 @@ import BookmarksMenu from "./BookmarksMenu";
 import HomeImageLink from "../HomeImageLink/HomeImageLink";
 import classes from "./ReadHeader.module.css";
 import { resetFocusActiveSentence } from "../../lute";
-import { bookmarksQuery } from "../../queries/book";
 import { handleSetFocusMode, handleSetHighlights } from "../../misc/actions";
 
 function ReadHeader({
@@ -44,7 +42,6 @@ function ReadHeader({
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
   const [, setSearchParams] = useSearchParams();
-  const { data: bookmarks } = useQuery(bookmarksQuery(params.id));
 
   function handleActivateEdit() {
     onSetActiveTerm({ data: null });
@@ -90,8 +87,8 @@ function ReadHeader({
             </div>
 
             <Group gap={0} wrap="nowrap">
-              {bookmarks ? (
-                <BookmarksMenu data={bookmarks} />
+              {book.bookmarks ? (
+                <BookmarksMenu data={book.bookmarks} />
               ) : (
                 <BookmarksButton disabled={true} />
               )}

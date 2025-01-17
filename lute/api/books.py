@@ -275,6 +275,36 @@ def book_info(bookid):
             if book.audio_filename
             else None
         ),
+        # mock bookmarks
+        "bookmarks": {
+            2: [  # page
+                {
+                    "id": 2,  # sentence id
+                    "description": "This sentence reminds me of my chilhood",
+                },
+                {"id": 6, "description": "Oh, the memories"},
+                {"id": 8, "description": "Are we looting?"},
+            ],
+            9: [
+                {
+                    "id": 2,
+                    "description": "This sentence reminds me of my chilhood",
+                },
+                {"id": 5, "description": "Oh, the memories"},
+                {"id": 6, "description": "Are we looting?"},
+                {"id": 7, "description": "Are we looting?"},
+                {"id": 8, "description": "Are we looting?"},
+            ],
+            12: [
+                {
+                    "id": 4,
+                    "description": "This sentence reminds me of my chilhood",
+                },
+                {"id": 5, "description": "Oh, the memories"},
+                {"id": 6, "description": "Are we looting?"},
+                {"id": 7, "description": "Are we looting?"},
+            ],
+        },
     }
 
     return jsonify(book_dict)
