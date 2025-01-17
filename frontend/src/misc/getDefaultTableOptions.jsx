@@ -29,19 +29,24 @@ const getDefaultTableOptions = () => ({
       alignItems: "center",
     },
   },
+
   mantineCopyButtonProps: {
     display: "block",
   },
+
   mantineSelectAllCheckboxProps: {
     size: "sm",
   },
+
   mantineSelectCheckboxProps: {
     size: "sm",
   },
+
   mantinePaperProps: {
     withBorder: false,
     shadow: false,
   },
+
   mantineSearchTextInputProps: {
     w: 200,
     size: "xs",
@@ -51,12 +56,26 @@ const getDefaultTableOptions = () => ({
       },
     },
   },
+
   mantineTableContainerProps: {
     mah: 600,
   },
+
   mantineTableProps: {
     striped: true,
     withColumnBorders: true,
+  },
+
+  mantineFilterTextInputProps: {
+    size: "xs",
+  },
+
+  mantineFilterSelectProps: {
+    size: "xs",
+  },
+
+  mantineFilterDateInputProps: {
+    size: "xs",
   },
 
   renderToolbarInternalActions: ({ table }) => (
