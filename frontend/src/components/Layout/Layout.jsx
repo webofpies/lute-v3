@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Outlet, useNavigation } from "react-router-dom";
 import { nprogress } from "@mantine/nprogress";
 import MainMenuBar from "../MainMenu/MainMenuBar";
-import { settingsQuery } from "../../queries/settings";
+import { settingsQuery } from "@settings/api/settings";
 
 function Layout() {
   const { data: settings } = useQuery(settingsQuery);

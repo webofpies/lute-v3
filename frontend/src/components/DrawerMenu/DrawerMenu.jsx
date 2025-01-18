@@ -20,8 +20,8 @@ import {
   IconPalette,
 } from "@tabler/icons-react";
 import DrawerLinks from "./DrawerLinks";
-import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
-import { settingsQuery } from "../../queries/settings";
+import SchemeToggleButton from "@common/SchemeToggleButton/SchemeToggleButton";
+import { settingsQuery } from "@settings/api/settings";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerMenu({ drawerOpen, onClose, onThemeFormOpen }) {

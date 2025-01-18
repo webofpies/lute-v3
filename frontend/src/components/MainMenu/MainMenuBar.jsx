@@ -11,10 +11,10 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown } from "@tabler/icons-react";
-import { softwareInfo } from "../../misc/modals";
-import { menu } from "../../misc/menus";
-import HomeImageLink from "../HomeImageLink/HomeImageLink";
-import SchemeToggleButton from "../SchemeToggleButton/SchemeToggleButton";
+import { softwareInfo } from "@resources/modals";
+import { menu } from "@resources/menus";
+import HomeImageLink from "@common/HomeImageLink/HomeImageLink";
+import SchemeToggleButton from "@common/SchemeToggleButton/SchemeToggleButton";
 import classes from "./MainMenuBar.module.css";
 
 function MainMenuBar({ settings }) {

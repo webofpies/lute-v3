@@ -1,0 +1,28 @@
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
+import { Button, Group, Text } from "@mantine/core";
+import PageContainer from "@common/PageContainer/PageContainer";
+import PageTitle from "@common/PageTitle/PageTitle";
+import BackupsTable from "@backup/components/BackupsTable/BackupsTable";
+import { backupsQuery } from "@backup/api/backup";
+
+function BackupsPage() {
+  const { data } = useQuery(backupsQuery);
+
+  return (
+    <PageContainer>
+      <PageTitle>Backups</PageTitle>
+      <Group justify="space-between">
+        <Text component="p" size="sm">{`Stored in: ${data.directory}`}</Text>
+        <Button
+          component={Link}
+          to="http://localhost:5001/backup/backup?type=manual">
+          Create New
+        </Button>
+      </Group>
+      <BackupsTable data={data.backups} />
+    </PageContainer>
+  );
+}
+
+export default BackupsPage;

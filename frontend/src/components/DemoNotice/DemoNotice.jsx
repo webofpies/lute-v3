@@ -3,8 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Alert, Button, rem, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconInfoCircle } from "@tabler/icons-react";
-import { databaseCleaned, demoDeactivated } from "../../misc/notifications";
-import { wipeDemoDBQuery, deactivateDemoQuery } from "../../queries/settings";
+import { databaseCleaned, demoDeactivated } from "@resources/notifications";
+import { wipeDemoDBQuery, deactivateDemoQuery } from "@settings/api/settings";
 
 function DemoNotice({ tutorialBookId }) {
   const queryClient = useQueryClient();

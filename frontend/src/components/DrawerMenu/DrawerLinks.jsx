@@ -10,8 +10,8 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { IconChevronDown } from "@tabler/icons-react";
-import { menu } from "../../misc/menus";
-import { softwareInfo } from "../../misc/modals";
+import { menu } from "@resources/menus";
+import { softwareInfo } from "@resources/modals";
 import classes from "./DrawerMenu.module.css";
 
 function DrawerLinks() {

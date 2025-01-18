@@ -6,7 +6,7 @@ import { IconBook2, IconCheck, IconSelector } from "@tabler/icons-react";
 import {
   loadSampleStoriesQuery,
   predefinedListQuery,
-} from "../../queries/language";
+} from "@language/api/language";
 
 function Welcome() {
   const queryClient = useQueryClient();

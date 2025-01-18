@@ -1,6 +1,6 @@
 import { Stack, Text } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
-import { softwareInfoQuery } from "../../queries/settings";
+import { softwareInfoQuery } from "@settings/api/settings";
 
 function SoftwareInfo() {
   const { data } = useQuery(softwareInfoQuery);

@@ -60,9 +60,9 @@ from lute.themes.routes import bp as themes_bp
 from lute.stats.routes import bp as stats_bp
 from lute.cli.commands import bp as cli_bp
 from lute.api.routes import bp as api_bp
-from lute.api.books import bp as api_books_bp
-from lute.api.languages import bp as api_languages_bp
-from lute.api.terms import bp as api_terms_bp
+from lute.api.book import bp as api_book_bp
+from lute.api.language import bp as api_language_bp
+from lute.api.term import bp as api_term_bp
 
 
 def _setup_app_dir(dirname, readme_content):
@@ -348,9 +348,9 @@ def _create_app(app_config, extra_config):
     app.register_blueprint(stats_bp)
     app.register_blueprint(cli_bp)
     app.register_blueprint(api_bp)
-    app.register_blueprint(api_languages_bp)
-    app.register_blueprint(api_books_bp)
-    app.register_blueprint(api_terms_bp)
+    app.register_blueprint(api_language_bp)
+    app.register_blueprint(api_book_bp)
+    app.register_blueprint(api_term_bp)
     if app_config.is_test_db:
         app.register_blueprint(dev_api_bp)
 

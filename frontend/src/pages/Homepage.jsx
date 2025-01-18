@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Box, Modal, useComputedColorScheme } from "@mantine/core";
-import BooksTable from "../components/BooksTable/BooksTable";
+import BooksTable from "@book/components/BooksTable/BooksTable";
+import PageContainer from "@common/PageContainer/PageContainer";
+import { settingsQuery, initialQuery } from "@settings/api/settings";
+import { applyLuteHighlights } from "@actions/general";
 import DemoNotice from "../components/DemoNotice/DemoNotice";
 import Welcome from "../components/Modals/Welcome";
-import PageContainer from "../components/PageContainer/PageContainer";
-import { settingsQuery, initialQuery } from "../queries/settings";
-import { applyLuteHighlights } from "../misc/actions";
 
-function Homepage() {
+function HomePage() {
   const colorScheme = useComputedColorScheme();
 
   const { data: settings } = useQuery(settingsQuery);
@@ -48,4 +48,4 @@ function Homepage() {
   );
 }
 
-export default Homepage;
+export default HomePage;
