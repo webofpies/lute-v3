@@ -1,5 +1,4 @@
 import { AreaChart } from "@mantine/charts";
-import "@mantine/charts/styles.css";
 
 const rawData = [
   {
